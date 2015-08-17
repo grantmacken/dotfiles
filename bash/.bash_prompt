@@ -1,0 +1,287 @@
+# set variable identifying the chroot you work in (used in the prompt below)
+#if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+#    debian_chroot=$(cat /etc/debian_chroot)
+#fi
+
+# set a fancy prompt (non-color, unless we know we "want" color)
+#case "$TERM" in
+#    xterm-color) color_prompt=yes;;
+#esac
+
+# uncomment for a colored prompt, if the terminal has the capability; turned
+# off by default to not distract the user: the focus in a terminal window
+# should be on the output of commands, not on the prompt
+#force_color_prompt=yes
+
+#if [ -n "$force_color_prompt" ]; then
+#    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+#	# We have color support; assume it's compliant with Ecma-48
+#	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+#	# a case would tend to support setf rather than setaf.)
+#	color_prompt=yes
+#    else
+#	color_prompt=
+#    fi
+#fi
+#
+#
+#if [ "$color_prompt" = yes ]; then
+#    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+#else
+#    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+#fi
+#unset color_prompt force_color_prompt
+
+#http://vim.wikia.com/wiki/256_colors_in_vim
+
+if [ "$TERM" = "xterm" ] ; then
+    if [ -z "$COLORTERM" ] ; then
+        if [ -z "$XTERM_VERSION" ] ; then
+            echo "Warning: Terminal wrongly calling itself 'xterm'."
+        else
+            case "$XTERM_VERSION" in
+            "XTerm(256)") TERM="xterm-256color" ;;
+            "XTerm(88)") TERM="xterm-88color" ;;
+            "XTerm") ;;
+            *)
+                echo "Warning: Unrecognized XTERM_VERSION: $XTERM_VERSION"
+                ;;
+            esac
+        fi
+    else
+        case "$COLORTERM" in
+            gnome-terminal)
+                # Those crafty Gnome folks require you to check COLORTERM,
+                # but don't allow you to just *favor* the setting over TERM.
+                # Instead you need to compare it and perform some guesses
+                # based upon the value. This is, perhaps, too simplistic.
+                TERM="gnome-256color"
+                ;;
+            *)
+                echo "Warning: Unrecognized COLORTERM: $COLORTERM"
+                ;;
+        esac
+    fi
+fi
+
+SCREENsCLRS="`tput colors`"
+if [ -z "$SCREENsCLRS" ] ; then
+    case "$TERM" in
+        screen-*color-bce)
+            echo "Unknown terminal $TERM. Falling back to 'screen-bce'."
+            export TERM=screen-bce
+            ;;
+        *-88color)
+            echo "Unknown terminal $TERM. Falling back to 'xterm-88color'."
+            export TERM=xterm-88color
+            ;;
+        *-256color)
+            echo "Unknown terminal $TERM. Falling back to 'xterm-256color'."
+            export TERM=xterm-256color
+            ;;
+    esac
+    SCREENsCLRS=`tput colors`
+fi
+if [ -z "$SCREENsCLRS" ] ; then
+    case "$TERM" in
+        gnome*|xterm*|konsole*|aterm|[Ee]term)
+            echo "Unknown terminal $TERM. Falling back to 'xterm'."
+            export TERM=xterm
+            ;;
+        rxvt*)
+            echo "Unknown terminal $TERM. Falling back to 'rxvt'."
+            export TERM=rxvt
+            ;;
+        screen*)
+            echo "Unknown terminal $TERM. Falling back to 'screen'."
+            export TERM=screen
+            ;;
+    esac
+    SCREENsCLRS=`tput colors`
+fi
+
+
+#! black dark/light
+#xterm*color0: base00
+#xterm*color8: base08
+#
+#! red dark/light
+#xterm*color1: base01
+#xterm*color9: base09
+#
+#! green dark/light
+#xterm*color2: base02
+#xterm*color10: base10
+#
+#! yellow dark/light
+#xterm*color3: base03
+#xterm*color11: base11
+#
+#! blue dark/light
+#xterm*color4: base04
+#xterm*color12: base12
+#
+#! magenta dark/light
+#xterm*color5:  base05
+#xterm*color13: base13
+#
+#! cyan dark/light
+#xterm*color6:  base06
+#xterm*color14:  base14
+#
+#! white dark/light
+#xterm*color7:  base07
+#xterm*color15: base15
+
+trap 'echo -ne "\e[0m"' DEBUG
+
+# base 16 colors
+#! black dark/light
+  bold=$(tput bold);
+  reverse=$(tput rev);
+  reset=$(tput sgr0);
+  
+declare -A sCLR
+
+sCLR[brblack]=$(tput setaf 234)
+sCLR[black]=$(tput setaf 235)
+sCLR[brgreen]=$(tput setaf 240)
+sCLR[bryellow]=$(tput setaf 241)
+sCLR[brblue]=$(tput setaf 244)
+sCLR[brcyan]=$(tput setaf 245)
+sCLR[white]=$(tput setaf 254)
+sCLR[brwhite]=$(tput setaf 230)
+sCLR[yellow]=$(tput setaf 136)
+sCLR[brred]=$(tput setaf 166)
+sCLR[red]=$(tput setaf 160)
+sCLR[magenta]=$(tput setaf 125)
+sCLR[brmagenta]=$(tput setaf 61)
+sCLR[blue]=$(tput setaf 33)
+sCLR[cyan]=$(tput setaf 37)
+sCLR[green]=$(tput setaf 64)
+
+
+#http://vim.wikia.com/wiki/Xterm256_color_names_for_console_Vim#
+
+#SOLARIZED HEX     16/8 TERMCOL  XTERM/HEX   L*A*B      RGB         HSB
+#--------- ------- ---- -------  ----------- ---------- ----------- -----------
+#base03    #002b36  8/4 brblack  234 #1c1c1c 15 -12 -12   0  43  54 193 100  21
+#base02    #073642  0/4 black    235 #262626 20 -12 -12   7  54  66 192  90  26
+#base01    #586e75 10/7 brgreen  240 #585858 45 -07 -07  88 110 117 194  25  46
+#base00    #657b83 11/7 bryellow 241 #626262 50 -07 -07 101 123 131 195  23  51
+#base0     #839496 12/6 brblue   244 #808080 60 -06 -03 131 148 150 186  13  59
+#base1     #93a1a1 14/4 brcyan   245 #8a8a8a 65 -05 -02 147 161 161 180   9  63
+#base2     #eee8d5  7/7 white    254 #e4e4e4 92 -00  10 238 232 213  44  11  93
+#base3     #fdf6e3 15/7 brwhite  230 #ffffd7 97  00  10 253 246 227  44  10  99
+#yellow    #b58900  3/3 yellow   136 #af8700 60  10  65 181 137   0  45 100  71
+#orange    #cb4b16  9/3 brred    166 #d75f00 50  50  55 203  75  22  18  89  80
+#red       #dc322f  1/1 red      160 #d70000 50  65  45 220  50  47   1  79  86
+#magenta   #d33682  5/5 magenta  125 #af005f 50  65 -05 211  54 130 331  74  83
+#violet    #6c71c4 13/5 brmagenta 61 #5f5faf 50  15 -45 108 113 196 237  45  77
+#blue      #268bd2  4/4 blue      33 #0087ff 55 -10 -45  38 139 210 205  82  82
+#cyan      #2aa198  6/6 cyan      37 #00afaf 60 -35 -05  42 161 152 175  74  63
+#green     #859900  2/2 green     64 #5f8700 60 -20  65 133 153   0  68 100  60
+
+
+GIT_PS1_SHOWDIRTYSTATE=1
+GIT_PS1_SHOWSTASHSTATE=1
+GIT_PS1_SHOWUNTRACKEDFILES=1
+# Explicitly unset color (default anyhow). Use 1 to set it.
+GIT_PS1_SHOWCOLORHINTS=1
+GIT_PS1_DESCRIBE_STYLE="branch"
+GIT_PS1_SHOWUPSTREAM="auto git"
+#${blueDark}\u
+case "$TERM" in
+xterm*|rxvt*)
+    [ -z "$TMUX" ] && export TERM=xterm-256color
+    PROMPT_COMMAND='__git_ps1 "${sCLR[green]}\W${reset}" "${sCLR[brmagenta]}\n\\\$ ${reset}" " [%s ${sCLR[brred]}$( git rev-parse --short HEAD 2>/dev/null )${reset}] "'
+    echo -ne "\033]0; $(pwd | sed "s:$HOME:~:")\007"
+    ;;
+*)
+    ;;
+esac
+
+#
+#prompt_git() {
+#	local s='';
+#	local branchName='';
+#
+#	# Check if the current directory is in a Git repository.
+#	if [ $(git rev-parse --is-inside-work-tree &>/dev/null; echo "${?}") == '0' ]; then
+#
+#		# check if the current directory is in .git before running git checks
+#		if [ "$(git rev-parse --is-inside-git-dir 2> /dev/null)" == 'false' ]; then
+#
+#			# Ensure the index is up to date.
+#			git update-index --really-refresh -q &>/dev/null;
+#
+#			# Check for uncommitted changes in the index.
+#			if ! $(git diff --quiet --ignore-submodules --cached); then
+#				s+='+';
+#			fi;
+#
+#			# Check for unstaged changes.
+#			if ! $(git diff-files --quiet --ignore-submodules --); then
+#				s+='!';
+#			fi;
+#
+#			# Check for untracked files.
+#			if [ -n "$(git ls-files --others --exclude-standard)" ]; then
+#				s+='?';
+#			fi;
+#
+#			# Check for stashed files.
+#			if $(git rev-parse --verify refs/stash &>/dev/null); then
+#				s+='$';
+#			fi;
+#
+#		fi;
+#
+#		# Get the short symbolic ref.
+#		# If HEAD isn’t a symbolic ref, get the short SHA for the latest commit
+#		# Otherwise, just give up.
+#		branchName="$(git symbolic-ref --quiet --short HEAD 2> /dev/null || \
+#			git rev-parse --short HEAD 2> /dev/null || \
+#			echo '(unknown)')";
+#
+#		[ -n "${s}" ] && s=" [${s}]";
+#
+#		echo -e "${1}${branchName}${blue}${s}";
+#	else
+#		return;
+#	fi;
+#}
+#
+#
+
+#
+#
+## Highlight the user name when logged in as root.
+#if [[ "${USER}" == "root" ]]; then
+#	userStyle="${red}";
+#else
+#	userStyle="${orange}";
+#fi;
+#
+## Highlight the hostname when connected via SSH.
+#if [[ "${SSH_TTY}" ]]; then
+#	hostStyle="${bold}${red}";
+#else
+#	hostStyle="${yellow}";
+#fi;
+#
+## Set the terminal title to the current working directory.
+#PS1="\[\033]0;\w\007\]";
+#PS1+="\[${bold}\]\n"; # newline
+#PS1+="\[${userStyle}\]\u"; # username
+#PS1+="\[${white}\] at ";
+#PS1+="\[${hostStyle}\]\h"; # host
+#PS1+="\[${white}\] in ";
+#PS1+="\[${green}\]\w"; # working directory
+#PS1+="\$(prompt_git \"${white} on ${violet}\")"; # Git repository details
+#PS1+="\n";
+#PS1+="\[${white}\]\$ \[${reset}\]"; # `$` (and reset color)
+#export PS1;
+#
+#PS2="\[${yellow}\]→ \[${reset}\]";
+#export PS2;

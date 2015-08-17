@@ -1,0 +1,57 @@
+# Make vim the default editor
+export EDITOR='vim'
+#source ~/bin/tmuxinator.bash
+
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+# Increase Bash history size. Allow 32³ entries; the default is 500.
+export HISTSIZE='32768'
+export HISTFILESIZE="${HISTSIZE}"
+# Omit duplicates and commands that begin with a space from history.
+export HISTCONTROL='ignoreboth'
+
+
+
+
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+
+
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+
+#colors
+export GREP_OPTIONS='--color=auto';
+# Highlight section titles in manual pages.
+export LESS_TERMCAP_md="${yellow}"
+
+
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+
+
+## Add these commands to your shell initialization:
+export PATH=~/.bpan/bin:~/.bpan/lib:"$PATH"
+export MANPATH=~/.bpan/man:"$MANPATH"
+
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+
+
+
+# added by travis gem
+[ -f $HOME/.travis/travis.sh ] && source $HOME/.travis/travis.sh
