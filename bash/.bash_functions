@@ -8,6 +8,15 @@ function  get_sha() {
     git rev-parse --short HEAD 2>/dev/null
 }
 
+mt_time () { #format time just the way I likes it
+    if [ `date +%p` = "PM" ]; then
+        meridiem="pm"
+    else
+        meridiem="am"
+    fi
+    date +"%l:%M$meridiem"|sed 's/ //g'
+}
+
 
 function colors() {
 	local fgc bgc vals seq0

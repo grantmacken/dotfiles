@@ -9,28 +9,41 @@
 #umask 022
 
 # if running bash
-if [ -n "$BASH_VERSION" ]; then
-    # include .bashrc if it exists
-    if [ -f "$HOME/.bashrc" ]; then
-	. "$HOME/.bashrc"
-    fi
-fi
+#if [ -n "$BASH_VERSION" ]; then
+#    # include .bashrc if it exists
+#    if [ -f "$HOME/.bashrc" ]; then
+#	source "$HOME/.bashrc"
+#    fi
+#fi
+
+#    1) .bash_profile is loaded the first time you login, and should be used
+#       only for paths and environmental settings
 
 # set PATH so it includes user's private bin if it exists
 if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:$PATH"
 fi
 
+# Case-insensitive globbing (used in pathname expansion)
+shopt -s nocaseglob
 
-# set PATH so it includes user's projects bin if it exists
-if [ -d "$HOME/projects/grantmacken/bin" ] ; then
-    PATH="$HOME/projects/grantmacken/bin:$PATH"
-fi
+# append to the history file, don't overwrite it
+shopt -s histappend
 
-# set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/node_modules/.bin" ] ; then
-    PATH="$HOME/node_modules/.bin:$PATH"
-fi
+# Autocorrect typos in path names when using `cd`
+shopt -s cdspell
+
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+
+# Enable some Bash 4 features when possible:
+# * `autocd`, e.g. `**/qux` will enter `./foo/bar/baz/qux`
+# * Recursive globbing, e.g. `echo **/*.txt`
+for option in autocd globstar; do
+  shopt -s "$option" 2> /dev/null;
+done;
+
 
 
 #_byobu_sourced=1 . /usr/bin/byobu-launch 2>/dev/null || true

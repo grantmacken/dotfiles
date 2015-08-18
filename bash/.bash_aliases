@@ -23,4 +23,6 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 
 alias dotfiles-reload='source $HOME/.bashrc'
 
+alias pj="cd $HOME/projects/$(git config --get user.name )"
+
 #alias tmux='TERMINFO=/usr/share/terminfo/x/xterm-16color TERM=xterm-16color tmux -2'

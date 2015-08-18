@@ -1,3 +1,12 @@
+
+# ☂ ► ✓ ✗ ☹ ⚑ ⚐
+# ☺ ☻ ☹
+# ✍ ✎
+# ★ ☆ ☕ ✁
+# ✿ ❀ ✣ ✦ ✪ ✰ ☼
+# ➯ ➥ ➤ ↺ ↳
+# ⚠ ⌛ ⚡ ℹ
+# ❶ ❷ ❸
 # set variable identifying the chroot you work in (used in the prompt below)
 #if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
 #    debian_chroot=$(cat /etc/debian_chroot)
@@ -34,71 +43,71 @@
 
 #http://vim.wikia.com/wiki/256_colors_in_vim
 
-if [ "$TERM" = "xterm" ] ; then
-    if [ -z "$COLORTERM" ] ; then
-        if [ -z "$XTERM_VERSION" ] ; then
-            echo "Warning: Terminal wrongly calling itself 'xterm'."
-        else
-            case "$XTERM_VERSION" in
-            "XTerm(256)") TERM="xterm-256color" ;;
-            "XTerm(88)") TERM="xterm-88color" ;;
-            "XTerm") ;;
-            *)
-                echo "Warning: Unrecognized XTERM_VERSION: $XTERM_VERSION"
-                ;;
-            esac
-        fi
-    else
-        case "$COLORTERM" in
-            gnome-terminal)
-                # Those crafty Gnome folks require you to check COLORTERM,
-                # but don't allow you to just *favor* the setting over TERM.
-                # Instead you need to compare it and perform some guesses
-                # based upon the value. This is, perhaps, too simplistic.
-                TERM="gnome-256color"
-                ;;
-            *)
-                echo "Warning: Unrecognized COLORTERM: $COLORTERM"
-                ;;
-        esac
-    fi
-fi
-
-SCREENsCLRS="`tput colors`"
-if [ -z "$SCREENsCLRS" ] ; then
-    case "$TERM" in
-        screen-*color-bce)
-            echo "Unknown terminal $TERM. Falling back to 'screen-bce'."
-            export TERM=screen-bce
-            ;;
-        *-88color)
-            echo "Unknown terminal $TERM. Falling back to 'xterm-88color'."
-            export TERM=xterm-88color
-            ;;
-        *-256color)
-            echo "Unknown terminal $TERM. Falling back to 'xterm-256color'."
-            export TERM=xterm-256color
-            ;;
-    esac
-    SCREENsCLRS=`tput colors`
-fi
-if [ -z "$SCREENsCLRS" ] ; then
-    case "$TERM" in
-        gnome*|xterm*|konsole*|aterm|[Ee]term)
-            echo "Unknown terminal $TERM. Falling back to 'xterm'."
-            export TERM=xterm
-            ;;
-        rxvt*)
-            echo "Unknown terminal $TERM. Falling back to 'rxvt'."
-            export TERM=rxvt
-            ;;
-        screen*)
-            echo "Unknown terminal $TERM. Falling back to 'screen'."
-            export TERM=screen
-            ;;
-    esac
-    SCREENsCLRS=`tput colors`
-fi
+#if [ "$TERM" = "xterm" ] ; then
+#    if [ -z "$COLORTERM" ] ; then
+#        if [ -n "$XTERM_VERSION" ] ; then
+#        #    echo "Warning: Terminal wrongly calling itself 'xterm'."
+#        #else
+#            case "$XTERM_VERSION" in
+#            "XTerm(256)") TERM="xterm-256color" ;;
+#            "XTerm(88)") TERM="xterm-88color" ;;
+#            "XTerm") ;;
+#            *)
+#                echo "Warning: Unrecognized XTERM_VERSION: $XTERM_VERSION"
+#                ;;
+#            esac
+#        fi
+#    else
+#        case "$COLORTERM" in
+#            gnome-terminal)
+#                # Those crafty Gnome folks require you to check COLORTERM,
+#                # but don't allow you to just *favor* the setting over TERM.
+#                # Instead you need to compare it and perform some guesses
+#                # based upon the value. This is, perhaps, too simplistic.
+#                TERM="gnome-256color"
+#                ;;
+#            *)
+#                echo "Warning: Unrecognized COLORTERM: $COLORTERM"
+#                ;;
+#        esac
+#    fi
+#fi
+#
+#SCREENCOLORS="`tput colors`"
+#if [ -z "$SCREENCOLORS" ] ; then
+#    case "$TERM" in
+#        screen-*color-bce)
+#            echo "Unknown terminal $TERM. Falling back to 'screen-bce'."
+#            export TERM=screen-bce
+#            ;;
+#        *-88color)
+#            echo "Unknown terminal $TERM. Falling back to 'xterm-88color'."
+#            export TERM=xterm-88color
+#            ;;
+#        *-256color)
+#            echo "Unknown terminal $TERM. Falling back to 'xterm-256color'."
+#            export TERM=xterm-256color
+#            ;;
+#    esac
+#    SCREENCOLORS=`tput colors`
+#fi
+#if [ -z "$SCREENCOLORS" ] ; then
+#    case "$TERM" in
+#        gnome*|xterm*|konsole*|aterm|[Ee]term)
+#            echo "Unknown terminal $TERM. Falling back to 'xterm'."
+#            export TERM=xterm
+#            ;;
+#        rxvt*)
+#            echo "Unknown terminal $TERM. Falling back to 'rxvt'."
+#            export TERM=rxvt
+#            ;;
+#        screen*)
+#            echo "Unknown terminal $TERM. Falling back to 'screen'."
+#            export TERM=screen
+#            ;;
+#    esac
+#    SCREENCOLORS=`tput colors`
+#fi
 
 
 #! black dark/light
@@ -134,14 +143,10 @@ fi
 #xterm*color15: base15
 
 trap 'echo -ne "\e[0m"' DEBUG
-
-# base 16 colors
-#! black dark/light
-  bold=$(tput bold);
-  reverse=$(tput rev);
-  reset=$(tput sgr0);
-  
 declare -A sCLR
+sCLR[bold]=$(tput bold)
+sCLR[reverse]=$(tput rev)
+sCLR[reset]=$(tput sgr0)
 
 sCLR[brblack]=$(tput setaf 234)
 sCLR[black]=$(tput setaf 235)
@@ -159,6 +164,9 @@ sCLR[brmagenta]=$(tput setaf 61)
 sCLR[blue]=$(tput setaf 33)
 sCLR[cyan]=$(tput setaf 37)
 sCLR[green]=$(tput setaf 64)
+
+
+
 
 
 #http://vim.wikia.com/wiki/Xterm256_color_names_for_console_Vim#
@@ -190,16 +198,80 @@ GIT_PS1_SHOWUNTRACKEDFILES=1
 GIT_PS1_SHOWCOLORHINTS=1
 GIT_PS1_DESCRIBE_STYLE="branch"
 GIT_PS1_SHOWUPSTREAM="auto git"
-#${blueDark}\u
+
 case "$TERM" in
 xterm*|rxvt*)
-    [ -z "$TMUX" ] && export TERM=xterm-256color
-    PROMPT_COMMAND='__git_ps1 "${sCLR[green]}\W${reset}" "${sCLR[brmagenta]}\n\\\$ ${reset}" " [%s ${sCLR[brred]}$( git rev-parse --short HEAD 2>/dev/null )${reset}] "'
-    echo -ne "\033]0; $(pwd | sed "s:$HOME:~:")\007"
+    export PROMPT_COMMAND='__git_ps1 "$(mt_time) ➯ ${sCLR[green]}\W"\
+   "${sCLR[green]}\n↳${sCLR[reset]}"\
+   " [%s ${sCLR[red]}$(get_sha 2>/dev/null)${sCLR[reset]}] "'
+    #echo -ne "\033]0; $(pwd | sed "s:$HOME:~:")\007"
+    #set_titlebar "${sCLR[bryellow]}$(get_dir)${sCLR[reset]}"'
     ;;
 *)
     ;;
 esac
+
+
+#${blueDark}\u
+#http://ithaca.arpinum.org/2013/01/02/git-prompt.html
+#case "$TERM" in
+#xterm*|rxvt*)
+#    [ -z "$TMUX" ] && export TERM=xterm-256color
+   # PROMPT_COMMAND='__git_ps1 "$(mt_time) ➯ ${sCLR[green]}\W"\
+   #"${sCLR[green]}\n↳${sCLR[reset]}"\
+   #" [%s ${sCLR[red]}$(get_sha 2>/dev/null)${sCLR[reset]}] "'
+#    echo -ne "\033]0; $(pwd | sed "s:$HOME:~:")\007"
+#    #set_titlebar "${sCLR[bryellow]}$(get_dir)${sCLR[reset]}"'
+#    ;;
+#*)
+#    ;;
+#esac
+
+
+
+# set variable identifying the chroot you work in (used in the prompt below)
+#if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
+#    debian_chroot=$(cat /etc/debian_chroot)
+#fi
+#
+## set a fancy prompt (non-color, unless we know we "want" color)
+#case "$TERM" in
+#    xterm-color) color_prompt=yes;;
+#esac
+#
+## uncomment for a colored prompt, if the terminal has the capability; turned
+## off by default to not distract the user: the focus in a terminal window
+## should be on the output of commands, not on the prompt
+#force_color_prompt=yes
+#
+#if [ -n "$force_color_prompt" ]; then
+#    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+#        # We have color support; assume it's compliant with Ecma-48
+#        # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+#        # a case would tend to support setf rather than setaf.)
+#        color_prompt=yes
+#    else
+#        color_prompt=
+#    fi
+#fi
+#
+#if [ "$color_prompt" = yes ]; then
+#    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+#else
+#    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+#fi
+#unset color_prompt force_color_prompt
+#
+## If this is an xterm set the title to user@host:dir
+#case "$TERM" in
+#xterm*|rxvt*)
+#    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+#    ;;
+#*)
+#    ;;
+#esac
+
+
 
 #
 #prompt_git() {
