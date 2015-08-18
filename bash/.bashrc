@@ -28,13 +28,6 @@ if [ -n "${gitUserName}" ] ; then
 	fi
 fi
 
-#path,prompt,exports,aliases,functions,extra,gitcompletion
-for file in ~/.bash_{exports,aliases,functions,prompt}; do
-	echo "$file"
-    [ -r "$file" ] && source "$file"
-done
-unset file
-
 [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"  # This loads nvm
 
 # added by travis gem
@@ -42,7 +35,6 @@ unset file
 
 #path,prompt,exports,aliases,functions,extra,gitcompletion
 for file in ~/.bash_{exports,aliases,functions,prompt}; do
-	echo "$file"
     [ -r "$file" ] && source "$file"
 done
 unset file
