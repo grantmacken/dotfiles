@@ -20,5 +20,6 @@ stow-all:
 	@echo 'GIT_REPO_OWNER_LOGIN': $(GIT_REPO_OWNER_LOGIN)
 	@echo 'TASK': use stow to create symlinks in home dir
 	@stow -v -t ~ bash
+	@stow -v -t ~ tmux
 
 .PHONY: stow-all
