@@ -199,10 +199,12 @@ GIT_PS1_SHOWCOLORHINTS=1
 GIT_PS1_DESCRIBE_STYLE="branch"
 GIT_PS1_SHOWUPSTREAM="auto git"
 
+
+
 case "$TERM" in
 xterm*|rxvt*)
     export PROMPT_COMMAND='__git_ps1 "$(mt_time) ➯ ${sCLR[green]}\W"\
-   "${sCLR[green]}\n↳${sCLR[reset]}"\
+   "\n↳"\
    " [%s ${sCLR[red]}$(get_sha 2>/dev/null)${sCLR[reset]}] "'
     #echo -ne "\033]0; $(pwd | sed "s:$HOME:~:")\007"
     #set_titlebar "${sCLR[bryellow]}$(get_dir)${sCLR[reset]}"'
@@ -210,6 +212,19 @@ xterm*|rxvt*)
 *)
     ;;
 esac
+
+
+#case "$TERM" in
+#xterm*|rxvt*)
+#    export PROMPT_COMMAND='__git_ps1 "$(mt_time) ➯ ${sCLR[green]}\W"\
+#   "${sCLR[green]}\n↳${sCLR[reset]}"\
+#   " [%s ${sCLR[red]}$(get_sha 2>/dev/null)${sCLR[reset]}] "'
+#    echo -ne "\033]0; $(pwd | sed "s:$HOME:~:")\007"
+#    #set_titlebar "${sCLR[bryellow]}$(get_dir)${sCLR[reset]}"'
+#    ;;
+#*)
+#    ;;
+#esac
 
 
 #${blueDark}\u

@@ -27,19 +27,52 @@ if [ -n "${gitUserName}" ] ; then
 		PATH="$HOME/projects/${gitUserName}/bin:$PATH"
 	fi
 fi
-
-[ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"  # This loads nvm
-
-# added by travis gem
-[ -f $HOME/.travis/travis.sh ] && source $HOME/.travis/travis.sh
-
 #path,prompt,exports,aliases,functions,extra,gitcompletion
 for file in ~/.bash_{exports,aliases,functions,prompt}; do
     [ -r "$file" ] && source "$file"
 done
 unset file
 
+[ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"  # This loads nvm
+# added by travis gem
+
+[ -f $HOME/.travis/travis.sh ] && source $HOME/.travis/travis.sh
+
+[ -f $HOME/projects/ingydotnet/git-subrepo/init ] && source $HOME/projects/ingydotnet/git-subrepo/init
+
+
+#path,prompt,exports,aliases,functions,extra,gitcompletion
+
 if [ ! "$TERM" = 'xterm-256color' ] ; then
   export TERM=xterm-256color
   source ~/.bash_prompt
 fi
+
+BASE_SESSION="$(git config user.name)"
+#echo "CHECK! - is Tmux running?"
+#if $(ps -e | grep -q tmux); then
+#if [ ! "$TERM" = 'xterm-256color' ] ; then
+#  export TERM=xterm-256color
+#  source ~/.bash_prompt
+#fi
+
+#BASE_SESSION="$(git config user.name)"
+#echo "CHECK! - is Tmux running?"
+#if $(ps -e | grep -q tmux); then
+#	source ~/.bash_prompt
+#else
+#   echo "NOPE! - Tmux is *NOT* running."
+#   source ~/.bash_prompt
+#   #Simply creates a new base session named "main" if none exists
+#   tmux new-session -d -s ${BASE_SESSION}
+#fi
+
+#if [ ! "$TERM" = 'screen-256color' ] ; then
+#  export TERM=xterm-256color
+#  source ~/.bash_prompt
+#  tmux new-session -d -s ${BASE_SESSION}
+#fi
+
+
+
+
