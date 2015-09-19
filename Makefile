@@ -21,5 +21,7 @@ stow-all:
 	@echo 'TASK': use stow to create symlinks in home dir
 	@stow -v -t ~ bash
 	@stow -v -t ~ tmux
+	@stow -v -t ~ vim
+	@stow -v -t ~/bin  bin
 
 .PHONY: stow-all

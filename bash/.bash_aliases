@@ -23,6 +23,11 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 
 alias dotfiles-reload='source $HOME/.bashrc'
 
-alias pj="cd $HOME/projects/$(git config --get user.name )"
-
+alias p="cd $PROJECTS"
+alias p.="cd $PROJECTS/dotfiles"
+alias p..="cd $PROJECTS/mk-tasks"
+alias p0="cd $PROJECTS/nginx-exist"
+alias p1="cd $PROJECTS/gmack.nz"
+alias tpInstall="~/.tmux/plugins/tpm/bin/install_plugins"
+alias tpUpdate="~/.tmux/plugins/tpm/bin/update_plugins"
 #alias tmux='TERMINFO=/usr/share/terminfo/x/xterm-16color TERM=xterm-16color tmux -2'

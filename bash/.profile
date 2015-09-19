@@ -23,27 +23,37 @@
 if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:$PATH"
 fi
-
-# Case-insensitive globbing (used in pathname expansion)
-shopt -s nocaseglob
-
-# append to the history file, don't overwrite it
-shopt -s histappend
-
-# Autocorrect typos in path names when using `cd`
-shopt -s cdspell
-
-# check the window size after each command and, if necessary,
-# update the values of LINES and COLUMNS.
-shopt -s checkwinsize
-
-# Enable some Bash 4 features when possible:
-# * `autocd`, e.g. `**/qux` will enter `./foo/bar/baz/qux`
-# * Recursive globbing, e.g. `echo **/*.txt`
-for option in autocd globstar; do
-  shopt -s "$option" 2> /dev/null;
-done;
+# set PATH so it includes user's projects bin if it exists
+export BASE_SESSION="$(git config user.name)"
+if [ -n "${BASE_SESSION}" ] ; then
+    export PROJECTS="$HOME/projects/${BASE_SESSION}"
+	if [ -d "$PROJECTS/bin" ] ; then
+        [[ $PATH == ?(*:)$PROJECTS/bin?(:*) ]] || PATH="$PROJECTS/bin:$PATH"
+    fi
+    if [ -d "$PROJECTS/node_modules/.bin" ] ; then
+		[[ $PATH == ?(*:)$PROJECTS/node_modules/.bin?(:*) ]] || PATH="$PROJECTS/node_modules/.bin:$PATH"
+	fi
+fi
 
 
 
-#_byobu_sourced=1 . /usr/bin/byobu-launch 2>/dev/null || true
+##_byobu_sourced=1 . /usr/bin/byobu-launch 2>/dev/null || true
+## Case-insensitive globbing (used in pathname expansion)
+#shopt -s nocaseglob
+#
+## append to the history file, don't overwrite it
+#shopt -s histappend
+#
+## Autocorrect typos in path names when using `cd`
+#shopt -s cdspell
+#
+## check the window size after each command and, if necessary,
+## update the values of LINES and COLUMNS.
+#shopt -s checkwinsize
+#
+## Enable some Bash 4 features when possible:
+## * `autocd`, e.g. `**/qux` will enter `./foo/bar/baz/qux`
+## * Recursive globbing, e.g. `echo **/*.txt`
+#for option in autocd globstar; do
+#  shopt -s "$option" 2> /dev/null;
+#done;

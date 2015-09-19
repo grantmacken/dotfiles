@@ -12,6 +12,8 @@
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
+setxkbmap -option 'caps:ctrl_modifier'
+xcape -e 'Caps_Lock=Escape;Control_L=Escape;Control_R=Escape'
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -20,27 +22,11 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
 
-# set PATH so it includes user's projects bin if it exists
-gitUserName="$(git config --get user.name)"
-if [ -n "${gitUserName}" ] ; then
-	if [ -d "$HOME/projects/${gitUserName}/bin" ] ; then
-		PATH="$HOME/projects/${gitUserName}/bin:$PATH"
-	fi
-fi
 #path,prompt,exports,aliases,functions,extra,gitcompletion
 for file in ~/.bash_{exports,aliases,functions,prompt}; do
     [ -r "$file" ] && source "$file"
 done
 unset file
-
-[ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"  # This loads nvm
-# added by travis gem
-
-[ -f $HOME/.travis/travis.sh ] && source $HOME/.travis/travis.sh
-
-[ -f $HOME/projects/ingydotnet/git-subrepo/init ] && source $HOME/projects/ingydotnet/git-subrepo/init
-
-
 #path,prompt,exports,aliases,functions,extra,gitcompletion
 
 if [ ! "$TERM" = 'xterm-256color' ] ; then
@@ -48,31 +34,39 @@ if [ ! "$TERM" = 'xterm-256color' ] ; then
   source ~/.bash_prompt
 fi
 
-BASE_SESSION="$(git config user.name)"
-#echo "CHECK! - is Tmux running?"
-#if $(ps -e | grep -q tmux); then
-#if [ ! "$TERM" = 'xterm-256color' ] ; then
-#  export TERM=xterm-256color
-#  source ~/.bash_prompt
-#fi
+#http://www.economyofeffort.com/2014/08/11/beyond-ctrl-remap-make-that-caps-lock-key-useful
+
+#isetxkbmap -layout us -option 'ctrl:nocaps'
+
+#TODO test
+#stty -ixon
+
 
 #BASE_SESSION="$(git config user.name)"
+#isTmuxRunning="$(ps -e | grep -q tmux)"
 #echo "CHECK! - is Tmux running?"
-#if $(ps -e | grep -q tmux); then
-#	source ~/.bash_prompt
-#else
-#   echo "NOPE! - Tmux is *NOT* running."
-#   source ~/.bash_prompt
-#   #Simply creates a new base session named "main" if none exists
-#   tmux new-session -d -s ${BASE_SESSION}
-#fi
+#echo "BASE_SESSION: ${BASE_SESSION}"
 
+#if [ -z "${isTmuxRunning}" ] ; then
+#	tmux new-session -d -s ${BASE_SESSION}
+#	tmux attach -t
+#   #Simply creates a new base session named "main" if none exists
+#   # and detach
+#fi
 #if [ ! "$TERM" = 'screen-256color' ] ; then
 #  export TERM=xterm-256color
 #  source ~/.bash_prompt
 #  tmux new-session -d -s ${BASE_SESSION}
 #fi
+#sudo apt-get install xvba-va-driver
+#sudo add-apt-repository ppa:nilarimogard/webupd8
+#sudo apt-get update
+#sudo apt-get install libvdpau-va-gl1
+#sudo sh -c "echo 'export VDPAU_DRIVER=va_gl' >> /etc/profile"
+#sudo mkdir /etc/adobe
+#sudo echo -e "EnableLinuxHWVideoDecode = 1\nOverrideGPUValidation = 1" | sudo tee /etc/adobe/mms.cfg
 
 
 
 
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
