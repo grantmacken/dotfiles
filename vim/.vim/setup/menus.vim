@@ -1,7 +1,7 @@
 "==============================================================================
 " 3. MENUS
 "==============================================================================
-
+let mapleader=','
 " menu prefix key
 let maplocalleader = ' '
 
@@ -14,13 +14,13 @@ let maplocalleader = ' '
 "   let g:unite_source_menu_menus.{name}.command_candidates = []
 " c. map to LocalLeader
 
-" menus {{{
+" menus 
 let g:unite_source_menu_menus = {}
 
-" menu prefix key (for all Unite menus) {{{
+" menu prefix key (for all Unite menus) 
 nnoremap [menu] <Nop>
 nmap <LocalLeader> [menu]
-" }}}
+" 
 
 " menus menu a master menu
 nnoremap <silent>[menu]u :Unite -silent -winheight=20 menu<CR>

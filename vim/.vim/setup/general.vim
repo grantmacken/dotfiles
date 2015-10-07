@@ -38,8 +38,18 @@ set hidden                      " allow changing buffer without saving it first
 set number                      " display line numbers
 set relativenumber              " display rel number
 set numberwidth=3               " gutter col width
+" Open new split panes to right and bottom, which feels more natural
+set splitbelow                  " open new split panes to right and bottom
+set splitright
+if has('mouse')
+    set mouse=a
+    "set ttymouse=xterm2
+endif
+set clipboard=unnamed
+" set clipboard^=unnamedplus
+" set paste
+" set go+=a
 " }}}
-source ~/.vim/setup/functions.vim
 " Searching {{{
 
 set magic                       " make regex a little easier to type
@@ -56,13 +66,17 @@ set ignorecase                  " ignore case letters
 set history=1000
 set undofile
 set undoreload=1000
+set undolevels=5000
 
 " }}}
 " Backups {{{
+" http://stackoverflow.com/a/15317146
 
-set backup
+set backup                        " use backups
+set writebackup
+set backupdir=$HOME/.vim/tmp/backup//  " 
+
 set noswapfile
-set backupdir=$HOME/.vim/tmp/backup/
 set undodir=$HOME/.vim/tmp/undo/
 set directory=$HOME/.vim/tmp/swap/
 set viminfo+=n$HOME/.vim/tmp/viminfo
@@ -88,14 +102,19 @@ set wildignore+=*.stats                          " Pylint stats
 " }}}
 " Tabs, space and indents{{{
 
-set expandtab                  " spaces instead of tabs
+set noexpandtab                " tabs instead of spaces to indent code
+set smarttab                   " respect options below
 set tabstop=4                  " a tab = four spaces
 set shiftwidth=4               " number of spaces for auto-indent
 set softtabstop=4              " a soft-tab of four spaces
 set autoindent                 " set on the auto-indent
+set shiftround                 " round indent to multiple of shiftwidth
 "
-" set formatoptions=qrn1ct
+"
 "}}}
+" Spelling {{{
+" setlocal spell spelllang=en_nz
+" }}}
 " Text display settings and wrapping {{{
 set linebreak
 set nowrap
@@ -103,60 +122,14 @@ set nowrap
 set textwidth=80
 set colorcolumn=81
 " }}}
-" Colorscheme {{{
-syntax enable                  " enable the syntax highlight
-set background=dark           " set a dark background
-set t_Co=256                   " 256 colors for the terminal
-"let g:seoul256_background = 239
 
-" colorscheme seoul256-light
-colorscheme seoul256
-" " }}}
-" Statusline {{{
 
-set noshowmode
- let g:lightline = {
-       \ 'colorscheme': 'wombat',
-      \ }
-
-let g:tmuxline_powerline_separators = 0
-
-" }}}
-" Unite. The interface to rule almost everything {{{
-    " https://github.com/joedicastro/dotfiles/tree/master/vim
-"I set Unite following two different ways.
-"On one hand I use it to access Unite sources via mappings with the <Leader> key
-", and secondly calling Unite menus through <LocalLeader> key mappings.
-
-" cm <c-o> <Plug>(unite_cmdmatch_complete)vim
-
-source ~/.vim/setup/unite.vim
-source ~/.vim/setup/leader-mappings.vim " <comma>
-source ~/.vim/setup/menus.vim           " <space>
-source ~/.vim/setup/menu-files.vim      " master menu = <space> + u
 " }}}
 " display unprintable chars {{{
 
 set list
 set listchars=tab:▸\ ,extends:❯,precedes:❮,nbsp:␣
 set showbreak=↪
-
-" }}}
- " Quick saving {{{
-nmap <silent> <Leader>w :update<CR>
-
-" }}}
-
-" Sessions }}}
-" help: Prossession
-
-" let g:loaded_prosession = 1 "  default
-" let g:prosession_dir = '~/.vim/session/' " default
-" let g:prosession_on_startup = 1 "  default: auto load on startup
-" let g:prosession_default_session = 0 " NOPE! every  project default session
-let g:prosession_per_branch = 1 " YEP!
-" let g:prosession_branch_cmd = 'git rev-parse --abbrev-ref HEAD 2>/dev/null'
-" let g:prosession_tmux_title = 1 " YEP!
 
 " }}}
 

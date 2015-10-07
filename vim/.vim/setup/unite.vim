@@ -1,79 +1,69 @@
 
 " UNITE
-" 1. lets and calls
-" 2. LEADER mappings
-" 3. MENUS  mappings <space>
+" 1. leader mappings
+" 2  lets
+" 3. MENUS
 "  main menu  <space>u
-"
-"==================
-" 1. LETS AND CALLS
-"==================
-"===============================================================================
-"VimFiler   https://github.com/Shougo/vimfiler.vim/blob/master/doc/vimfiler.txt
-"===============================================================================
-" vimfiler needs unite
-" Disable netrw.vim
-let g:loaded_netrwPlugin = 1
+"==============================================================================
+" 1. LEADER and LOCAL LEADER for menus
+"==============================================================================
 
-" vimfiler behaves as default explorer
-let g:vimfiler_as_default_explorer = 1
-"let g:vimfiler_safe_mode_by_default = 0
-let g:vimfiler_tree_leaf_icon = " "
-let g:vimfiler_tree_opened_icon = '▾'
-let g:vimfiler_tree_closed_icon = '▸'
-let g:vimfiler_file_icon = '-'
-let g:vimfiler_marked_file_icon = '✓'
-let g:vimfiler_readonly_file_icon = '✗'
-let g:vimfiler_time_format = '%m-%d-%y %H:%M:%S'
-let g:vimfiler_expand_jump_to_first_child = 0
+let mapleader=','
+" menu prefix key
+let maplocalleader = ' '
 
-" When pressing "e" open file in new tab.
-" let g:vimfiler_edit_action = 'tabopen'
+ " Unite. The interface to rule almost everything 
+    " https://github.com/joedicastro/dotfiles/tree/master/vim
+"I set Unite following two different ways.
+"On one hand I use it to access Unite sources via mappings with the <Leader> key
+", and secondly calling Unite menus through <LocalLeader> key mappings.
+"==============================================================================
+" 2. LETS AND CALLS
+"==============================================================================
 
-" Don't ignore any files (the default is to ignore files beginning with dot).
-" let g:vimfiler_ignore_pattern =
-"let g:vimfiler_ignore_pattern = '\.git\|\.DS_Store\|\.pyc'
-
-" matcher_ignore_files
-
-call unite#filters#matcher_default#use(['matcher_fuzzy'])
-" call unite#filters#sorter_default#use(['sorter_rank'])
-call unite#custom#source('file_mru,file_rec,file_rec/async,grep,locate',
-            \ 'ignore_pattern', join(['\.git/', 'tmp/', 'bundle/'], '\|'))
-
-let g:default_context = {
-    \ 'winheight' : 15,
-    \ 'update_time' : 200,
-    \ 'prompt' : '>>> ',
-    \ 'enable_start_insert' : 0,
-    \ 'enable_short_source_names' : 0,
-    \ 'marked_icon' : '✓',
-    \ 'ignorecase' : 1,
-    \ 'smartcase' : 1,
-\ }
-
-call unite#custom#profile('default', 'context', default_context)
-
-" let g:unite_source_history_yank_enable = 1
+let g:unite_source_history_yank_enable = 1
 let g:unite_force_overwrite_statusline = 0
-let g:unite_enable_short_source_mes = 0
-let g:unite_split_rule = 'botright'
-let g:unite_data_directory = $HOME.'/.vim/tmp/unite'
-let g:unite_source_buffer_time_format = '(%d-%m-%Y %H:%M:%S) '
+call unite#custom#profile('default', 'context', {
+	\   'direction': 'dynamicbottom',
+	\ })   
+let g:unite_data_directory = expand($VIMPATH.'/tmp/unite')
+let g:junkfile#directory = expand($VIMPATH.'/tmp/junk')
+let g:neomru#file_mru_path = expand($VIMPATH.'/tmp/neomru/file')
+let g:neomru#directory_mru_path = expand($VIMPATH.'/tmp/neomru/directory')
 
-
-let g:unite_source_file_mru_time_format = '(%d-%m-%Y %H:%M:%S) '
-let g:unite_source_directory_mru_time_format = '(%d-%m-%Y %H:%M:%S) '
-
+let g:unite_source_buffer_time_format = '(%Y-%m-%d %H:%M:%S) '
+let g:unite_source_file_mru_time_format = '(%Y-%m-%d %H:%M:%S) '
+let g:unite_source_directory_mru_time_format = '(%Y-%m-%d %H:%M:%S) '
 
 let g:unite_source_grep_command='ag'
 let g:unite_source_grep_default_opts='--nocolor --nogroup -a -S'
 let g:unite_source_grep_recursive_opt=''
 let g:unite_source_grep_search_word_highlight = 1
 
+"==============================================================================
+" 3. MENUS
+"==============================================================================
+" menus menu  a master menu that shows all the custom menus
+" the master menu gets built up by constructing custom menus
+" a,b.c  a three step process
+" a. define the menu
+"   let g:unite_source_menu_menus.{name}
+" b. define array of menu command_candidates
+"   let g:unite_source_menu_menus.{name}.command_candidates = []
+" c. map to LocalLeader
 
-let g:junkfile#directory = expand($HOME.'/.vim/tmp/junk')
-let g:neomru#file_mru_path = expand($HOME.'/.vim/tmp/neomru/file')
-let g:neomru#directory_mru_path = expand($HOME.'/.vim/tmp/neomru/directory')
+" menus
+let g:unite_source_menu_menus = {}
 
+" menu prefix key (for all Unite menus)
+nnoremap [menu] <Nop>
+nmap <LocalLeader> [menu]
+"
 
+" menus menu a master menu
+nnoremap <silent>[menu]u :Unite -silent -winheight=20 menu<CR>
+
+"==============================================================================
+" 3. Command: find a command match 
+"==============================================================================
+cm <c-o> <Plug>(unite_cmdmatch_complete)

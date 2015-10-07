@@ -1,4 +1,9 @@
-
+" Mapping
+" F toggles
+"  distraction free editing of markdown files
+map <F12> :Goyo <bar> :Limelight!! <bar> :TogglePencil <CR> :GitGutterEnable<CR>
+map <F5> :setlocal spell! spelllang=en_nz<CR>
+"map <F12> : Goyo<CRk>:GitGutterEnable<CR>
 let mapleader=','
 
 "timeout length for leader key
@@ -12,33 +17,47 @@ set timeoutlen=2000
 " * tabs
 " * buffer search
 
-
 " - VimFilerExplorer [{options}...] [{path}] *:VimFilerExplorer*
-" options -no-quit
-
 " files
+
 nnoremap <silent><Leader>m :call UProjectMostRecentlyUsed()<CR>
-nnoremap <silent><Leader>o :call UProjectFiles()<CR>
-nnoremap <silent><Leader>e :VimFilerExplorer -no-quit -explorer -project -status -find -auto-expand<CR>
+nnoremap <silent><Leader>p :call UProjectFiles()<CR>
+nnoremap <silent><Leader>e :VimFiler -project <CR> 
+nnoremap <silent><Leader>w :update<CR>
+nnoremap <silent><Leader>K :call UProjectNewDir()<CR>
+nnoremap <silent><Leader>N :call UProjectNewFile()<CR>
+nnoremap <silent><Leader>np :call UProjectNewPost()<CR>
+nnoremap <silent><Leader>nn :call UProjectNewNote()<CR>
+nnoremap <silent><Leader>N :call UProjectNewFile()<CR>
+" tabs
+"  https://joshldavis.com/2014/04/05/vim-tab-madness-buffers-vs-tabs/
+nnoremap <silent><Leader>b :Unite -silent -quick-match buffer<CR>
+nnoremap <leader>T :enew<CR>
+nnoremap <leader>l :bnext<CR> 
+nnoremap <leader>h :bprevious<CR>
+" Close the current buffer and move to the previous one
+" This replicates the idea of closing a tab
+function! BufferCloseMovePrev()
+  execute ':bd'
+  execute ':b#'
+endfunction
+nmap <leader>bq :call BufferCloseMovePrev()<CR>
+" show all open buffers and their status
+nmap <leader>bl :ls<CR>
+
 
 "nnoremap [unite]e :VimFilerBufferDir -buffer-name=explorer -split -simple -winwidth=35 -toggle -quit<cr>
 " Open filer in project folder.
-"nnoremap [unite]p :VimFiler -buffer-name=explorer2 -split -simple -winwidth=35 -toggle -project -quit<cr>
-
-
-
-
-
+" nnoremap [unite]p :VimFiler -buffer-name=explorer2 -split -simple -winwidth=35 -toggle -project -quit<cr>
 
 " buffers
-nnoremap <silent><Leader>b :Unite -silent buffer<CR>
 
 " tabs
 "nnoremap <silent><Leader>B :Unite -silent tab<CR>
 
 " buffer search
 "nnoremap <silent><Leader>f :Unite -silent -no-split -start-insert -auto-preview
-            \ line<CR>
+"           \ line<CR>
 "nnoremap <silent>[menu]8 :UniteWithCursorWord -silent -no-split -auto-preview
 "            \ line<CR>
 
