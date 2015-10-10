@@ -52,6 +52,7 @@ Sessions are cheap. Make a new session for each project.
   some other binding.
 - ```prefix + @``` - promote current pane into a new session.<br/>
           Analogous to how `prefix + !` breaks current pane to a new window.
+- `:move-window -r`  to renumber and reorder windows
 
 
 ##Workspace Saving and Restoring

@@ -1,4 +1,74 @@
 
+function tmx_watch() {
+if [ -e config ] ; then
+mxInit
+hasWatch=$(
+  tmux list-windows -t ${ABBREV} -F '#W' | grep 'watch'
+  )
+
+if [ -z "${hasWatch}" ] ; then
+  tmux new-window -n watch
+  tmux split-window -t watch
+  tmux select-layout -t watch tiled
+  tmux split-window -t watch
+  tmux select-layout -t watch tiled
+  tmux split-window -t watch
+  tmux select-layout -t watch tiled
+  tmux split-window -t watch
+  tmux select-layout -t watch tiled
+  tmux send-keys -t watch.1 "make livereload-start"  C-m
+  tmux send-keys -t watch.2 "make watch-www"  C-m
+  tmux send-keys -t watch.3 "make watch-templates"  C-m
+  tmux send-keys -t watch.4 "make watch-modules"  C-m
+fi
+fi
+}
+
+function mxInit(){
+  source <( sed 's/=/="/g' config | sed -r 's/$/"/g' )
+  source ../common.properties
+  source ../project.properties
+  clear
+}
+
+function mxGitHead(){
+  git rev-parse --short HEAD
+}
+
+function mxNginxAccessLog(){
+  tailf -n 1 /var/log/nginx/file.log |
+  awk '{ printf("%-15s\t%s\t%s\t%s\n", $1,  $6, $9, $7)}'
+}
+
+function mxNginxErrorLog(){
+  tailf /var/log/nginx/error.log |
+  grep -oP '"(.+)"\sdoes not match\s"(\S+)"'
+}
+
+function mxNginxErrorLogMatches(){
+  tailf /var/log/nginx/error.log |
+  grep -oP '"(.+)"\smatches\s"(\S+)"'
+}
+
+function mxExistUp(){
+  curl -I 'http://localhost:8080/' |
+  grep -oP '(\KJetty.+$)' 2>/dev/null
+}
+
+function mxExistClient(){
+  cd $EXIST_HOME
+  java -jar start.jar client -s -P $GITHUB_ACCESS_TOKEN -u $GIT_REPO_OWNER_LOGIN
+}
+
+function mxExistDBLog(){
+  mxInit
+  tailf "${XMLDB_LOG}" | awk -v m="\x01" -v N="8" '{$N=m$N; print substr($0,index($0,m)+1)}'
+  #awk '{ printf("%-15s\t%s\t%s\t%s\n", $1,  $4, $5 , $8)}'
+}
+
+function mxAppDataLog(){
+  tailf "${APP_LOG}" | awk -v m="\x01" -v N="7" '{$N=m$N; print substr($0,index($0,m)+1)}'
+}
 
 get_dir() {
     printf "%s" $(pwd | sed "s:$HOME:~:")

@@ -12,7 +12,7 @@ set timeoutlen=2000
 "==============================================================================
 " 2. LEADER MAPPINGS
 "==============================================================================
-" * files
+" * files  ref" 'menu-files.vim'
 " * buffers
 " * tabs
 " * buffer search
@@ -20,16 +20,11 @@ set timeoutlen=2000
 " - VimFilerExplorer [{options}...] [{path}] *:VimFilerExplorer*
 " files
 
-nnoremap <silent><Leader>m :call UProjectMostRecentlyUsed()<CR>
-nnoremap <silent><Leader>p :call UProjectFiles()<CR>
-nnoremap <silent><Leader>e :VimFiler -project <CR> 
 nnoremap <silent><Leader>w :update<CR>
-nnoremap <silent><Leader>K :call UProjectNewDir()<CR>
-nnoremap <silent><Leader>N :call UProjectNewFile()<CR>
-nnoremap <silent><Leader>np :call UProjectNewPost()<CR>
-nnoremap <silent><Leader>nn :call UProjectNewNote()<CR>
-nnoremap <silent><Leader>N :call UProjectNewFile()<CR>
+
+
 " tabs
+"
 "  https://joshldavis.com/2014/04/05/vim-tab-madness-buffers-vs-tabs/
 nnoremap <silent><Leader>b :Unite -silent -quick-match buffer<CR>
 nnoremap <leader>T :enew<CR>

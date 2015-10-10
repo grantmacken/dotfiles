@@ -74,13 +74,11 @@ set undolevels=5000
 
 set backup                        " use backups
 set writebackup
-set backupdir=$HOME/.vim/tmp/backup//  " 
-
+set backupdir=$HOME/.vim/tmp/backup//
 set noswapfile
 set undodir=$HOME/.vim/tmp/undo/
 set directory=$HOME/.vim/tmp/swap/
-set viminfo+=n$HOME/.vim/tmp/viminfo
-
+" set viminfo+=$HOME/.vim/tmp/viminfo
 " make this dirs if no exists previously
 silent! call MakeDirIfNoExists(&undodir)
 silent! call MakeDirIfNoExists(&backupdir)
@@ -104,9 +102,9 @@ set wildignore+=*.stats                          " Pylint stats
 
 set noexpandtab                " tabs instead of spaces to indent code
 set smarttab                   " respect options below
-set tabstop=4                  " a tab = four spaces
-set shiftwidth=4               " number of spaces for auto-indent
-set softtabstop=4              " a soft-tab of four spaces
+set tabstop=2                 " a tab = four spaces
+set shiftwidth=2               " number of spaces for auto-indent
+set softtabstop=2              " a soft-tab of four spaces
 set autoindent                 " set on the auto-indent
 set shiftround                 " round indent to multiple of shiftwidth
 "
@@ -123,14 +121,10 @@ set textwidth=80
 set colorcolumn=81
 " }}}
 
-
-" }}}
 " display unprintable chars {{{
-
 set list
 set listchars=tab:▸\ ,extends:❯,precedes:❮,nbsp:␣
 set showbreak=↪
-
 " }}}
 
 "autocmd VimEnter * if !argc() | VimFilerExplorer -no-quit -project -status -find | endif
