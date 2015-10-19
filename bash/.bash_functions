@@ -67,7 +67,9 @@ function mxExistDBLog(){
 }
 
 function mxAppDataLog(){
-  tailf "${APP_LOG}" | awk -v m="\x01" -v N="7" '{$N=m$N; print substr($0,index($0,m)+1)}'
+ [ -e '.logs/trigger.log' ] && \
+  tailf .logs/trigger.log | \
+	awk -v m="\x01" -v N="7" '{$N=m$N; print substr($0,index($0,m)+1)}'
 }
 
 get_dir() {
