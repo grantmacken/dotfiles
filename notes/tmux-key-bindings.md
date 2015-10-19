@@ -37,6 +37,7 @@ You know whether you are in Zoom by checking the status bar for the Z
 -  ```prefix + f``` find window.
 -  ```prefix + ,``` rename window. Note: save workspace ```prefix + Ctrl s```
 -  ```prefix + p or n``` previous or next window
+-  ```prefix + q``` show panes
 
 ##Session Creation
 

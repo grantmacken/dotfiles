@@ -46,9 +46,17 @@ let g:tmuxline_powerline_separators = 0
 "    \'z'    : '#H'}
 
 " }}}
+
 " vim-prosession {{{
 let g:prosession_tmux_title = 1
 let g:prosession_on_startup = 1
 let g:prosession_default_session = 0
 
 " }}}
+
+" skeleton templates {{{
+" default template_dir ~/.vim/templates
+" function! g:skeleton_replacements.CREATED()
+" 	return "xxx"
+" endfunction
+" " }}}

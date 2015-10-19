@@ -52,6 +52,8 @@ nnoremap <silent><Leader>np :call UProjectNewPage()<CR>
 let g:unite_source_menu_menus.files.command_candidates = [
    \['▷ content new article                                        ⌘ ,na',
    \'call UProjectNewArticle()'],
+   \['▷ content new page                                           ⌘ ,np',
+   \'call UProjectNewPage()'],
    \['▷ most recently used files                                   ⌘ ,m',
    \'call UProjectMostRecentlyUsed()'],
    \['▷ open project files with recursive search                   ⌘ ,o',
