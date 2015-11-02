@@ -100,13 +100,13 @@ set wildignore+=*.stats                          " Pylint stats
 " }}}
 " Tabs, space and indents{{{
 
-set noexpandtab                " tabs instead of spaces to indent code
-set smarttab                   " respect options below
-set tabstop=2                 " a tab = four spaces
-set shiftwidth=2               " number of spaces for auto-indent
-set softtabstop=2              " a soft-tab of four spaces
-set autoindent                 " set on the auto-indent
-set shiftround                 " round indent to multiple of shiftwidth
+set expandtab               " spaces to indent code
+set smarttab                " respect options below
+set tabstop=4               " a tab = four spaces
+set shiftwidth=4            " number of spaces for auto-indent
+set softtabstop=4           " a soft-tab of four spaces
+set autoindent              " set on the auto-indent
+set shiftround              " round indent to multiple of shiftwidth
 "
 "
 "}}}

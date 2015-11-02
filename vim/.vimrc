@@ -26,6 +26,7 @@ call s:source_file('general.vim')
 call s:source_file('leader-mappings.vim')
 
 call s:source_file('menu-files.vim')
+call s:source_file('menu-grep.vim')
 call s:source_file('menu-navigation.vim')
 "" 
 "autocomands

@@ -23,22 +23,12 @@ set timeoutlen=2000
 nnoremap <silent><Leader>w :update<CR>
 
 
-" tabs
-"
+" buffers and  tabs
 "  https://joshldavis.com/2014/04/05/vim-tab-madness-buffers-vs-tabs/
 nnoremap <silent><Leader>b :Unite -silent -quick-match buffer<CR>
-nnoremap <leader>T :enew<CR>
-nnoremap <leader>l :bnext<CR> 
-nnoremap <leader>h :bprevious<CR>
-" Close the current buffer and move to the previous one
-" This replicates the idea of closing a tab
-function! BufferCloseMovePrev()
-  execute ':bd'
-  execute ':b#'
-endfunction
-nmap <leader>bq :call BufferCloseMovePrev()<CR>
-" show all open buffers and their status
-nmap <leader>bl :ls<CR>
+nnoremap <leader>bb :BufSurfBack<CR> 
+nnoremap <leader>bf :BufSurfForward<CR>
+nnoremap <leader>bl :ls<CR>
 
 
 "nnoremap [unite]e :VimFilerBufferDir -buffer-name=explorer -split -simple -winwidth=35 -toggle -quit<cr>

@@ -5,19 +5,17 @@ let g:unite_source_menu_menus.navigation = {
 
 " re map <silent> [unite]i :<C-u>Unite file_rec/git<CR>
 let g:unite_source_menu_menus.navigation.command_candidates = [
-    \['▷ buffers                                                        ⌘ ,b',
+    \['▷ buffers                                                          ⌘ ,b',
         \'Unite buffer'],
-    \['▷ new buffer                                                     ⌘ ,T',
-        \'enew'],                   
-    \['▷ goto next buffer                                                   ',
-        \'bnext'],
-    \['▷ prev buffer                                                        ',
-        \'bprevious'],
-    \['▷ first buffer                                                       ',
+    \['▷ browse next buffer                                              ⌘ ,bf',
+        \'BufSurfFoward'],
+    \['▷ browse prev buffer                                              ⌘ ,bb',
+        \'BufSurfBack'],
+    \['▷ first buffer                                                         ',
         \'bfirst'],
-    \['▷ next modified buffer                                               ',
+    \['▷ next modified buffer                                                 ',
         \'bmodified'],
-    \['▷ delete buffer                                                      ',
+    \['▷ delete buffer                                                        ',
         \'bdelete'],
     \]
 nnoremap <silent>[menu]b :Unite -silent menu:navigation<CR>

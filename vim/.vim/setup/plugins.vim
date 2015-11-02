@@ -10,7 +10,8 @@ Plug 'kshenoy/vim-signature'
 Plug 'Yggdroot/indentLine'
 "Plug 'Yggdroot/file-line'
 Plug 't9md/vim-choosewin'  " simplifies window navigation like tmux
-
+"Buffers 
+Plug 'ton/vim-bufsurf'     "navigate backwards forwards like browser
 " Fuzzy search
 Plug 'junegunn/fzf',{ 'dir': '~/.fzf', 'do': 'yes \| ./install' } 
 Plug 'Shougo/unite.vim'
@@ -99,8 +100,8 @@ Plug 'junegunn/seoul256.vim'
 "Plug 'ton/vim-bufsurf'
 "Plug 'terryma/vim-smooth-scroll'
 "Plug 'terryma/vim-multiple-cursors'
-
-" a better looking status line 
+Plug  'ntpeters/vim-better-whitespace'
+" a setter looking status line 
 Plug 'bling/vim-airline'
 "Plug 'itchyny/lightline.vim'
 Plug 'edkolev/tmuxline.vim'
