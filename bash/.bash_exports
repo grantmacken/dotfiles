@@ -21,9 +21,6 @@ export LESS_TERMCAP_md="$ORANGE"
 # Don’t clear the screen after quitting a manual page
 export MANPAGER="less -X"
 
-# Always enable colored `grep` output
-export GREP_OPTIONS="--color=auto"
-
 ## Add these commands to your shell initialization:
 export PATH=~/.bpan/bin:~/.bpan/lib:"$PATH"
 export MANPATH=~/.bpan/man:"$MANPATH"
