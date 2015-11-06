@@ -10,12 +10,13 @@ set t_Co=256                   " 256 colors for the terminal
 " colorscheme seoul256-lightL:
 colorscheme seoul256
 " " }}}
-" Airline, tmuline statusline and tabline {{{
+" Airline, tmuxline statusline and tabline {{{
 " just use airline
 let airline_theme='ubaryd'
 let airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1        " enable tabline list
 let g:airline#extensions#tabline#buffer_nr_show = 1  " show  buffer number
+
 " let g:airline#extensions#tabline#buffer_nr_format = '%s: '
 " let g:airline#extensions#tabline#fnametruncate = 10
 let g:airline#extensions#tabline#fnamemod = ':t'  " Show just the filename
@@ -36,14 +37,25 @@ nmap <leader>9 <Plug>AirlineSelectTab9
 
 " let g:airline_section_x = '%{PencilMode()}':
 
-let g:tmuxline_powerline_separators = 0
-
+let g:airline#extensions#tmuxline#enabled = 1
+let airline#extensions#tmuxline#color_template = 'normal'
+" airline#extensions#tmuxline#snapshot_file = "~/.tmux-statusline-colors.conf"
+let g:tmuxline_powerline_separators = 1
 " let g:tmuxline_preset = {
-"    \'a'    : '#S',
-"    \'win'  : ['#I', '#W'],
-"    \'cwin' : ['#I', '#P','#W', '#F'],
-"    \'y'    : ['%R','%a','%Y'],
-"    \'z'    : '#H'}
+"     \'a'    : '#S',
+"     \'b'    : '#W',
+"     \'c'    : '#H',
+"     \'win'  : '#I #W',
+"     \'cwin' : '#I #W',
+"     \'x'    : '%a',
+"     \'y'    : '#W %R',
+"     \'z'    : '#H'}
+let g:tmuxline_preset = {
+   \'a'    : '#S',
+   \'win'  : ['#I', '#W'],
+   \'cwin' : ['#I', '#W'],
+   \'z'    : ['%R','%a','%Y'],
+   \}
 
 " }}}
 

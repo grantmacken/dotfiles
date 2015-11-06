@@ -1,6 +1,6 @@
 #TMUX NOTES
 
-##Controling TMUX Panes and Vim splits
+##Controlling TMUX Panes and Vim splits
 
 (tmux pain control)[https://github.com/tmux-plugins/tmux-pain-control]
 automatically creates the following bindings
@@ -14,7 +14,7 @@ automatically creates the following bindings
   resize panes using prefix with vim like bindings
   ctrl + H + J or L or K or L
 
-Everthing else should be prefixed
+Everything else should be prefixed
 Prefix = CTRL + Space
 
 ##Split Panes
@@ -55,14 +55,11 @@ Sessions are cheap. Make a new session for each project.
           Analogous to how `prefix + !` breaks current pane to a new window.
 - `:move-window -r`  to renumber and reorder windows
 
-
 ##Workspace Saving and Restoring
 
  save before exit - restore on load
 
 - ```prefix + Ctrl-s``` - save workspce
 - ```prefix + Ctrl-r``` - restore workspace
-
-Opening files.
 
 
