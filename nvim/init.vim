@@ -3,19 +3,25 @@ let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
 
 " Respect XDG {{{
 if exists("$XDG_CONFIG_HOME")
-  let $VIMPATH=expand('$XDG_CONFIG_HOME/nvim')
-  let $VARPATH=expand('$XDG_CACHE_HOME/nvim')
+	let $VIMPATH=expand('$XDG_CONFIG_HOME/nvim')
+	let $VARPATH=expand('$XDG_CACHE_HOME/nvim')
 else                                                                     
-  let $VIMPATH=expand('$HOME/.config/nvim')
-  let $VARPATH=expand('$HOME/.cache/nvim')
+	let $VIMPATH=expand('$HOME/.config/nvim')
+	let $VARPATH=expand('$HOME/.cache/nvim')
 endif
- " }}}
+" }}}
 " Ensure cache directory "{{{
-if ! isdirectory(expand($VARPATH))
-    " Create missing dirs i.e. cache/{undo,backup}
-    call mkdir(expand('$VARPATH/undo'), 'p')
-    call mkdir(expand('$VARPATH/backup'))
-endif	
+silent! call MakeDirIfNoExists('$VARPATH/undo')
+silent! call MakeDirIfNoExists('$VARPATH/backup')
+silent! call MakeDirIfNoExists('$VARPATH/session')
+silent! call MakeDirIfNoExists('$VARPATH/skeleton')
+
+function! MakeDirIfNoExists(path)
+    if !isdirectory(expand(a:path))
+        call mkdir(expand(a:path), "p")
+    endif
+endfunction
+
 " }}}
 " Global Mappings "{{{
 " Use spacebar instead of '\' as leader. Require before loading plugins.
@@ -29,13 +35,26 @@ nnoremap ,        <Nop>
 xnoremap ,        <Nop>
 "
 " }}}
-" Disable default plugins "{{{
+"" Disable pre-bundled plugins {{{
+let g:loaded_getscript = 1
+let g:loaded_getscriptPlugin = 1
+let g:loaded_netrw = 1
+let g:loaded_netrwPlugin = 1
+let g:loaded_netrwFileHandlers = 1
+let g:loaded_netrwSettings = 1
+let g:loaded_tar = 1
+let g:loaded_tarPlugin = 1
+let g:loaded_2html_plugin = 1
+let g:loaded_vimball = 1
+let g:loaded_vimballPlugin = 1
+let g:loaded_zip = 1
+let g:loaded_zipPlugin = 1
 
 " }}}
-" <leader>vr :sp $MYVIMRC<cr> "Split edit your vimrc.
-" <leader>so :source $MYVIMRC<cr> "Source (reload) your vimrc.
 " Add In Plugings {{{
 call plug#begin(expand('$VIMPATH/plugged'))
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
 Plug 'airblade/vim-rooter'
 Plug 'benekastah/neomake'
 Plug 'Shougo/deoplete.nvim'	
@@ -45,10 +64,13 @@ Plug 'lambdalisue/vim-gista'
 Plug 'lambdalisue/vim-gita'
 Plug 'tpope/vim-commentary'
 Plug 'itchyny/vim-gitbranch'
-Plug 'christoomey/vim-tmux-navigator'
 Plug 'noahfrederick/vim-skeleton'
 Plug 'sickill/vim-pasta'
 Plug 'christoomey/vim-tmux-runner'
+" snippets
+Plug 'SirVer/ultisnips'
+" <leader>so :source $MYVIMRC<cr> "Source (reload) your vimrc.
+" <leader>so :source $MYVIMRC<cr> "Source (reload) your vimrc.
 " Visual
 Plug 'junegunn/seoul256.vim'
 Plug 'itchyny/lightline.vim'
@@ -100,22 +122,176 @@ call plug#end()
 " 'wildmenu' is set by default
 " }}}
 "===============================================================================
+" General {{{
 syntax on
-set modelines=1
+set modeline                 " automatically setting options from modelines
+set report=0                 " Don't report on line changes
+set noerrorbells             " Don't trigger bell on error
+"set visualbell t_vb=         " Don't make any faces
+set lazyredraw               " don't redraw while in macros
+set hidden                   " hide buffers when abandoned instead of unload
+set ffs=unix,dos,mac         " Use Unix as the standard file type
+set magic                    " For regular expressions turn magic on
+set path=.,**                " Directories to search when using gf
+set virtualedit=block        " Position cursor anywhere in visual block
+set synmaxcol=1000           " Don't syntax highlight long lines
+syntax sync minlines=256     " Update syntax highlighting for more lines
+set formatoptions+=1         " Don't break lines after a one-letter word
+set formatoptions-=t         " Don't auto-wrap texti
+" }}}
+" Files and Directories {{{
+
 set noswapfile    " http://robots.thoughtbot.com/post/18739402579/global-gitignore#comment-45841328i
 set autowriteall  " auto write file
+set undofile
+set directory=$VARPATH/swap//
+set undodir=$VARPATH/undo//
+set backupdir=$VARPATH/backup//
+set viewdir=$VARPATH/view/
+set spellfile=$VIMPATH/spell/en.utf-8.add
+"}}}
+" Tabs and Indents {{{
+set textwidth=80    " Text width maximum chars before wrapping
+set noexpandtab     " Don't expand tabs to spaces.
+set tabstop=2       " The number of spaces a tab is
+set softtabstop=2   " While performing editing operations
+set autoindent      " Use same indenting on new lines
+set smartindent     " Smart autoindenting on new lines
+set shiftround      " Round indent to multiple of 'shiftwidth'
+set shiftwidth=2    " Number of spaces to use in auto(indent)
+" }}}
+" Time {{{
+
+set timeout ttimeout
+set timeoutlen=1000 " Time out on mappings
+set ttimeoutlen=50  " Time out on key codes
+set updatetime=1000 " Idle time to write swap
+
+" }}}
+" Folds {{{
+" -----
+set foldenable
+set foldmethod=syntax
+set foldlevelstart=99
+set foldtext=FoldText()
+
+" Nicer fold text
+" See: http://dhruvasagar.com/2013/03/28/vim-better-foldtext
+function! FoldText()
+	let line = ' ' . substitute(getline(v:foldstart), '^\s*"\?\s*\|\s*"\?\s*{{' . '{\d*\s*', '', 'g') . ' '
+	let lines_count = v:foldend - v:foldstart + 1
+	let lines_count_text = '| ' . printf("%10s", lines_count . ' lines') . ' |'
+	let foldchar = matchstr(&fillchars, 'fold:\zs.')
+	let foldtextstart = strpart('+' . repeat(foldchar, v:foldlevel*2) . line, 0, (winwidth(0)*2)/3)
+	let foldtextend = lines_count_text . repeat(foldchar, 8)
+	let foldtextlength = strlen(substitute(foldtextstart . foldtextend, '.', 'x', 'g')) + &foldcolumn
+	return foldtextstart . repeat(foldchar, winwidth(0)-foldtextlength) . foldtextend
+endfunction
+" }}}
 " Colorscheme {{{
 let g:seoul256_background = 234
 colorscheme seoul256
 set background=dark
 " }}}
+" Behavior {{{
+set linebreak                   " Break long lines at 'breakat'
+set breakat=\ \	;:,!?           " Long lines break chars
+set nostartofline               " Cursor in same column for few commands
+set whichwrap+=h,l,<,>,[,],~    " Move to following line on certain keys
+set splitbelow splitright       " Splits open bottom right
+set switchbuf=usetab,split      " Switch buffer behavior
+"set backspace=indent,eol,start  "nvim default Intuitive backspacing in insert mode
+set diffopt=filler,iwhite       " Diff mode: show fillers, ignore white
+set formatprg=par\ -w78         " Using http://www.nicemice.net/par/
+set showfulltag                 " Show tag and tidy search in completion
+set completeopt=menuone,preview " Show preview and menu even for one item
+"set complete=.                  " No wins, buffs, tags, include scanning
+set nowrap                      " No wrap by default
+" }}}
+" Editor UI Appearance {{{
+" --------------------
+set noshowmode          " Don't show mode in cmd window
+set shortmess=aoOTI     " Shorten messages and don't show intro
+set scrolloff=2         " Keep at least 2 lines above/below
+set sidescrolloff=2     " Keep at least 2 lines left/right
+set pumheight=20        " Pop-up menu's line height
+set number              " Show line numbers
+set relativenumber      " Use relative instead of absolute line numbers
+set noruler             " Disable default status ruler
+set list                " Show hidden characters
+
+set showtabline=2       " Always show the tabs line
+set tabpagemax=30       " Maximum number of tab pages
+set winwidth=30         " Minimum width for current window
+set winheight=1         " Minimum height for current window
+set previewheight=8     " Completion preview height
+set helpheight=12       " Minimum help window height
+
+"set display=lastline   "nvim default
+set notitle             " No need for a title
+set noshowcmd           " Don't show command in status line
+set cmdheight=2         " Height of the command line
+set cmdwinheight=5      " Command-line lines
+set noequalalways       " Don't resize windows on split or close
+set laststatus=2        " Always show a status line
+set colorcolumn=80      " Highlight the 80th character limit
+
+" Changing characters to fill special ui elements
+set showbreak=↪
+set fillchars=vert:│,fold:─
+set listchars=tab:\⋮\ ,extends:⟫,precedes:⟪,nbsp:.,trail:·
+
+" Do not display completion messages
+" Patch: https://groups.google.com/forum/#!topic/vim_dev/WeBBjkXE8H8
+if has('patch-7.4.314')
+	set shortmess+=c
+endif
+
+" For snippet_complete marker
+if has('conceal') && v:version >= 703
+	set conceallevel=2 concealcursor=niv
+endif
+
+" }}}
 "===============================================================================
 " PLUGGED 
 "==============================================================================
-" Use deoplete {{{
+" Fuzzy File Explorer with FZF {{{
+" https://github.com/junegunn/fzf/wiki/
+" https://github.com/junegunn/fzf.vim
+" Default fzf layout
+" - down / up / left / right
+" - window (nvim only)
+let g:fzf_layout = { 'down': '~40%' }
+" ctrl-[a-z], alt-[a-z], f[1-4], or any single character
+let g:fzf_action = {
+  \ 'ctrl-m': 'e',
+  \ 'ctrl-t': 'tabedit',
+  \ 'alt-j':  'botright split',
+  \ 'alt-k':  'topleft split',
+  \ 'alt-h':  'vertical topleft split',
+  \ 'alt-l':  'vertical botright split' }
+nnoremap <silent> <Leader><Leader> :FZF -m<CR>
+" }}}
+" Templates with skeleton {{{
+let g:skeleton_template_dir = "$VARPATH/templates"
+
+" }}}
+" Sessions with obsession and prosession {{{
+" What not to save in sessions:
+" set sessionoptions-=options  neovim default
+set sessionoptions-=globals
+set sessionoptions-=folds
+set sessionoptions-=help
+let g:prosession_tmux_title = 1
+let g:prosession_on_startup = 1
+let g:prosession_default_session = 0
+let g:prosession_dir = '~/.cache/nvim/session'
+" }}}
+" Autocompletion with deoplete {{{
 let g:deoplete#enable_at_startup = 1
 " }}}
-" Use lightline {{{ 
+" Status and Tabbar with lightline {{{ 
 let g:lightline = {
       \ 'colorscheme': 'seoul256',
       \ 'active': {
