@@ -1,6 +1,4 @@
-
 let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
-
 " Respect XDG {{{
 if exists("$XDG_CONFIG_HOME")
 	let $VIMPATH=expand('$XDG_CONFIG_HOME/nvim')
@@ -35,49 +33,43 @@ nnoremap ,        <Nop>
 xnoremap ,        <Nop>
 "
 " }}}
-"" Disable pre-bundled plugins {{{
-let g:loaded_getscript = 1
-let g:loaded_getscriptPlugin = 1
-let g:loaded_netrw = 1
-let g:loaded_netrwPlugin = 1
-let g:loaded_netrwFileHandlers = 1
-let g:loaded_netrwSettings = 1
-let g:loaded_tar = 1
-let g:loaded_tarPlugin = 1
-let g:loaded_2html_plugin = 1
-let g:loaded_vimball = 1
-let g:loaded_vimballPlugin = 1
-let g:loaded_zip = 1
-let g:loaded_zipPlugin = 1
-
+" My autocmd block - Clear vimrc group's autocmds if reloading {{{
+augroup vimrc
+	autocmd!
+augroup END
 " }}}
 " Add In Plugings {{{
 call plug#begin(expand('$VIMPATH/plugged'))
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-Plug 'airblade/vim-rooter'
 Plug 'benekastah/neomake'
 Plug 'Shougo/deoplete.nvim'	
 Plug 'janko-m/vim-test'
 Plug 'simnalamburt/vim-mundo'
+Plug 'noahfrederick/vim-skeleton'
+Plug 'christoomey/vim-tmux-runner'
+" git gists and github
+Plug 'airblade/vim-rooter'
+Plug 'itchyny/vim-gitbranch'
 Plug 'lambdalisue/vim-gista'
 Plug 'lambdalisue/vim-gita'
-Plug 'tpope/vim-commentary'
-Plug 'itchyny/vim-gitbranch'
-Plug 'noahfrederick/vim-skeleton'
+Plug 'airblade/vim-gitgutter'
+
+" edit
+Plug 'tpope/vim-commentary', { 'on': '<Plug>Commentary' }
 Plug 'sickill/vim-pasta'
-Plug 'christoomey/vim-tmux-runner'
+Plug 'nathanaelkane/vim-indent-guides'
+Plug 'ntpeters/vim-better-whitespace'
+Plug 'cazador481/fakeclip.neovim'
 " snippets
 Plug 'SirVer/ultisnips'
-" <leader>so :source $MYVIMRC<cr> "Source (reload) your vimrc.
-" <leader>so :source $MYVIMRC<cr> "Source (reload) your vimrc.
+Plug 'honza/vim-snippets'
 " Visual
 Plug 'junegunn/seoul256.vim'
 Plug 'itchyny/lightline.vim'
 Plug 'cocopon/lightline-hybrid.vim'
 Plug 'shinchu/lightline-seoul256.vim'
-Plug 'nathanaelkane/vim-indent-guides'
-Plug 'ntpeters/vim-better-whitespace'
+Plug 'edkolev/tmuxline.vim'
 " writing
 Plug 'reedes/vim-pencil'
 Plug 'junegunn/goyo.vim', { 'on': 'Goyo' } " distraction-free writing
@@ -94,9 +86,8 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'tmux-plugins/vim-tmux'
 call plug#end()
 "}}}
-"===============================================================================
 " General Settings
-" nvim Notes {{{ 
+" vim Notes {{{ 
 " 'autoindent' is set by default
 " 'autoread' is set by default
 " 'backspace' defaults to "indent,eol,start"
@@ -121,26 +112,24 @@ call plug#end()
 " 'viminfo' includes "!"
 " 'wildmenu' is set by default
 " }}}
-"===============================================================================
 " General {{{
 syntax on
 set modeline                 " automatically setting options from modelines
 set report=0                 " Don't report on line changes
 set noerrorbells             " Don't trigger bell on error
-"set visualbell t_vb=         " Don't make any faces
+set visualbell t_vb=         " Don't make any faces
 set lazyredraw               " don't redraw while in macros
 set hidden                   " hide buffers when abandoned instead of unload
 set ffs=unix,dos,mac         " Use Unix as the standard file type
 set magic                    " For regular expressions turn magic on
 set path=.,**                " Directories to search when using gf
 set virtualedit=block        " Position cursor anywhere in visual block
-set synmaxcol=1000           " Don't syntax highlight long lines
-syntax sync minlines=256     " Update syntax highlighting for more lines
+" set synmaxcol=1000           " Don't syntax highlight long lines
+" syntax sync minlines=256     " Update syntax highlighting for more lines
 set formatoptions+=1         " Don't break lines after a one-letter word
 set formatoptions-=t         " Don't auto-wrap texti
 " }}}
 " Files and Directories {{{
-
 set noswapfile    " http://robots.thoughtbot.com/post/18739402579/global-gitignore#comment-45841328i
 set autowriteall  " auto write file
 set undofile
@@ -149,7 +138,9 @@ set undodir=$VARPATH/undo//
 set backupdir=$VARPATH/backup//
 set viewdir=$VARPATH/view/
 set spellfile=$VIMPATH/spell/en.utf-8.add
-"}}}
+set wildmode=list:longest,full
+set wildignorecase
+" }}}
 " Tabs and Indents {{{
 set textwidth=80    " Text width maximum chars before wrapping
 set noexpandtab     " Don't expand tabs to spaces.
@@ -208,6 +199,22 @@ set completeopt=menuone,preview " Show preview and menu even for one item
 "set complete=.                  " No wins, buffs, tags, include scanning
 set nowrap                      " No wrap by default
 " }}}
+" Searching {{{
+" ---------
+set ignorecase      " Search ignoring case
+set smartcase       " Keep case when searching with *
+set infercase
+set wrapscan        " Searches wrap around the end of the file
+set showmatch       " Jump to matching bracket
+set matchpairs+=<:> " Add HTML brackets to pair matching
+set matchtime=1     " Tenths of a second to show the matching paren
+set cpoptions-=m    " showmatch will wait 0.5s or until a char is typed
+" set incsearch       " Incremental search
+" set hlsearch        " Highlight search results
+" 'hlsearch' is set by default
+" 'incsearch' is set by default
+
+" }}}
 " Editor UI Appearance {{{
 " --------------------
 set noshowmode          " Don't show mode in cmd window
@@ -253,15 +260,24 @@ if has('conceal') && v:version >= 703
 endif
 
 " }}}
-"===============================================================================
-" PLUGGED 
-"==============================================================================
+" PLUGGED
+" Comments with vim-commentary {{{
+" default mappings 
+" gcc comment line
+" gc comment
+" gcu uncomment
+" ----------------------------------------------------------------------------
+" }}}
+" Clipboard with xClip and fakeclip {{{
+let g:vim_fakeclip_tmux_plus=1
+" }}}
 " Fuzzy File Explorer with FZF {{{
 " https://github.com/junegunn/fzf/wiki/
 " https://github.com/junegunn/fzf.vim
 " Default fzf layout
 " - down / up / left / right
 " - window (nvim only)
+"let $FZF_DEFAULT_OPTS .= ' --inline-info'
 let g:fzf_layout = { 'down': '~40%' }
 " ctrl-[a-z], alt-[a-z], f[1-4], or any single character
 let g:fzf_action = {
@@ -270,8 +286,16 @@ let g:fzf_action = {
   \ 'alt-j':  'botright split',
   \ 'alt-k':  'topleft split',
   \ 'alt-h':  'vertical topleft split',
-  \ 'alt-l':  'vertical botright split' }
-nnoremap <silent> <Leader><Leader> :FZF -m<CR>
+  \ 'alt-l':  'vertcal botright split' }
+"nnoremap <silent> <Leader><Leader> :Files<CR>
+nnoremap <silent> <Leader>f  :GitFiles<CR>
+nnoremap <silent> <Leader>b  :Buffers<CR>
+nnoremap <silent> <Leader>ag :Ag <C-R><C-W><CR>
+"command! Plugs call fzf#run({
+"  \ 'source':  map(sort(keys(g:plugs)), 'g:plug_home."/".v:val'),
+"  \ 'options': '--delimiter / --nth -1',
+"  \ 'down':    '~40%',
+"  \ 'sink':    'Explore'})
 " }}}
 " Templates with skeleton {{{
 let g:skeleton_template_dir = "$VARPATH/templates"
@@ -329,6 +353,8 @@ let g:lightline = {
       \   'git_traffic': 'g:lightline.my.git_traffic',
       \   'git_status': 'g:lightline.my.git_status',
       \ },
+      \ 'separator': { 'left': "\ue0b0", 'right': "\ue0b2" },
+      \ 'subseparator': { 'left': "\ue0b1", 'right': "\ue0b3" }
       \}
 let g:lightline.my = {}
 function! g:lightline.my.git_branch() " {{{
@@ -342,5 +368,62 @@ function! g:lightline.my.git_status() " {{{
 endfunction " }}}
 
 "}}}
+" ==============================================================================
+" MAPPED
+" ==============================================================================
+" Saving files
+inoremap <C-s>     <C-O>:update<CR>
+nnoremap <C-s>     :update<CR>
+nnoremap <leader>s :update<CR>
+nnoremap <leader>w :update<CR>
+" Quiting
+inoremap <C-Q>     <esc>:q<CR>
+nnoremap <C-Q>     :q<CR>
+vnoremap <C-Q>     <ESC>
+nnoremap <Leader>q :q<CR>
+nnoremap <Leader>Q :qa!<CR>
+" Moving forward and back with prefixes  '[' ']' {{{
+" ----------------------------------------------------------------------------
+" Buffers
+" ----------------------------------------------------------------------------
+nnoremap ]b :bnext<CR>
+nnoremap [b :bprev<CR>
+" ----------------------------------------------------------------------------
+" Tabs
+" ----------------------------------------------------------------------------
+nnoremap ]t :tabn<cr>
+nnoremap [t :tabp<cr>
+" ----------------------------------------------------------------------------
+" Quickfix
+" ----------------------------------------------------------------------------
+nnoremap ]q :cnext<cr>zz
+nnoremap [q :cprev<cr>zz
+nnoremap ]l :lnext<cr>zz
+nnoremap [l :lprev<cr>zz
+" ----------------------------------------------------------------------------
+" <tab> / <s-tab> | Circular windows navigation
+" ----------------------------------------------------------------------------
+" nnoremap <tab>   <c-w>w
+" nnoremap <S-tab> <c-w>W
+" }}}
+" AUTOCMD {{{
+" ============================================================================
+augroup reload_vimrc
+    autocmd!
+    autocmd bufwritepost $MYVIMRC nested source $MYVIMRC
+	augroup END
+
+augroup vimrc
+"	autocmd BufWritePost $MYVIMRC nested source $MYVIMR
+"	autocmd BufEnter * :syntax sync fromstart
+  " Included syntax
+  "au FileType,ColorScheme * call <SID>file_type_handler()
+  " Automatic rename of tmux window
+  if exists('$TMUX') && !exists('$NORENAME')
+    au BufEnter * if empty(&buftype) | call system('tmux rename-window '.expand('%:t:S')) | endif
+    au VimLeave * call system('tmux set-window automatic-rename on')
+  endif
+augroup END
+" }}}
 " last line is modeline
 " vim:foldmethod=marker:foldlevel=0
