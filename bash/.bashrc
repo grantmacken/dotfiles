@@ -34,39 +34,16 @@ if [ ! "$TERM" = 'xterm-256color' ] ; then
   source ~/.bash_prompt
 fi
 
-#http://www.economyofeffort.com/2014/08/11/beyond-ctrl-remap-make-that-caps-lock-key-useful
-
-#isetxkbmap -layout us -option 'ctrl:nocaps'
-
-#TODO test
-#stty -ixon
-
-
-#BASE_SESSION="$(git config user.name)"
-#isTmuxRunning="$(ps -e | grep -q tmux)"
-#echo "CHECK! - is Tmux running?"
-#echo "BASE_SESSION: ${BASE_SESSION}"
-
-#if [ -z "${isTmuxRunning}" ] ; then
-#	tmux new-session -d -s ${BASE_SESSION}
-#	tmux attach -t
-#   #Simply creates a new base session named "main" if none exists
-#   # and detach
-#fi
-#if [ ! "$TERM" = 'screen-256color' ] ; then
-#  export TERM=xterm-256color
-#  source ~/.bash_prompt
-#  tmux new-session -d -s ${BASE_SESSION}
-#fi
-#sudo apt-get install xvba-va-driver
-#sudo add-apt-repository ppa:nilarimogard/webupd8
-#sudo apt-get update
-#sudo apt-get install libvdpau-va-gl1
-#sudo sh -c "echo 'export VDPAU_DRIVER=va_gl' >> /etc/profile"
-#sudo mkdir /etc/adobe
-#sudo echo -e "EnableLinuxHWVideoDecode = 1\nOverrideGPUValidation = 1" | sudo tee /etc/adobe/mms.cfg
+#if [ -z "$TMUX" ] ; then
+# tmux new-session -As "${BASE_SESSION}"
+#else
+#    if ! $(session_exists "${BASE_SESSION}" ); then
+#      create_detached_session "${BASE_SESSION}"
+#    fi
+#    tmux switch-client -t "${BASE_SESSION}"
+#  fi
 
 
-
+# create_if_needed_and_attach
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash

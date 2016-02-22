@@ -1,28 +1,18 @@
 
-function tmx_watch() {
-if [ -e config ] ; then
-mxInit
-hasWatch=$(
-  tmux list-windows -t ${ABBREV} -F '#W' | grep 'watch'
-  )
 
-if [ -z "${hasWatch}" ] ; then
-  tmux new-window -n watch
-  tmux split-window -t watch
-  tmux select-layout -t watch tiled
-  tmux split-window -t watch
-  tmux select-layout -t watch tiled
-  tmux split-window -t watch
-  tmux select-layout -t watch tiled
-  tmux split-window -t watch
-  tmux select-layout -t watch tiled
-  tmux send-keys -t watch.1 "make livereload-start"  C-m
-  tmux send-keys -t watch.2 "make watch-www"  C-m
-  tmux send-keys -t watch.3 "make watch-templates"  C-m
-  tmux send-keys -t watch.4 "make watch-modules"  C-m
-fi
-fi
+function not_in_tmux() {
+  [ -z "$TMUX" ]
 }
+
+function session_exists() {
+  tmux list-sessions | sed -E 's/:.*$//' | grep -q "^$1$"
+}
+
+function create_detached_session() {
+  (TMUX='' tmux new-session -Ad -s "$1")
+}
+
+
 
 function mxInit(){
   source <( sed 's/=/="/g' config | sed -r 's/$/"/g' )

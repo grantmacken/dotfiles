@@ -1,4 +1,9 @@
+" Cursor configuration {{{
 let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
+let &t_SI = "\<Esc>[5 q"
+let &t_SR = "\<Esc>[3 q"
+let &t_EI = "\<Esc>[2 q"
+"}}}
 " Respect XDG {{{
 if exists("$XDG_CONFIG_HOME")
 	let $VIMPATH=expand('$XDG_CONFIG_HOME/nvim')
@@ -13,6 +18,8 @@ silent! call MakeDirIfNoExists('$VARPATH/undo')
 silent! call MakeDirIfNoExists('$VARPATH/backup')
 silent! call MakeDirIfNoExists('$VARPATH/session')
 silent! call MakeDirIfNoExists('$VARPATH/skeleton')
+silent! call MakeDirIfNoExists('$VARPATH/skeleton')
+silent! call MakeDirIfNoExists('$VARPATH/tags')
 
 function! MakeDirIfNoExists(path)
     if !isdirectory(expand(a:path))
@@ -42,8 +49,8 @@ augroup END
 call plug#begin(expand('$VIMPATH/plugged'))
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
+Plug 'justinmk/vim-dirvish'
 Plug 'benekastah/neomake'
-Plug 'Shougo/deoplete.nvim'	
 Plug 'janko-m/vim-test'
 Plug 'simnalamburt/vim-mundo'
 Plug 'noahfrederick/vim-skeleton'
@@ -54,14 +61,17 @@ Plug 'itchyny/vim-gitbranch'
 Plug 'lambdalisue/vim-gista'
 Plug 'lambdalisue/vim-gita'
 Plug 'airblade/vim-gitgutter'
-
 " edit
-Plug 'tpope/vim-commentary', { 'on': '<Plug>Commentary' }
+Plug 'tpope/vim-commentary'
 Plug 'sickill/vim-pasta'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'cazador481/fakeclip.neovim'
-" snippets
+" tags
+"Plug 'ludovicchabant/vim-gutentags'
+Plug 'majutsushi/tagbar'
+" completion and snippets
+Plug 'Shougo/deoplete.nvim'	
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 " Visual
@@ -115,9 +125,9 @@ call plug#end()
 " General {{{
 syntax on
 set modeline                 " automatically setting options from modelines
-set report=0                 " Don't report on line changes
-set noerrorbells             " Don't trigger bell on error
-set visualbell t_vb=         " Don't make any faces
+" set report=0                 " Don't report on line changes
+" set noerrorbells             " Don't trigger bell on error
+" set visualbell t_vb=         " Don't make any faces
 set lazyredraw               " don't redraw while in macros
 set hidden                   " hide buffers when abandoned instead of unload
 set ffs=unix,dos,mac         " Use Unix as the standard file type
@@ -138,7 +148,7 @@ set undodir=$VARPATH/undo//
 set backupdir=$VARPATH/backup//
 set viewdir=$VARPATH/view/
 set spellfile=$VIMPATH/spell/en.utf-8.add
-set wildmode=list:longest,full
+set wildmode=longest,full
 set wildignorecase
 " }}}
 " Tabs and Indents {{{
@@ -151,8 +161,7 @@ set smartindent     " Smart autoindenting on new lines
 set shiftround      " Round indent to multiple of 'shiftwidth'
 set shiftwidth=2    " Number of spaces to use in auto(indent)
 " }}}
-" Time {{{
-
+" Time {{{ 
 set timeout ttimeout
 set timeoutlen=1000 " Time out on mappings
 set ttimeoutlen=50  " Time out on key codes
@@ -200,8 +209,11 @@ set completeopt=menuone,preview " Show preview and menu even for one item
 set nowrap                      " No wrap by default
 " }}}
 " Searching {{{
-" ---------
-set ignorecase      " Search ignoring case
+" behave like normal regerx by automaticaly inserting \v
+nnoremap / /\v
+vnoremap / /\v
+set gdefault        " Make global default
+set ignorecase      " Make ignoring case the default
 set smartcase       " Keep case when searching with *
 set infercase
 set wrapscan        " Searches wrap around the end of the file
@@ -209,10 +221,9 @@ set showmatch       " Jump to matching bracket
 set matchpairs+=<:> " Add HTML brackets to pair matching
 set matchtime=1     " Tenths of a second to show the matching paren
 set cpoptions-=m    " showmatch will wait 0.5s or until a char is typed
-" set incsearch       " Incremental search
-" set hlsearch        " Highlight search results
-" 'hlsearch' is set by default
-" 'incsearch' is set by default
+" 'hlsearch' under nvim is set by default
+" 'incsearch' under nvim is set by default
+nnoremap <leader><leader> :noh<cr>
 
 " }}}
 " Editor UI Appearance {{{
@@ -260,7 +271,60 @@ if has('conceal') && v:version >= 703
 endif
 
 " }}}
-" PLUGGED
+"PLUGGED
+" Tags created by universal-ctags and views created with tagbar {{{
+"let g:gutentags_cache_dir = '$VARPATH/tags'
+let g:tagbar_type_css = {
+\ 'ctagstype' : 'Css',
+    \ 'kinds'     : [
+        \ 'c:classes',
+        \ 's:selectors',
+        \ 'i:identities'
+    \ ]
+		\ }
+
+let g:tagbar_type_make = {
+            \ 'kinds':[
+                \ 'm:macros',
+                \ 't:targets'
+            \ ]
+						\}
+
+let g:tagbar_type_markdown = {
+    \ 'ctagstype' : 'markdown',
+    \ 'kinds' : [
+        \ 'h:Heading_L1',
+        \ 'i:Heading_L2',
+        \ 'k:Heading_L3'
+    \ ]
+		\ }
+
+let g:tagbar_type_xquery = {
+    \ 'ctagstype' : 'xquery',
+    \ 'kinds'     : [
+        \ 'f:function',
+        \ 'v:variable',
+        \ 'm:module',
+    \ ]
+		\ }
+
+let g:tagbar_type_xsd = {
+    \ 'ctagstype' : 'XSD',
+    \ 'kinds'     : [
+        \ 'e:elements',
+        \ 'c:complexTypes',
+        \ 's:simpleTypes'
+    \ ]
+		\ }
+
+let g:tagbar_type_xslt = {
+  \ 'ctagstype' : 'xslt',
+  \ 'kinds' : [
+    \ 'v:variables',
+    \ 't:templates'
+  \ ]
+	\}
+" }}}
 " Comments with vim-commentary {{{
 " default mappings 
 " gcc comment line
@@ -271,7 +335,17 @@ endif
 " Clipboard with xClip and fakeclip {{{
 let g:vim_fakeclip_tmux_plus=1
 " }}}
-" Fuzzy File Explorer with FZF {{{
+" File Explorer with netrw {{{
+map <F1> :Lexplore <CR>
+let g:netrw_winsize = -28
+let g:netrw_banner = 0 " Disable banner
+let g:netrw_hide = 1 " show not-hidden files by default
+let g:netrw_liststyle=3 " tree view
+let g:netrw_sort_sequence = '[\/]$,*'
+let g:netrw_browse_split = 4
+let g:netrw_altv = 1
+"}}}
+" Fuzzy Find Files and things in files with FZF {{{
 " https://github.com/junegunn/fzf/wiki/
 " https://github.com/junegunn/fzf.vim
 " Default fzf layout
@@ -313,7 +387,7 @@ let g:prosession_default_session = 0
 let g:prosession_dir = '~/.cache/nvim/session'
 " }}}
 " Autocompletion with deoplete {{{
-let g:deoplete#enable_at_startup = 1
+" let g:deoplete#enable_at_startup = 1
 " }}}
 " Status and Tabbar with lightline {{{ 
 let g:lightline = {
@@ -371,17 +445,19 @@ endfunction " }}}
 " ==============================================================================
 " MAPPED
 " ==============================================================================
-" Saving files
+" Saving files {{{
 inoremap <C-s>     <C-O>:update<CR>
 nnoremap <C-s>     :update<CR>
 nnoremap <leader>s :update<CR>
 nnoremap <leader>w :update<CR>
-" Quiting
+" }}}
+" Quiting {{{
 inoremap <C-Q>     <esc>:q<CR>
 nnoremap <C-Q>     :q<CR>
 vnoremap <C-Q>     <ESC>
 nnoremap <Leader>q :q<CR>
 nnoremap <Leader>Q :qa!<CR>
+" }}}
 " Moving forward and back with prefixes  '[' ']' {{{
 " ----------------------------------------------------------------------------
 " Buffers
@@ -415,7 +491,7 @@ augroup reload_vimrc
 
 augroup vimrc
 "	autocmd BufWritePost $MYVIMRC nested source $MYVIMR
-"	autocmd BufEnter * :syntax sync fromstart
+  autocmd BufEnter * :syntax sync fromstart
   " Included syntax
   "au FileType,ColorScheme * call <SID>file_type_handler()
   " Automatic rename of tmux window

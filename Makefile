@@ -20,6 +20,7 @@ stow-all:
 	@stow -v -t ~ bash
 	@stow -v -t ~ tmux
 	@stow -v -t ~ vim
+	@stow -v -t ~ ctags
 	@stow -v -t ~/.config/nvim nvim
 	@stow -v -t ~/bin  bin
 

@@ -18,7 +18,7 @@ in dotfiles project I have some folders
 
 * bash
 * tmux
-* vim
+* nvim
 * bin
 
 and a Makefile in the root of the dir.
@@ -58,7 +58,6 @@ I use key binding to move between tmux panes and vim splits.
 ##bin 
 
 contains some of my bash scripts
-
 
 #Some notes: Setting the keyboard [capslock](http://www.economyofeffort.com/2014/08/11/beyond-ctrl-remap-make-that-caps-lock-key-useful) so it maps to control, then map control to escape
 
