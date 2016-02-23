@@ -11,7 +11,10 @@ if [ -x /usr/bin/dircolors ]; then
     #alias fgrep='fgrep --color=auto'
     #alias egrep='egrep --color=auto'
 fi
-
+#vim now nvim
+alias vim='nvim'
+alias vi='nvim'
+alias v='nvim'
 
 alias ll='ls -alF'
 alias la='ls -A'
