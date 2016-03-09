@@ -3,9 +3,6 @@
 " Maintainer:	Doug Kearns <dougkearns@gmail.com>
 " Last Change:	2013 Jul 7
 
-if exists("current_compiler")
-  finish
-endif
 let current_compiler = "tidy"
 
 if exists(":CompilerSet") != 2		" older Vim always used :setlocal

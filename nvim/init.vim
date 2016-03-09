@@ -419,31 +419,31 @@ let g:prosession_dir = '~/.cache/nvim/session'
 " }}}
 " Linters with neomake {{{
 " neomake notes:  :ll #n  goto eror number
-let g:neomake_verbose=0
-let g:neomake_logfile = expand('$VARPATH/logs/error.log')
-let g:neomake_warning_sign = {
-			\ 'text': '▕',
-			\ 'texthl': 'WarningMsg',
-			\ }
-let g:neomake_error_sign = {
-			\ 'text': '░',
-			\ 'texthl': 'ErrorMsg',
-			\ }
+"let g:neomake_verbose=0
+"let g:neomake_logfile = expand('$VARPATH/logs/error.log')
+"let g:neomake_warning_sign = {
+"			\ 'text': '▕',
+"			\ 'texthl': 'WarningMsg',
+"			\ }
+"let g:neomake_error_sign = {
+"			\ 'text': '░',
+"			\ 'texthl': 'ErrorMsg',
+"			\ }
 
 " neomake MAKERS
 " --------------
 "  with HTML use tidy
 " overide tidy defaults http://www.html-tidy.org/
 " --gnu-emacs yes'output format that includes the file name
-let g:neomake_html_tidy_args = [
-      \ '--quiet', 1 ,
-			\ '--input-encoding', 'utf8',
-			\ '--show-errors', 6,
-			\ '--show-warnings', 1,
-			\ '--show-info', 0,
-			\ '--gnu-emacs', 1,
-			\ '--show-body-only', 'auto',
-			\ '--doctype', 'omit']
+"let g:neomake_html_tidy_args = [
+"      \ '--quiet', 1 ,
+"			\ '--input-encoding', 'utf8',
+"			\ '--show-errors', 6,
+"			\ '--show-warnings', 1,
+"			\ '--show-info', 0,
+"			\ '--gnu-emacs', 1,
+"			\ '--show-body-only', 'auto',
+"			\ '--doctype', 'omit']
 
 "let g:neomake_html_tidy_errorformat = '%A%f:%l:%c: Warning: %m'
 "
@@ -453,21 +453,30 @@ let g:neomake_html_tidy_args = [
 "
 "\ 'mapexpr': 'substitute(v:val, ".tasks/modules.mk:56:.....", "", "g")',
 
-let g:neomake_xquery_xq_maker = {
-    \ 'exe': 'make',
-    \ 'args': ['modules'],
-		\ 'append_file': 0,
-		\ 'errorformat': '%A%f:%l:%c: %m',
-    \ }
+"let g:neomake_xquery_xq_maker = {
+"    \ 'exe': 'make',
+"    \ 'args': ['modules'],
+"		\ 'append_file': 0,
+"		\ 'errorformat': '%A%f:%l:%c: %m',
+"    \ }
 
-let g:neomake_xquery_enabled_makers = ['xq']
+"let g:neomake_xquery_enabled_makers = ['xq']
 
+execute "sign define AccioError text=\u276f"
+execute "sign define AccioWarning text=\u276f"
 
-"autocmd! BufWritePost *.html :Accio tidy % 
+highlight! link AccioErrorSign SyntasticErrorSign
+highlight! link AccioWarningSign SyntasticErrorSign
+
+augroup init_accio
+  autocmd!
+  autocmd BufWritePost * if exists("b:accio") | call accio#accio(b:accio) | endif
+augroup END
+
 " autocmd! Filetype xquery setlocal makeprg=make\ modules\ %
 "autocmd! BufWritePost *.xqm  Neomake xq
 
-autocmd! InsertChange,TextChanged *.html update | Accio ["tidy"]
+autocmd! InsertChange,TextChanged *.html update | :Accio [ "xmlwf" ]
 "let g:neomake_open_list = 2 " automaically open location list 
 " }}}
 " Autocompletion with deoplete and ultisnips
