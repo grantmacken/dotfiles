@@ -463,11 +463,11 @@ let g:neomake_xquery_xq_maker = {
 let g:neomake_xquery_enabled_makers = ['xq']
 
 
-autocmd! BufWritePost *.html Neomake tidy
+"autocmd! BufWritePost *.html :Accio tidy % 
 " autocmd! Filetype xquery setlocal makeprg=make\ modules\ %
-autocmd! BufWritePost *.xqm  Neomake xq
+"autocmd! BufWritePost *.xqm  Neomake xq
 
-"autocmd! InsertChange,TextChanged *.html update | Neomake tidy
+autocmd! InsertChange,TextChanged *.html update | Accio ["tidy"]
 "let g:neomake_open_list = 2 " automaically open location list 
 " }}}
 " Autocompletion with deoplete and ultisnips
