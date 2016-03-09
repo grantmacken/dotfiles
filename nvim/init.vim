@@ -72,7 +72,7 @@ Plug 'cazador481/fakeclip.neovim'
 Plug 'rbgrouleff/bclose.vim' "delete buffer without closing window
 " tags
 "Plug 'ludovicchabant/vim-gutentags'
-Plug 'majutsushi/tagbar'
+Plug 'majutsushi/tagbar', {'on': 'TagbarToggle'}
 " completion and snippets
 " Plug 'ervandew/supertab'
 Plug 'Shougo/deoplete.nvim'
@@ -461,12 +461,17 @@ let g:prosession_dir = '~/.cache/nvim/session'
 "    \ }
 
 "let g:neomake_xquery_enabled_makers = ['xq']
+" ----------------------------------------------------------------------
+" Accio
+" ----------------------------------------------------------------------
 
+let g:accio_create_empty_quickfix = 0
+let g:accio_update_interval = 250
 execute "sign define AccioError text=\u276f"
 execute "sign define AccioWarning text=\u276f"
 
-highlight! link AccioErrorSign SyntasticErrorSign
-highlight! link AccioWarningSign SyntasticErrorSign
+"highlight! link AccioErrorSign SyntasticErrorSign
+"highlight! link AccioWarningSign SyntasticErrorSign
 
 augroup init_accio
   autocmd!
@@ -476,11 +481,10 @@ augroup END
 " autocmd! Filetype xquery setlocal makeprg=make\ modules\ %
 "autocmd! BufWritePost *.xqm  Neomake xq
 
-autocmd! InsertChange,TextChanged *.html update | :Accio [ "xmlwf" ]
+" autocmd! InsertChange,TextChanged *.html update | :Accio [ "tidy", "xmlwf", "xmllint" ]
 "let g:neomake_open_list = 2 " automaically open location list 
 " }}}
-" Autocompletion with deoplete and ultisnips
-" {{{
+" Autocompletion with deoplete and ultisnips {{{
 " let g:SuperTabDefaultCompletionType = '<C-n>'
 " set completeopt=menuone,preview " Show preview and menu even for one item
 set completeopt+=noinsert       " auto select feature like neocomplete
@@ -683,7 +687,10 @@ nnoremap <C-Q>     :q<CR>
 vnoremap <C-Q>     <ESC>
 nnoremap <Leader>q :q<CR>
 nnoremap <Leader>Q :qa!<CR>
-" }}}
+" gita
+nnoremap <Leader>g<Space> :Gita<Space>
+nnoremap <Leader>gs :Gita status<CR>
+nnoremap <Leader>gc :Gita commit<CR>
 " Moving forward and back with prefixes  '[' ']' {{{
 " ----------------------------------------------------------------------------
 " Buffers
@@ -718,6 +725,18 @@ nnoremap [l :lprev<cr>zz
 " }}}
 " AUTOCMD {{{
 " ============================================================================
+
+augroup vimenter
+    autocmd!
+    autocmd VimEnter * silent setlocal cursorline
+	augroup END
+
+augroup qf
+    autocmd!
+    autocmd QuickFixCmdPost grep,make,grepadd,vimgrep,vimgrepadd,cscope,cfile,cgetfile,caddfile,helpgrep cwindow
+    autocmd QuickFixCmdPost lgrep,lmake,lgrepadd,lvimgrep,lvimgrepadd,lcscope,lfile,lgetfile,laddfile lwindow
+	augroup END
+
 augroup reload_vimrc
     autocmd!
     autocmd bufwritepost $MYVIMRC nested source $MYVIMRC
