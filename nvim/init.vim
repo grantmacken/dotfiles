@@ -47,7 +47,7 @@ augroup END
 call plug#begin(expand('$VIMPATH/plugged'))
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-"Plug 'justinmk/vim-dirvish'
+Plug 'justinmk/vim-dirvish'
 " Plug 'benekastah/neomake'			" linting
 Plug 'pgdouyon/vim-accio'
 Plug 'janko-m/vim-test'				" testing
@@ -64,7 +64,8 @@ Plug 'airblade/vim-gitgutter'
 " edit
 Plug 'junegunn/vim-easy-align' " https://github.com/junegunn/vim-easy-align
 Plug 'Raimondi/delimitMate' " https://github.com/Raimondi/delimitMate
-Plug 'tpope/vim-commentary', { 'on': ['<Plug>Commentary', '<Plug>CommentaryLine', '<Plug>ChangeCommentary'] }
+Plug 'tpope/vim-projectionist'
+Plug 'tpope/vim-commentary' " , { 'on': ['<Plug>Commentary', '<Plug>CommentaryLine', '<Plug>ChangeCommentary'] }
 Plug 'sickill/vim-pasta'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'ntpeters/vim-better-whitespace'
@@ -367,16 +368,19 @@ let g:tagbar_type_xslt = {
 " Clipboard with xClip and fakeclip {{{
 let g:vim_fakeclip_tmux_plus=1
 " }}}
-" File Explorer with netrw {{{
+" Map File Exploring to Ranger and Dirvish {{{
 "
- map <leader>r :call OpenRanger()<CR>
-let g:netrw_winsize = -28
-let g:netrw_banner = 0 " Disable banner
-let g:netrw_hide = 1 " show not-hidden files by default
-let g:netrw_liststyle=3 " tree view
-let g:netrw_sort_sequence = '[\/]$,*'
-let g:netrw_browse_split = 4
-let g:netrw_altv = 1
+map <leader>r :call OpenRanger()<CR>
+let g:loaded_netrwPlugin = 1
+nnoremap <leader>d :Dirvish %:p:h<CR>
+
+"let g:netrw_winsize = -28
+"let g:netrw_banner = 0 " Disable banner
+"let g:netrw_hide = 1 " show not-hidden files by default
+"let g:netrw_liststyle=3 " tree view
+"let g:netrw_sort_sequence = '[\/]$,*'
+"let g:netrw_browse_split = 4
+"let g:netrw_altv = 1
 "}}}
 " Fuzzy Find Files and things in files with FZF {{{
 " https://github.com/junegunn/fzf/wiki/
@@ -417,7 +421,7 @@ let g:prosession_on_startup = 1
 let g:prosession_default_session = 0
 let g:prosession_dir = '~/.cache/nvim/session'
 " }}}
-" Linters with neomake {{{
+" Linters and Checkers with Accio {{{
 " neomake notes:  :ll #n  goto eror number
 "let g:neomake_verbose=0
 "let g:neomake_logfile = expand('$VARPATH/logs/error.log')
@@ -466,17 +470,14 @@ let g:prosession_dir = '~/.cache/nvim/session'
 " ----------------------------------------------------------------------
 
 let g:accio_create_empty_quickfix = 0
-let g:accio_update_interval = 250
-execute "sign define AccioError text=\u276f"
-execute "sign define AccioWarning text=\u276f"
-
-"highlight! link AccioErrorSign SyntasticErrorSign
-"highlight! link AccioWarningSign SyntasticErrorSign
-
-augroup init_accio
-  autocmd!
-  autocmd BufWritePost * if exists("b:accio") | call accio#accio(b:accio) | endif
-augroup END
+" let g:accio_update_interval = 250
+" Note:  Noah Frederick's  after ... sets text and signs
+" @see gf 'after/plugin/accio.vim'
+" @see 'Noah Frederick' 
+"augroup init_accio
+"  autocmd!
+"  autocmd BufWritePost * if exists("b:accio") | call accio#accio(b:accio) | endif
+"augroup END
 
 " autocmd! Filetype xquery setlocal makeprg=make\ modules\ %
 "autocmd! BufWritePost *.xqm  Neomake xq
@@ -618,45 +619,47 @@ au BufEnter * exec "inoremap <silent> " . g:UltiSnipsExpandTrigger . " <C-R>=g:U
 " required if using https://github.com/bling/vim-airline
 " let g:airline_powerline_fonts=1
 let g:lightline = {
-      \ 'colorscheme': 'seoul256',
-      \ 'active': {
-      \   'left': [
-      \     [ 'mode', 'paste' ],
-      \     [ 'filename' ],
-      \   ],
-      \   'right': [
-      \     [ 'lineinfo' ],
-      \     [ 'fileformat', 'fileencoding', 'filetype' ],
-      \   ],
-      \ },
-      \ 'inactive': {
-      \   'left': [
-      \     [ 'filename' ],
-      \   ],
-      \   'right': [
-      \     [ 'fileformat', 'fileencoding', 'filetype' ],
-      \   ],
-      \ },
-      \ 'tabline': {
-      \   'left': [
-      \     [ 'tabs' ],
-      \   ],
-      \   'right': [
-      \     [ 'close' ],
-      \     [ 'git_branch', 'git_traffic', 'git_status', 'cwd' ],
-      \   ],
-      \ },
-      \ 'component_visible_condition': {
-      \   'lineinfo': '(winwidth(0) >= 70)',
-      \ },
-      \ 'component_function': {
-      \   'git_branch': 'g:lightline.my.git_branch',
-      \   'git_traffic': 'g:lightline.my.git_traffic',
-      \   'git_status': 'g:lightline.my.git_status',
-      \ },
-      \ 'separator': { 'left': "\ue0b0", 'right': "\ue0b2" },
-      \ 'subseparator': { 'left': "\ue0b1", 'right': "\ue0b3" }
-      \}
+			\ 'colorscheme': 'seoul256',
+			\ 'active': {
+			\   'left': [
+			\     [ 'mode', 'paste' ],
+			\     [ 'filename' ],
+			\   ],
+			\   'right': [
+			\     [ 'lineinfo' ],
+			\     [ 'fileformat', 'fileencoding', 'filetype' ],
+			\   ],
+			\ },
+			\ 'inactive': {
+			\   'left': [
+			\     [ 'filename' ],
+			\   ],
+			\   'right': [
+			\     [ 'fileformat', 'fileencoding', 'filetype' ],
+			\   ],
+			\ },
+			\ 'tabline': {
+			\   'left': [
+			\     [ 'tabs' ],
+			\   ],
+			\   'right': [
+			\     [ 'close' ],
+			\     [ 'git_branch', 'git_traffic', 'git_status', 'cwd' ],
+			\   ],
+			\ },
+			\ 'component_visible_condition': {
+			\   'lineinfo': '(winwidth(0) >= 70)',
+			\ },
+			\ 'component_function': {
+			\   'git_branch': 'g:lightline.my.git_branch',
+			\   'git_traffic': 'g:lightline.my.git_traffic',
+			\   'git_status': 'g:lightline.my.git_status',
+			\ },
+			\ 'separator': { 'left': "\ue0b0", 'right': "\ue0b2" },
+			\ 'subseparator': { 'left': "\ue0b1", 'right': "\ue0b3" }
+			\}
+
+" "%#WarningMsg#%{accio#statusline()}%
 
 let g:lightline.my = {}
 
@@ -691,6 +694,7 @@ nnoremap <Leader>Q :qa!<CR>
 nnoremap <Leader>g<Space> :Gita<Space>
 nnoremap <Leader>gs :Gita status<CR>
 nnoremap <Leader>gc :Gita commit<CR>
+" }}}
 " Moving forward and back with prefixes  '[' ']' {{{
 " ----------------------------------------------------------------------------
 " Buffers
@@ -711,12 +715,15 @@ nnoremap <silent> [f :ProjectBufPrev 'F<cr>
 nnoremap ]t :tabn<cr>
 nnoremap [t :tabp<cr>
 " ----------------------------------------------------------------------------
-" Quickfix
+" Quickfix 
 " ----------------------------------------------------------------------------
-nnoremap ]q :cnext<cr>zz
-nnoremap [q :cprev<cr>zz
-nnoremap ]l :lnext<cr>zz
-nnoremap [l :lprev<cr>zz
+" Accio
+" https://github.com/pgdouyon/vim-accio
+" By default these are mapped to [w and ]w (mnemonic: warning).
+"nnoremap ]q :cnext<cr>zz
+"nnoremap [q :cprev<cr>zz
+"nnoremap ]l :lnext<cr>zz
+"nnoremap [l :lprev<cr>zz
 " ----------------------------------------------------------------------------
 " <tab> / <s-tab> | Circular windows navigation
 " ----------------------------------------------------------------------------
