@@ -1,7 +1,7 @@
-" autoload/nox/snippets.vim - Global helpers for snippets
+" autoload/snippets.vim - Global helpers for snippets
 " Maintainer:   Noah Frederick
 
-function! nox#snippet#title(basename)
+function! snippet#title(basename)
   if exists("g:template_title")
     " Setting g:template_title lets us override the title (once)
     let title = g:template_title
@@ -19,7 +19,7 @@ function! nox#snippet#title(basename)
   return title
 endfunction
 
-function! nox#snippet#expand_snippet_or_complete_maybe()
+function! snippet#expand_snippet_or_complete_maybe()
   call UltiSnips#ExpandSnippetOrJump()
 
   if !exists("g:ulti_expand_or_jump_res") || g:ulti_expand_or_jump_res == 0
@@ -43,7 +43,7 @@ function! s:try_insert(skel)
   return g:ulti_expand_res
 endfunction
 
-function! nox#snippet#insert_skeleton() abort
+function! snippet#insert_skeleton() abort
   " Load UltiSnips in case it was deferred via vim-plug
   if !exists('g:did_plugin_ultisnips') && exists(':PlugStatus')
     call plug#load('ultisnips')
@@ -55,15 +55,15 @@ function! nox#snippet#insert_skeleton() abort
     return
   endif
 
-  if !empty(b:projectionist)
-    " Loop through projections with 'skeleton' key and try each one until the
-    " snippet expands
-    for [root, value] in projectionist#query('skeleton')
-      if s:try_insert(value)
-        return
-      endif
-    endfor
-  endif
+  " if !empty(b:projectionist)
+  "   " Loop through projections with 'skeleton' key and try each one until the
+  "   " snippet expands
+  "   for [root, value] in projectionist#query('skeleton')
+  "     if s:try_insert(value)
+  "       return
+  "     endif
+  "   endfor
+  " endif
 
   " Try generic _skel template as last resort
   call s:try_insert("skel")

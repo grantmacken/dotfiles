@@ -749,7 +749,7 @@ augroup reload_vimrc
     autocmd bufwritepost $MYVIMRC nested source $MYVIMRC
 	augroup END
 
-augroup vimrc
+augroup init
 	autocmd!
 "	autocmd BufWritePost $MYVIMRC nested source $MYVIMR
 " autocmd BufEnter * :syntax sync fromstart
@@ -758,6 +758,14 @@ augroup vimrc
 	autocmd BufNewFile,BufRead *.snippets set filetype=snippets
 
 	autocmd BufEnter * call <SID>AutoProjectRootCD()
+	autocmd User ProjectionistActivate
+			\ if &filetype !=# '' && &filetype !=# 'dirvish' |
+			\   for [s:root, s:value] in projectionist#query("framework") |
+			\     if index(split(&filetype, '\.'), s:value) < 0 |
+			\       let &filetype = join([&filetype, s:value], ".") |
+			\     endif |
+			\   endfor |
+			\ endif
   " Included syntax
   "au FileType,ColorScheme * call <SID>file_type_handler()
   " Automatic rename of tmux window

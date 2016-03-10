@@ -1,16 +1,14 @@
 " ultisnips_custom.vim - Custom UltiSnips settings
 " Maintainer:   Noah Frederick
+" https://noahfrederick.com/log/vim-templates-with-ultisnips-and-projectionist/
+" after/plugin/ultsnips_custom.vim
 
-if exists(":SkelEdit") || !exists("g:UltiSnipsExpandTrigger") || !has("python") && !has("python3")
-  finish
-endif
+"if exists(":SkelEdit") || !exists("g:UltiSnipsExpandTrigger")
+"  finish
+"endif
 
 augroup ultisnips_custom
   autocmd!
-  autocmd BufNewFile * silent! call nox#snippet#insert_skeleton()
-  autocmd BufEnter * execute "inoremap <silent> "
-        \ . g:UltiSnipsExpandTrigger
-        \ . " <C-r>=nox#snippet#expand_snippet_or_complete_maybe()<CR>"
+  autocmd BufNewFile * silent! call snippet#insert_skeleton()
 augroup END
 
-" vim: fdm=marker:sw=2:sts=2:et
