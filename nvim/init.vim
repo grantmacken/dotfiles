@@ -42,6 +42,8 @@ augroup END
 call plug#begin(expand('$VIMPATH/plugged'))
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
+Plug 'tpope/vim-projectionist'
+Plug 'c-brenn/fuzzy-projectionist.vim' "https://github.com/c-brenn/fuzzy-projectionist.vim
 Plug 'justinmk/vim-dirvish'
 " Plug 'benekastah/neomake'			" linting
 Plug 'pgdouyon/vim-accio'
@@ -56,9 +58,9 @@ Plug 'lambdalisue/vim-gista'
 Plug 'lambdalisue/vim-gita'
 Plug 'airblade/vim-gitgutter'
 " edit
+Plug 'unblevable/quick-scope' "https://github.com/unblevable/quick-scope
 Plug 'junegunn/vim-easy-align' " https://github.com/junegunn/vim-easy-align
 Plug 'Raimondi/delimitMate' " https://github.com/Raimondi/delimitMate
-Plug 'tpope/vim-projectionist'
 Plug 'tpope/vim-commentary' " , { 'on': ['<Plug>Commentary', '<Plug>CommentaryLine', '<Plug>ChangeCommentary'] }
 Plug 'sickill/vim-pasta'
 Plug 'nathanaelkane/vim-indent-guides'
@@ -167,7 +169,13 @@ set virtualedit=block        " Position cursor anywhere in visual block
 " syntax sync minlines=256     " Update syntax highlighting for more lines
 set formatoptions+=1         " Don't break lines after a one-letter word
 set formatoptions-=t         " Don't auto-wrap texti
+
 " }}}
+"{{{clipboard with xclip 
+set clipboard^=unnamedplus   "uses x-11 clipboard, stores in middle mouse
+"vmap <C-c> :<Esc>`>a<CR><Esc>mx`<i<CR><Esc>my'xk$v'y!xclip -selection c<CR>u
+"nmap <C-c> y: call system("xclip -i -selection clipboard", getreg("\""))<CR>
+ "}}}
 " Files and Directories {{{
 set noswapfile    " http://robots.thoughtbot.com/post/18739402579/global-gitignore#comment-45841328i
 set autowriteall  " auto write file
@@ -828,7 +836,7 @@ endfunction
 
 function! CreateArticle( file )
 	call MakeDirIfNoExists( strftime("content/posts/articles/%Y/%m/%d") )
-	execute ':edit ' . strftime("content/posts/articles/%Y/%m/%d/") . a:file  . '.md'
+	execute ':A ' . strftime("content/posts/articles/%Y/%m/%d/") . a:file  . '.md'
 endfunction
 "
 " }}}
