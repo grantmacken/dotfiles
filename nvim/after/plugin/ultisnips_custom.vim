@@ -9,6 +9,7 @@
 
 augroup ultisnips_custom
   autocmd!
+	autocmd User ProjectionistActivate silent! call snippet#InsertSkeleton()
   autocmd BufNewFile * silent! call snippet#insert_skeleton()
 augroup END
 

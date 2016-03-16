@@ -19,11 +19,6 @@ silent! call MakeDirIfNoExists('$VARPATH/session')
 silent! call MakeDirIfNoExists('$VARPATH/logs')
 silent! call MakeDirIfNoExists('$VARPATH/tags')
 
-function! MakeDirIfNoExists(path)
-    if !isdirectory(expand(a:path))
-        call mkdir(expand(a:path), "p")
-    endif
-endfunction
 
 " }}}
 " Global Mappings "{{{
@@ -53,7 +48,6 @@ Plug 'pgdouyon/vim-accio'
 Plug 'janko-m/vim-test'				" testing
 " Plug 'Chiel92/vim-autoformat'	" formating TODO: https://github.com/Chiel92/vim-autoformat
 Plug 'simnalamburt/vim-mundo'	" history
-Plug 'noahfrederick/vim-skeleton'
 Plug 'christoomey/vim-tmux-runner'
 Plug 'szw/vim-maximizer' " zoom vim window
 " projects git gists and github
@@ -127,7 +121,7 @@ Plug 'othree/xml.vim' " close tags while you type
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'tmux-plugins/vim-tmux'
 " XQUERY 
-Plug 'vim-scripts/XQuery-indentomnicompleteftplugin' " might have to install manually
+"Plug 'vim-scripts/XQuery-indentomnicompleteftplugin' " might have to install manually
 call plug#end()
 "}}}:
 " General Settings
@@ -371,8 +365,10 @@ let g:vim_fakeclip_tmux_plus=1
 " Map File Exploring to Ranger and Dirvish {{{
 "
 map <leader>r :call OpenRanger()<CR>
-let g:loaded_netrwPlugin = 1
-nnoremap <leader>d :Dirvish %:p:h<CR>
+let g:loaded_netrwPlugin = 1 
+nnoremap <silent> <F9> :ProjectRootExe Dirvish<cr>
+"autocmd User ProjectionistActivate silent! call snippet#InsertSkeleton()
+" nnoremap <leader>d :Dirvish %:p:h<CR>
 
 "let g:netrw_winsize = -28
 "let g:netrw_banner = 0 " Disable banner
@@ -406,9 +402,6 @@ nnoremap <silent> <Leader>ag :Ag <C-R><C-W><CR>
 "  \ 'options': '--delimiter / --nth -1',
 "  \ 'down':    '~40%',
 "  \ 'sink':    'Explore'})
-" }}}
-" Templates with skeleton {{{
-let g:skeleton_template_dir = "$VARPATH/templates"
 " }}}
 " Sessions with obsession and prosession {{{
 " What not to save in sessions:
@@ -541,7 +534,9 @@ endif
 " file/include ... neoinclude
 " ---------------------------------------------------------------------------------------------------
 let g:deoplete#sources = {}
-let g:deoplete#sources._ = ['buffer', 'member', 'tag', 'file', 'dictionary', 'syntax', 'look', 'file/include' ]  " '_'  value is used for default filetypes
+let g:deoplete#sources._ = ['buffer', 'member', 'tag', 'file', 'dictionary', 'syntax', 'look', 'file/include' ] 
+" '_'  value is used for default filetypes
+
 let g:deoplete#sources.html = ['ultisnips', 'buffer', 'tag']  " set values for each filetype
 let g:deoplete#sources.javascript = [ 'ternjs', 'ultisnips', 'buffer', 'tag']  " set values for each filetype
 let g:deoplete#sources.vim = ['vim', 'buffer', 'tag']  " set values for each filetype
@@ -677,7 +672,11 @@ endfunction " }}}
 " ==============================================================================
 " MAPPED
 " ==============================================================================
-" Editing Saving and Quiting {{{
+" EDITING Tasks, Spelling Saving and Quiting {{{
+" spelling
+map <F2> :setlocal spell! spelllang=en_nz<CR>
+" ref:  se h spell
+
 nnoremap <leader>ep :ProjectRootCD<cr>:e<space>
 " Saving
 inoremap <C-s>     <C-O>:update<CR>
@@ -690,25 +689,27 @@ nnoremap <C-Q>     :q<CR>
 vnoremap <C-Q>     <ESC>
 nnoremap <Leader>q :q<CR>
 nnoremap <Leader>Q :qa!<CR>
-" gita
+" git and gists
 nnoremap <Leader>g<Space> :Gita<Space>
-nnoremap <Leader>gs :Gita status<CR>
+nnoremap <Leader>gg :Gita status<CR>
 nnoremap <Leader>gc :Gita commit<CR>
+nnoremap <Leader>gs :Gista<Space>
 " }}}
+
 " Moving forward and back with prefixes  '[' ']' {{{
 " ----------------------------------------------------------------------------
 " Buffers
 " ----------------------------------------------------------------------------
-nnoremap ]b :bnext<CR>
-nnoremap [b :bprev<CR>
+" nnoremap ]b :bnext<CR>
+" nnoremap [b :bprev<CR>
 " only within current project
-nnoremap <silent> [p :ProjectBufPrev<cr>
-nnoremap <silent> ]p :ProjectBufNext<cr>
-nnoremap <silent> [P :ProjectBufFirst<cr>
-nnoremap <silent> ]P :ProjectBufLast<cr>
+nnoremap <silent> [b :ProjectBufPrev<cr>
+nnoremap <silent> ]b :ProjectBufNext<cr>
+nnoremap <silent> [B :ProjectBufFirst<cr>
+nnoremap <silent> ]B :ProjectBufLast<cr>
 " mF to mark file
-nnoremap <silent> ]f :ProjectBufNext 'F<cr>
-nnoremap <silent> [f :ProjectBufPrev 'F<cr>
+" nnoremap <silent> ]f :ProjectBufNext 'F<cr>
+" nnoremap <silent> [f :ProjectBufPrev 'F<cr>
 " ----------------------------------------------------------------------------
 " Tabs
 " ----------------------------------------------------------------------------
@@ -753,19 +754,25 @@ augroup init
 	autocmd!
 "	autocmd BufWritePost $MYVIMRC nested source $MYVIMR
 " autocmd BufEnter * :syntax sync fromstart
-"
+" NOTE: filetype 
+" detection -- '/usr/share/nvim/runtime/filetype.vim'
+" make recognizes  mk extension
+" xquery recognizes xql xqm xq
   autocmd BufNewFile,BufRead .env.* setfiletype sh
-	autocmd BufNewFile,BufRead *.snippets set filetype=snippets
+	autocmd BufNewFile,BufRead *.snippets set filetype=snippets "add new snippets filetpe
 
-	autocmd BufEnter * call <SID>AutoProjectRootCD()
-	autocmd User ProjectionistActivate
-			\ if &filetype !=# '' && &filetype !=# 'dirvish' |
-			\   for [s:root, s:value] in projectionist#query("framework") |
-			\     if index(split(&filetype, '\.'), s:value) < 0 |
-			\       let &filetype = join([&filetype, s:value], ".") |
-			\     endif |
-			\   endfor |
-			\ endif
+	autocmd BufEnter * call <SID>AutoProjectRootCD() 
+	" when entering a buffer look for project root and change dir"
+	" our shell commands 'make' etc run from project root
+	"
+	" autocmd User ProjectionistActivate
+	" 		\ if &filetype !=# '' && &filetype !=# 'dirvish' |
+	" 		\   for [s:root, s:value] in projectionist#query("framework") |
+	" 		\     if index(split(&filetype, '\.'), s:value) < 0 |
+	" 		\       let &filetype = join([&filetype, s:value], ".") |
+	" 		\     endif |
+	" 		\   endfor |
+	" 		\ endif
   " Included syntax
   "au FileType,ColorScheme * call <SID>file_type_handler()
   " Automatic rename of tmux window
@@ -776,6 +783,12 @@ augroup init
 augroup END
 " }}}
 " functions {{{
+
+function! MakeDirIfNoExists(path)
+		if !isdirectory(expand(a:path))
+				call mkdir(expand(a:path), "p")
+		endif
+endfunction
 
 function! <SID>AutoProjectRootCD()
 	try
@@ -813,6 +826,10 @@ function! OpenRanger()
 	startinsert
 endfunction
 
+function! CreateArticle( file )
+	call MakeDirIfNoExists( strftime("content/posts/articles/%Y/%m/%d") )
+	execute ':edit ' . strftime("content/posts/articles/%Y/%m/%d/") . a:file  . '.md'
+endfunction
 "
 " }}}
 " last line is modeline
