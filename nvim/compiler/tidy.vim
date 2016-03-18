@@ -20,4 +20,3 @@ CompilerSet errorformat=%f:%l:%c:\ Error:%m,%f:%l:%c:\ Warning:%m,%-G%.%#
 
 let &cpoptions = s:cpo_save
 unlet s:cpo_save
-highlight! link AccioWarningSign WarningMsg

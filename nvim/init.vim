@@ -475,12 +475,16 @@ let g:accio_create_empty_quickfix = 0
 " Note:  Noah Frederick's  after ... sets text and signs
 " @see gf 'after/plugin/accio.vim'
 " @see 'Noah Frederick' 
-"augroup init_accio
-"  autocmd!
-"  autocmd BufWritePost * if exists("b:accio") | call accio#accio(b:accio) | endif
-"augroup END
+" NOTE:
+" one filetype can have many compilers
+" HTML
+" @see 'nvim/ftplugin/html.vim'
+" @see 'nvim/compiler/tidy.vim'
+" XQUERY
+" @see 'nvim/ftplugin/xquery.vim'
+" @see 'nvim/compiler/xqm.vim' this invokes make modules
 
-" autocmd! Filetype xquery setlocal makeprg=make\ modules\ %
+"" autocmd! Filetype xquery setlocal makeprg=make\ modules\ %
 "autocmd! BufWritePost *.xqm  Neomake xq
 
 " autocmd! InsertChange,TextChanged *.html update | :Accio [ "tidy", "xmlwf", "xmllint" ]
@@ -703,7 +707,6 @@ nnoremap <Leader>gg :Gita status<CR>
 nnoremap <Leader>gc :Gita commit<CR>
 nnoremap <Leader>gs :Gista<Space>
 " }}}
-
 " Moving forward and back with prefixes  '[' ']' {{{
 " ----------------------------------------------------------------------------
 " Buffers
