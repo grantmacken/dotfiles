@@ -2,7 +2,7 @@ let s:save_cpo = &cpoptions
 set cpoptions&vim
 
 augroup xquery 
-		autocmd BufWrite <buffer> Accio ["xqModules"]
+	autocmd BufWrite <buffer> Accio ["xqm"]
 augroup END
 
 let &cpoptions = s:save_cpo

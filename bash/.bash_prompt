@@ -49,10 +49,15 @@ function prompt_func () {
 	local BLACK="\[\e[90m\]"
 	local NOCOLOR="\[\e[0m\]"
 
-	local PREFIX=">"
+	local PREFIX="➤"
+# 	➯ ➥ "
+# 	➯ ➥  ↺ ↳
+## ★  ☕ ✁
+## ✿  ✣ ✦   ☼
 
-	local prompt="${PREFIX} ${PROMPTCOLOR}\w"
-	type -t __git_ps1 &>/dev/null && prompt="${prompt}${BOLDCOLOR}$(__git_ps1 ' ± %s')"
+	local prompt="${PREFIX}"
+	#type -t __git_ps1 &>/dev/null && prompt="${prompt}${BOLDCOLOR}$(__git_ps1 ' ± %s')"
+	type -t __git_ps1 &>/dev/null && prompt="${prompt}${PROMPTCOLOR}➤"
 
 	if [ $exit_status -eq 0 ] ; then
 		PS1="${GREEN}${prompt} ${NOCOLOR}"
@@ -127,7 +132,6 @@ PROMPT_COMMAND=prompt_func
 ## ✍ ✎
 ## ★ ☆ ☕ ✁
 ## ✿ ❀ ✣ ✦ ✪ ✰ ☼
-## ➯ ➥ ➤ ↺ ↳
 ## ⚠ ⌛ ⚡ ℹ
 ## ❶ ❷ ❸
 ## set variable identifying the chroot you work in (used in the prompt below)

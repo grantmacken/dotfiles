@@ -1,10 +1,12 @@
 " Cursor configuration {{{
+"
 let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
 let &t_SI = "\<Esc>[5 q"
 let &t_SR = "\<Esc>[3 q"
 let &t_EI = "\<Esc>[2 q"
 "}}}
 " Respect XDG {{{
+
 if exists("$XDG_CONFIG_HOME")
 	let $VIMPATH=expand('$XDG_CONFIG_HOME/nvim')
 	let $VARPATH=expand('$XDG_CACHE_HOME/nvim')
@@ -12,6 +14,7 @@ else
 	let $VIMPATH=expand('$HOME/.config/nvim')
 	let $VARPATH=expand('$HOME/.cache/nvim')
 endif
+
 " }}}
 " Ensure directory "{{{
 silent! call MakeDirIfNoExists('$VARPATH/backup')
@@ -39,6 +42,7 @@ augroup vimrc
 augroup END
 " }}}
 " Add In Plugings {{{
+
 call plug#begin(expand('$VIMPATH/plugged'))
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
@@ -61,7 +65,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'unblevable/quick-scope' "https://github.com/unblevable/quick-scope
 Plug 'junegunn/vim-easy-align' " https://github.com/junegunn/vim-easy-align
 Plug 'Raimondi/delimitMate' " https://github.com/Raimondi/delimitMate
-Plug 'tpope/vim-commentary' " , { 'on': ['<Plug>Commentary', '<Plug>CommentaryLine', '<Plug>ChangeCommentary'] }
+Plug 'tpope/vim-commentary'  , { 'on': ['<Plug>Commentary', '<Plug>CommentaryLine', '<Plug>ChangeCommentary'] }
 Plug 'sickill/vim-pasta'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'ntpeters/vim-better-whitespace'
@@ -80,10 +84,8 @@ Plug 'Shougo/neco-syntax' "deoplete syntax source drop in replacement for  autol
 Plug 'ujihisa/neco-look' "deoplete spelling source ... word completion with 'look' command ref man look
 Plug 'Shougo/neoinclude.vim' "deoplete file/include source and extends tag source
 Plug 'Shougo/neco-vim'  "deoplete source foe vim
-
-
-" Plug 'Konfekt/FastFold' recomended Shougo plugin 
-" Plug 'Shougo/echodoc'  " recomended plugin .. to look at function auguments 
+Plug 'Konfekt/FastFold' "recomended Shougo plugin
+" Plug 'Shougo/echodoc'  " recomended plugin .. to look at function auguments
 " Visual
 Plug 'ryanoasis/vim-devicons'
 Plug 'junegunn/seoul256.vim'
@@ -91,40 +93,41 @@ Plug 'itchyny/lightline.vim' " will call gita for git updates
 Plug 'cocopon/lightline-hybrid.vim'
 Plug 'shinchu/lightline-seoul256.vim'
 Plug 'edkolev/tmuxline.vim'
-" Plug 'itchyny/vim-gitbranch' 
+" Plug 'itchyny/vim-gitbranch'
 " writing
 Plug 'reedes/vim-pencil'
 Plug 'junegunn/goyo.vim', { 'on': 'Goyo' } " distraction-free writing
 Plug 'junegunn/limelight.vim', { 'on': 'Limelight' } " focus tool. Good for presentating with vim
 " Plug 'ron89/thesaurus_query.vim' TODO https://github.com/Ron89/thesaurus_query.vim
 " sessions:
-Plug 'tpope/vim-obsession'	
+Plug 'tpope/vim-obsession'
 Plug 'dhruvasagar/vim-prosession' " each git project has associated vim session
 " language-specific plugins
 " JavaScript:  https://davidosomething.com/blog/vim-for-javascript/
 Plug 'othree/yajs.vim', { 'for': 'javascript' } " SYNTAX object/method data comes from Mozilla's WebIDL
-" Plug 'othree/es.next.syntax.vim' 
+" Plug 'othree/es.next.syntax.vim'
 " Plug 'othree/javascript-libraries-syntax.vim'
-Plug 'gavocanov/vim-js-indent' " INDENT 
-"Plug 'heavenshell/vim-jsdoc' "  jsdocs  https://github.com/heavenshell/vim-jsdoc 
+Plug 'gavocanov/vim-js-indent' " INDENT
+"Plug 'heavenshell/vim-jsdoc' "  jsdocs  https://github.com/heavenshell/vim-jsdoc
 "Plug 'ternjs/tern_for_vim', { 'do': 'npm install' } " setup tern
 Plug 'carlitux/deoplete-ternjs' " COMPLETION: deoplete tern as recomended by Shougo
 " Plug 'othree/jspc.vim' ... COMPLETION:  function param completion
-" JSON: 
+" JSON:
 Plug 'elzr/vim-json', { 'for': 'json' } " JSON support
-" CSS: 
+" CSS:
 Plug 'ap/vim-css-color', { 'for': 'css' } " set the background of hex color values to the color
 Plug 'hail2u/vim-css3-syntax', { 'for': 'css' } " CSS3 syntax support
 " HTML XML:
 Plug 'othree/html5.vim' "HTML 5 with  WAI-ARIA attribute support
 Plug 'othree/xml.vim' " close tags while you type
-" Plug 'tejr/vim-tmux' 
-" TMUX: 
+" Plug 'tejr/vim-tmux'
+" TMUX:
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'tmux-plugins/vim-tmux'
-" XQUERY 
+" XQUERY
 "Plug 'vim-scripts/XQuery-indentomnicompleteftplugin' " might have to install manually
 call plug#end()
+
 "}}}:
 " General Settings
 " vim Notes {{{
@@ -153,7 +156,8 @@ call plug#end()
 " 'wildmenu' is set by default
 " }}}
 " General {{{
-" filetype plugin indent on ... Note: vim Plug does this 
+
+" filetype plugin indent on ... Note: vim Plug does this
 " syntax on  ... Note: vim Plug does this
 set modeline                 " automatically setting options from modelines
 " set report=0                 " Don't report on line changes
@@ -171,13 +175,14 @@ set formatoptions+=1         " Don't break lines after a one-letter word
 set formatoptions-=t         " Don't auto-wrap texti
 
 " }}}
-"{{{clipboard with xclip 
+"{{{clipboard with xclip
 set clipboard^=unnamedplus   "uses x-11 clipboard, stores in middle mouse
 "vmap <C-c> :<Esc>`>a<CR><Esc>mx`<i<CR><Esc>my'xk$v'y!xclip -selection c<CR>u
 "nmap <C-c> y: call system("xclip -i -selection clipboard", getreg("\""))<CR>
  "}}}
 " Files and Directories {{{
-set noswapfile    " http://robots.thoughtbot.com/post/18739402579/global-gitignore#comment-45841328i
+set noswapfile
+" http://robots.thoughtbot.com/post/18739402579/global-gitignore#comment-45841328i
 set autowriteall  " auto write file
 set undofile
 set directory=$VARPATH/swap//
@@ -189,6 +194,7 @@ set wildmode=longest,full
 set wildignorecase
 " }}}
 " Tabs and Indents {{{
+
 set textwidth=120   " Text width maximum 120 chars before wrapping
 set noexpandtab     " Don't expand tabs to spaces.
 set tabstop=2       " The number of spaces a tab is
@@ -197,33 +203,14 @@ set autoindent      " Use same indenting on new lines
 set smartindent     " Smart autoindenting on new lines
 set shiftround      " Round indent to multiple of 'shiftwidth'
 set shiftwidth=2    " Number of spaces to use in auto(indent)
+
 " }}}
 " Time {{{
+"
 set timeout ttimeout
 set timeoutlen=1000 " Time out on mappings
 set ttimeoutlen=50  " Time out on key codes
 set updatetime=1000 " Idle time to write swap
-
-" }}}
-" Folds {{{
-" -----
-set foldenable
-set foldmethod=syntax
-set foldlevelstart=99
-set foldtext=FoldText()
-
-" Nicer fold text
-" See: http://dhruvasagar.com/2013/03/28/vim-better-foldtext
-function! FoldText()
-	let line = ' ' . substitute(getline(v:foldstart), '^\s*"\?\s*\|\s*"\?\s*{{' . '{\d*\s*', '', 'g') . ' '
-	let lines_count = v:foldend - v:foldstart + 1
-	let lines_count_text = '| ' . printf("%10s", lines_count . ' lines') . ' |'
-	let foldchar = matchstr(&fillchars, 'fold:\zs.')
-	let foldtextstart = strpart('+' . repeat(foldchar, v:foldlevel*2) . line, 0, (winwidth(0)*2)/3)
-	let foldtextend = lines_count_text . repeat(foldchar, 8)
-	let foldtextlength = strlen(substitute(foldtextstart . foldtextend, '.', 'x', 'g')) + &foldcolumn
-	return foldtextstart . repeat(foldchar, winwidth(0)-foldtextlength) . foldtextend
-endfunction
 " }}}
 " Colorscheme {{{
 syntax enable
@@ -252,7 +239,7 @@ set showfulltag                 " Show tag and tidy search in completion
 set nowrap                      " No wrap by default
 " }}}
 " Editor UI Appearance {{{
-" --------------------
+"
 set noshowmode          " Don't show mode in cmd window
 set shortmess=aoOTI     " Shorten messages and don't show intro
 set scrolloff=2         " Keep at least 2 lines above/below
@@ -297,15 +284,149 @@ endif
 
 " }}}
 "PLUGGED
+" Autocompletion with deoplete and ultisnips {{{
+" let g:SuperTabDefaultCompletionType = '<C-n>'
+" set completeopt=menuone,preview " Show preview and menu even for one item
+set completeopt+=noinsert       " auto select feature like neocomplete
+" set completeopt+=noselect
+" set g:context_filetype#same_filetypes
+let g:deoplete#enable_at_startup = 1
+let g:deoplete#enable_smart_case = 1
+let g:deoplete#auto_completion_start_length = 3
+
+" Define keyword.
+"  Default the tern foldtextlength
+" <C-h>, <BS>: close popup and delete backword char.
+augroup omnifuncs
+	autocmd!
+	autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
+"   autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+"   autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+"   autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+"  " autocmd FileType javascript setlocal omnifunc=jspc#omni
+"   autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+"   autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+"   autocmd FileType xquery setlocal omnifunc=xquerycomplete#CompleteXQuery
+augroup end
+inoremap <expr><C-h> deoplete#mappings#smart_close_popup()."\<C-h>"
+inoremap <expr><BS>  deoplete#mappings#smart_close_popup()."\<C-h>"
+""<CR>: close popup and save indent.
+inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+function! s:my_cr_function() abort
+	return deoplete#mappings#close_popup() . "\<CR>"
+endfunction
+
+if !exists('g:deoplete#keyword_patterns')
+	let g:deoplete#keyword_patterns = {}
+endif
+
+let g:deoplete#keyword_patterns['default'] = '\h\w*'
+
+if !exists('g:deoplete#omni#input_patterns')
+	let g:deoplete#omni#input_patterns = {}
+endif
+" sources:
+" Note: come with default sources
+" buffer	    It collects keywords from current buffer and the buffers which have same 'filetype'.
+" member	    It collects members from cur:rent buffer.
+" tag		      It collects keywords from |ctags| files
+" file	      This source collects keywords from local files.
+" omni		    This source collects keywords from 'omnifunc'. Note: It is not asynchronous.
+" dictionary	This source collects keywords from 'dictionary'.
+" Note: can have external sources :Help deoplete-external-sources
+" ---------------------------------------------------------------------------------------------------
+" UltiSnips ... https://github.com/SirVer/ultisnips
+" https://github.com/SirVer/ultisnips/blob/master/rplugin/python3/deoplete/sources/ultisnips.py
+" ---------------------------------------------------------------------------------------------------
+" ternjs ... deoplete-ternjs: ternjs source for JavaScript https://github.com/carlitux/deoplete-ternjs
+" https://github.com/carlitux/deoplete-ternjs/blob/master/rplugin/python3/deoplete/sources/ternjs.py
+" ---------------------------------------------------------------------------------------------------
+" syntax ... deoplete source analyzes a syntax file like autoload/syntaxcomplete.vim with more candidates
+"            defaults to 4 keyword letter length
+" https://github.com/Shougo/neco-syntax/blob/master/rplugin/python3/deoplete/sources/syntax.py
+" ---------------------------------------------------------------------------------------------------
+" look         ... neco-look  ref man look
+" ---------------------------------------------------------------------------------------------------
+" file/include ... neoinclude
+" ---------------------------------------------------------------------------------------------------
+let g:deoplete#sources = {}
+let g:deoplete#sources._ = ['buffer', 'member', 'tag', 'file', 'dictionary', 'syntax', 'look', 'file/include' ]
+" '_'  value is used for default filetypes
+
+let g:deoplete#sources.html = ['ultisnips', 'buffer', 'tag']  " set values for each filetype
+let g:deoplete#sources.javascript = [ 'ternjs', 'ultisnips', 'buffer', 'tag']  " set values for each filetype
+let g:deoplete#sources.vim = ['vim', 'buffer', 'tag']  " set values for each filetype
+" let g:deoplete#disable_auto_complete = 1
+"autocmd,CompleteDone * if pumvisible() == 0 | pclose | endif
+" NOTE: avoiding omnifuncs, instead rely on deoplete sources
+" omnifuncs
+" augroup omnifuncs
+"   autocmd!
+"   autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+"   autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+"   autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+"  " autocmd FileType javascript setlocal omnifunc=jspc#omni
+"   autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+"   autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+"   autocmd FileType xquery setlocal omnifunc=xquerycomplete#CompleteXQuery
+" augroup end
+
+" tern
+" if exists('g:plugs["tern_for_vim"]')
+"   let g:tern_show_argument_hints = 'on_hold'
+"   let g:tern_show_signature_in_pum = 1
+
+"   autocmd FileType javascript setlocal omnifunc=tern#Complete
+
+
+" endif
+"settup SyntaxComplete for every filetype that does not already have a language specific OMNI script
+	" if has("autocmd") && exists("+omnifunc")
+	" autocmd Filetype *
+				" \	if &omnifunc == "" |
+				" \		setlocal omnifunc=syntaxcomplete#Complete |
+				" \	endif
+	"   endif
+"===============================================================================
+" UltiSnips
+"===============================================================================
+let g:UltiSnipsListSnippets = "<C-g><tab>"
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<tab>"
+let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+let g:UltiSnipsSnippetsDir = split(&runtimepath, ',')[0] . '/snips'
+let g:UltiSnipsSnippetDirectories = [g:UltiSnipsSnippetsDir]
+
+" Make UltiSnips works nicely with YCM
+function! g:UltiSnips_Complete()
+	call UltiSnips#ExpandSnippet()
+	if g:ulti_expand_res == 0
+		if pumvisible()
+			return "\<C-n>"
+		else
+			call UltiSnips#JumpForwards()
+			if g:ulti_jump_forwards_res == 0
+				return "\<TAB>"
+			endif
+		endif
+	endif
+	return ""
+endfunction
+
+au BufEnter * exec "inoremap <silent> " . g:UltiSnipsExpandTrigger . " <C-R>=g:UltiSnips_Complete()<cr>"
+" UltiSnips config
+" inoremap <silent><expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+" let g:UltiSnipsExpandTrigger="<tab>"
+" let g:UltiSnipsJumpForwardTrigger="<tab>"
+" let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+
+" }}}
 " Maximize window with vim-maximizer {{{
 let g:maximizer_set_default_mapping = 1
 let g:maximizer_default_mapping_key = '<F11>'
-"nnoremap <silent><F3> :MaximizerToggle<CR>
-"vnoremap <silent><F3> :MaximizerToggle<CR>gv
-"inoremap <silent><F3> <C-o>:MaximizerToggle<CR>
 " }}}
 " Tags created by universal-ctags and views created with tagbar {{{
-" Notes: ctags config 
+" Notes: ctags config
 map <F10> :TagbarToggle<CR>
 " Note: <leader>'t'  Fuzzy Find
 "let g:gutentags_cache_dir = '$VARPATH/tags'
@@ -361,19 +482,27 @@ let g:tagbar_type_xslt = {
 			\}
 " }}}
 " Comments with vim-commentary {{{
-" default mappings
-" gcc comment line
-" gc comment
-" gcu uncomment
-" ----------------------------------------------------------------------------
-" }}}
+"
+" commentary maps, since it is loaded lazily
+map  gc  <Plug>Commentary
+nmap gcc <Plug>CommentaryLine
+nmap cgc <Plug>ChangeCommentary
+nmap gcu <Plug>Commentary<Plug>CommentaryLine
+
+}}}
 " Clipboard with xClip and fakeclip {{{
+
 let g:vim_fakeclip_tmux_plus=1
+
+" }}}
+" Github with Gita and Gista {{{
+" 
+" let g:gista#client#default#apiname = 'grantmacken'
 " }}}
 " Map File Exploring to Ranger and Dirvish {{{
-"
+
 map <leader>r :call OpenRanger()<CR>
-let g:loaded_netrwPlugin = 1 
+let g:loaded_netrwPlugin = 1
 nnoremap <silent> <F9> :ProjectRootExe Dirvish<cr>
 "autocmd User ProjectionistActivate silent! call snippet#InsertSkeleton()
 " nnoremap <leader>d :Dirvish %:p:h<CR>
@@ -385,7 +514,25 @@ nnoremap <silent> <F9> :ProjectRootExe Dirvish<cr>
 "let g:netrw_sort_sequence = '[\/]$,*'
 "let g:netrw_browse_split = 4
 "let g:netrw_altv = 1
+
 "}}}
+" Folds with FastFold {{{
+
+set foldenable
+set foldcolumn=4
+set foldnestmax=3
+set foldlevel=0
+set foldlevelstart=0
+" specifies for which commands a fold will be opened
+set foldopen=block,hor,insert,jump,mark,percent,quickfix,search,tag,undo
+nmap <F3> <Plug>(FastFoldUpdate)
+" syntax folding {{{
+let g:xml_syntax_folding = 1
+"}}}
+" set foldmethod=syntax
+" set foldlevelstart=99
+" set foldtext=FoldText()
+" }}}
 " Fuzzy Find Files and things in files with FZF {{{
 " https://github.com/junegunn/fzf/wiki/
 " https://github.com/junegunn/fzf.vim
@@ -422,49 +569,7 @@ let g:prosession_on_startup = 1
 let g:prosession_default_session = 0
 let g:prosession_dir = '~/.cache/nvim/session'
 " }}}
-" Linters and Checkers with Accio {{{
-" neomake notes:  :ll #n  goto eror number
-"let g:neomake_verbose=0
-"let g:neomake_logfile = expand('$VARPATH/logs/error.log')
-"let g:neomake_warning_sign = {
-"			\ 'text': '▕',
-"			\ 'texthl': 'WarningMsg',
-"			\ }
-"let g:neomake_error_sign = {
-"			\ 'text': '░',
-"			\ 'texthl': 'ErrorMsg',
-"			\ }
-
-" neomake MAKERS
-" --------------
-"  with HTML use tidy
-" overide tidy defaults http://www.html-tidy.org/
-" --gnu-emacs yes'output format that includes the file name
-"let g:neomake_html_tidy_args = [
-"      \ '--quiet', 1 ,
-"			\ '--input-encoding', 'utf8',
-"			\ '--show-errors', 6,
-"			\ '--show-warnings', 1,
-"			\ '--show-info', 0,
-"			\ '--gnu-emacs', 1,
-"			\ '--show-body-only', 'auto',
-"			\ '--doctype', 'omit']
-
-"let g:neomake_html_tidy_errorformat = '%A%f:%l:%c: Warning: %m'
-"
-" \ 'mapexpr': 'substitute(v:val, ".tasks/modules.mk:56:.....", "", "g")',
-"\ 'errorformat': 'xq stderr: .tasks/modules.mk:56: *** %f:%l:%c: %m',
-" with xQuery use make
-"
-"\ 'mapexpr': 'substitute(v:val, ".tasks/modules.mk:56:.....", "", "g")',
-
-"let g:neomake_xquery_xq_maker = {
-"    \ 'exe': 'make',
-"    \ 'args': ['modules'],
-"		\ 'append_file': 0,
-"		\ 'errorformat': '%A%f:%l:%c: %m',
-"    \ }
-
+" Linters and Checkers with Accio {{{<F3><F3>
 "let g:neomake_xquery_enabled_makers = ['xq']
 " ----------------------------------------------------------------------
 " Accio
@@ -474,7 +579,7 @@ let g:accio_create_empty_quickfix = 0
 " let g:accio_update_interval = 250
 " Note:  Noah Frederick's  after ... sets text and signs
 " @see gf 'after/plugin/accio.vim'
-" @see 'Noah Frederick' 
+" @see 'Noah Frederick'
 " NOTE:
 " one filetype can have many compilers
 " HTML
@@ -482,140 +587,13 @@ let g:accio_create_empty_quickfix = 0
 " @see 'nvim/compiler/tidy.vim'
 " XQUERY
 " @see 'nvim/ftplugin/xquery.vim'
-" @see 'nvim/compiler/xqm.vim' this invokes make modules
+" @see 'nvim/compiler/xqm.vim'
 
 "" autocmd! Filetype xquery setlocal makeprg=make\ modules\ %
 "autocmd! BufWritePost *.xqm  Neomake xq
 
 " autocmd! InsertChange,TextChanged *.html update | :Accio [ "tidy", "xmlwf", "xmllint" ]
-"let g:neomake_open_list = 2 " automaically open location list 
-" }}}
-" Autocompletion with deoplete and ultisnips {{{
-" let g:SuperTabDefaultCompletionType = '<C-n>'
-" set completeopt=menuone,preview " Show preview and menu even for one item
-set completeopt+=noinsert       " auto select feature like neocomplete
-set completeopt+=noselect
-" set g:context_filetype#same_filetypes
-let g:deoplete#enable_at_startup = 1
-let g:deoplete#enable_smart_case = 1
-let g:deoplete#auto_completion_start_length = 3
-
-" Define keyword.
-"  Default the tern foldtextlength 
-" <C-h>, <BS>: close popup and delete backword char.
-" autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
-" inoremap <expr><C-h> deoplete#mappings#smart_close_popup()."\<C-h>"
-" inoremap <expr><BS>  deoplete#mappings#smart_close_popup()."\<C-h>"
-" <CR>: close popup and save indent.
-" inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-" function! s:my_cr_function() abort
-"   return deoplete#mappings#close_popup() . "\<CR>"
-" endfunction
-
-if !exists('g:deoplete#keyword_patterns')
-	let g:deoplete#keyword_patterns = {}
-endif
-
-let g:deoplete#keyword_patterns['default'] = '\h\w*'
-
-if !exists('g:deoplete#omni#input_patterns')
-  let g:deoplete#omni#input_patterns = {}
-endif
-" sources: 
-" Note: come with default sources
-" buffer	    It collects keywords from current buffer and the buffers which have same 'filetype'.
-" member	    It collects members from cur:rent buffer.
-" tag		      It collects keywords from |ctags| files
-" file	      This source collects keywords from local files.
-" omni		    This source collects keywords from 'omnifunc'. Note: It is not asynchronous.
-" dictionary	This source collects keywords from 'dictionary'.
-" Note: can have external sources :Help deoplete-external-sources
-" ---------------------------------------------------------------------------------------------------
-" UltiSnips ... https://github.com/SirVer/ultisnips 
-" https://github.com/SirVer/ultisnips/blob/master/rplugin/python3/deoplete/sources/ultisnips.py
-" ---------------------------------------------------------------------------------------------------
-" ternjs ... deoplete-ternjs: ternjs source for JavaScript https://github.com/carlitux/deoplete-ternjs
-" https://github.com/carlitux/deoplete-ternjs/blob/master/rplugin/python3/deoplete/sources/ternjs.py
-" ---------------------------------------------------------------------------------------------------
-" syntax ... deoplete source analyzes a syntax file like autoload/syntaxcomplete.vim with more candidates
-"            defaults to 4 keyword letter length 
-" https://github.com/Shougo/neco-syntax/blob/master/rplugin/python3/deoplete/sources/syntax.py
-" ---------------------------------------------------------------------------------------------------
-" look         ... neco-look  ref man look
-" ---------------------------------------------------------------------------------------------------
-" file/include ... neoinclude
-" ---------------------------------------------------------------------------------------------------
-let g:deoplete#sources = {}
-let g:deoplete#sources._ = ['buffer', 'member', 'tag', 'file', 'dictionary', 'syntax', 'look', 'file/include' ] 
-" '_'  value is used for default filetypes
-
-let g:deoplete#sources.html = ['ultisnips', 'buffer', 'tag']  " set values for each filetype
-let g:deoplete#sources.javascript = [ 'ternjs', 'ultisnips', 'buffer', 'tag']  " set values for each filetype
-let g:deoplete#sources.vim = ['vim', 'buffer', 'tag']  " set values for each filetype
-" let g:deoplete#disable_auto_complete = 1
-"autocmd,CompleteDone * if pumvisible() == 0 | pclose | endif
-" NOTE: avoiding omnifuncs, instead rely on deoplete sources
-" omnifuncs
-" augroup omnifuncs
-"   autocmd!
-"   autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-"   autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-"   autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-"  " autocmd FileType javascript setlocal omnifunc=jspc#omni
-"   autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-"   autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-"   autocmd FileType xquery setlocal omnifunc=xquerycomplete#CompleteXQuery
-" augroup end
-
-" tern
-" if exists('g:plugs["tern_for_vim"]')
-"   let g:tern_show_argument_hints = 'on_hold'
-"   let g:tern_show_signature_in_pum = 1
-
-"   autocmd FileType javascript setlocal omnifunc=tern#Complete
-
-
-" endif
-"settup SyntaxComplete for every filetype that does not already have a language specific OMNI script
-  " if has("autocmd") && exists("+omnifunc")
-	" autocmd Filetype *
-		    " \	if &omnifunc == "" |
-		    " \		setlocal omnifunc=syntaxcomplete#Complete |
-		    " \	endif
-  "   endif
-"===============================================================================
-" UltiSnips
-"===============================================================================
-let g:UltiSnipsListSnippets = "<C-g><tab>"
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
-let g:UltiSnipsSnippetsDir = split(&runtimepath, ',')[0] . '/snips'
-let g:UltiSnipsSnippetDirectories = [g:UltiSnipsSnippetsDir]
-
-" Make UltiSnips works nicely with YCM
-function! g:UltiSnips_Complete()
-  call UltiSnips#ExpandSnippet()
-  if g:ulti_expand_res == 0
-    if pumvisible()
-      return "\<C-n>"
-    else
-      call UltiSnips#JumpForwards()
-      if g:ulti_jump_forwards_res == 0
-        return "\<TAB>"
-      endif
-    endif
-  endif
-  return ""
-endfunction
-
-au BufEnter * exec "inoremap <silent> " . g:UltiSnipsExpandTrigger . " <C-R>=g:UltiSnips_Complete()<cr>"
-" UltiSnips config
-" inoremap <silent><expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
-" let g:UltiSnipsExpandTrigger="<tab>"
-" let g:UltiSnipsJumpForwardTrigger="<tab>"
-" let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
-
+"let g:neomake_open_list = 2 " automaically open location list
 " }}}
 " Status and Tabbar with lightline {{{
 " These are the basic settings to get the font to work (required):
@@ -684,6 +662,8 @@ endfunction " }}}
 " ==============================================================================
 " MAPPED
 " ==============================================================================
+tnoremap <ESC> <C-\><C-n>
+
 " EDITING Tasks, Spelling Saving and Quiting {{{
 " spelling
 map <F2> :setlocal spell! spelllang=en_nz<CR>
@@ -695,7 +675,7 @@ inoremap <C-s>     <C-O>:update<CR>
 nnoremap <C-s>     :update<CR>
 nnoremap <leader>s :update<CR>
 nnoremap <leader>w :update<CR>
-" Quiting 
+" Quiting
 inoremap <C-Q>     <esc>:q<CR>
 nnoremap <C-Q>     :q<CR>
 vnoremap <C-Q>     <ESC>
@@ -727,7 +707,7 @@ nnoremap <silent> ]B :ProjectBufLast<cr>
 nnoremap ]t :tabn<cr>
 nnoremap [t :tabp<cr>
 " ----------------------------------------------------------------------------
-" Quickfix 
+" Quickfix
 " ----------------------------------------------------------------------------
 " Accio
 " https://github.com/pgdouyon/vim-accio
@@ -765,14 +745,14 @@ augroup init
 	autocmd!
 "	autocmd BufWritePost $MYVIMRC nested source $MYVIMR
 " autocmd BufEnter * :syntax sync fromstart
-" NOTE: filetype 
+" NOTE: filetype
 " detection -- '/usr/share/nvim/runtime/filetype.vim'
 " make recognizes  mk extension
 " xquery recognizes xql xqm xq
   autocmd BufNewFile,BufRead .env.* setfiletype sh
 	autocmd BufNewFile,BufRead *.snippets set filetype=snippets "add new snippets filetpe
 
-	autocmd BufEnter * call <SID>AutoProjectRootCD() 
+	autocmd BufEnter * call <SID>AutoProjectRootCD()
 	" when entering a buffer look for project root and change dir"
 	" our shell commands 'make' etc run from project root
 	"
