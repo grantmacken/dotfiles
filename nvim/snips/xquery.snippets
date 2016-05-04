@@ -1,8 +1,73 @@
 # xquery.snippets - Snippets for xquery file type
 
+
+# Usage:
+# In file myCleverApp.js, expands to `module.exports = MyCleverApp;`
+snippet me "module.exports" b
+module.exports = ${1:`!p snip.rv = snip.basename`};$0
+endsnippet
+
 snippet _skel "xQuery fallback template" b
 xquery version "3.0";
+(:~
+:
+@author $1
+@version $2
+@see 
+:)
 $0
 endsnippet
 
+
+snippet versionDec "xquery version"
+xquery version "3.1"
+$0
+endsnippet
+
+
+snippet mod "module namespace" !b
+module namespace ${1:`!p snip.rv = snip.basename`} = "http://`basename $( pwd )`/#${1:`!p snip.rv = snip.basename`}";
+$0
+endsnippet
+
+snippet import "import module at" !b
+import module namespace $1 = "http://`basename $( pwd )`/#$1" at "$1.xqm";
+$0
+endsnippet
+
+snippet commmentBlock "comment block" !b
+(:~
+:
+@author $1
+@version $2
+:$0
+~:)
+endsnippet
+
+
+snippet decFunc "declare function" !b
+(:~
+${1: describe function }
+@name $2
+@param ${3:param} as $4
+@return ${5:return} as $6
+:)
+declare function `!p snip.rv = snip.basename`:$2 (${3} as $4 ) as $6 {
+
+
+return
+${0}
+}
+endsnippet
+
+
+snippet let "LetBinding" !b
+let $${1:ValueName} := ${2:ExprSingle}
+$0
+endsnippet
+
+snippet count "count"
+count $${1:varname}
+$0
+endsnippet
 

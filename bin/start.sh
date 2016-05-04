@@ -1,5 +1,14 @@
 #!/bin/bash
-#https://patrickmn.com/blog/lowering-gaming-mouse-sensitivity-in-ubuntu-9-10/
+
+xrandr --output DVI-0 --mode 1920x1080 --rate 60
+xrandr --output VGA-0 --mode 1920x1080 --rate 60
+
+xrandr --output DVI-0 --right-of VGA-0
+xrandr --output VGA-0 --left-of DVI-0
+:
+xrandr --output VGA-0 --primary
+
+#https://patrickmn.com/blog/lowering-gaming-mouse-sensitivity-in-ubuntu-9-10/:
 # xinput --list-props "Cooler Master Storm Alcor Mouse"
 
 xinput --set-prop "Cooler Master Storm Alcor Mouse" "Device Accel Constant Deceleration" 5
@@ -21,7 +30,7 @@ gnome-terminal -e "tmux -u -2 new -s '${BASE_SESSION}'"
 # xset m 1/2 4
 
 
-#http://www.economyofeffort.com/2014/08/11/beyond-ctrl-remap-make-that-caps-lock-key-useful/
+#http://www.economyofeffort.com/2014/08/11/beyond-ctrl-remap-make-that-caps-lock-k:ey-useful/
 
 #sudo gedit  /etc/default/keyboard
 # XKBOPTIONS="caps:ctrl_modifier"
