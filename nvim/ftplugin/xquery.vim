@@ -7,7 +7,7 @@ set cpoptions&vim
 " Works for XQDoc style start comments like (:~ too.
 setlocal comments=s1:(:,mb::,ex::)
 setlocal commentstring=(:%s:)
-setlocal dict+=expand('$VIMPATH/words/xquery.txt')
+setlocal dict+=~/.config/nvim/words/xquery.dict
 
 " from html.vim
 if exists("loaded_matchit")

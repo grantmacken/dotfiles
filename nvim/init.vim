@@ -17,6 +17,18 @@ endif
 silent! call MakeDirIfNoExists('$VARPATH/backup')
 
 " }}}
+" Global Mappings "{{{
+" Use spacebar instead of '\' as leader. Require before loading plugins.
+let g:mapleader="\<Space>"
+let g:maplocalleader=','
+
+" Release keymappings for plug-in.
+nnoremap <Space>  <Nop>
+xnoremap <Space>  <Nop>
+nnoremap ,        <Nop>
+xnoremap ,        <Nop>
+"
+" }}}
 " Add In Plugings {{{
 
 function! DoRemote(arg)
@@ -235,7 +247,6 @@ let g:deoplete#sources.xquery = ['ultisnips', 'tag', 'syntax']  " set values for
 let g:deoplete#sources.html = ['ultisnips', 'buffer', 'tag']  " set values for each filetype
 let g:deoplete#sources.javascript = [ 'ternjs', 'ultisnips', 'buffer', 'tag']  " set values for each filetype
 let g:deoplete#sources.vim = ['vim', 'buffer', 'tag']  " set values for each filetype
-
 
 " Use partial fuzzy matches like YouCompleteMe
 call deoplete#custom#set('_', 'matchers', ['matcher_fuzzy'])
