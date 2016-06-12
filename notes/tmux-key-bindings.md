@@ -39,6 +39,7 @@ You know whether you are in Zoom by checking the status bar for the Z
 -  ```prefix + p or n``` previous or next window
 -  ```prefix + q``` show panes
 
+http://unix.stackexchange.com/questions/24274/attach-to-different-windows-in-session
 ##Session Creation
 
 Sessions are cheap. Make a new session for each project.
@@ -48,7 +49,7 @@ Sessions are cheap. Make a new session for each project.
   Faster than the built-in `prefix + s` prompt for long session lists.
 - ```prefix + C``` (shift + c) - prompt for creating a new session by name.
 - ```prefix + X``` (shift + x) - kill current session without detaching tmux.
-- ```prefix + S``` (shift + s) - switches to the last session.<br/>
+- ```prefix + S``` (shift + s) - switches to the last session.
   The same as built-in `prefix + L` that everyone seems to override with
   some other binding.
 - ```prefix + @``` - promote current pane into a new session.<br/>
@@ -61,5 +62,4 @@ Sessions are cheap. Make a new session for each project.
 
 - ```prefix + Ctrl-s``` - save workspce
 - ```prefix + Ctrl-r``` - restore workspace
-
 

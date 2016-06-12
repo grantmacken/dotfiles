@@ -1,12 +1,24 @@
 # xquery.snippets - Snippets for xquery file type
 
+global !p
+import string, vim
+import textwrap
+# Functions useful for all snippets
 
+def complete(t, opts):
+    """
+    Modified completion example from UltiSnips videos.
+    """
+    if t:
+        opts = [m[len(t):] for m in opts if m.startswith(t) ]
+    if len(opts) == 0:
+        return ""
+    if len(opts) == 1:
+        return opts[0]
+    return "(" + '|'.join(opts) + ')'
+
+endglobal
 # Usage:
-# In file myCleverApp.js, expands to `module.exports = MyCleverApp;`
-snippet me "module.exports" b
-module.exports = ${1:`!p snip.rv = snip.basename`};$0
-endsnippet
-
 snippet _skel "xQuery fallback template" b
 xquery version "3.0";
 (:~
@@ -18,51 +30,105 @@ xquery version "3.0";
 $0
 endsnippet
 
-
-snippet versionDec "xquery version"
-xquery version "3.1"
+# short expressions at line start
+# start with
+snippet "^xqu" "xquery version (xqu)" rbA
+xquery version "3.1";
 $0
 endsnippet
 
-
-snippet mod "module namespace" !b
-module namespace ${1:`!p snip.rv = snip.basename`} = "http://`basename $( pwd )`/#${1:`!p snip.rv = snip.basename`}";
+# add module namespace for this module
+snippet mod "module namespace (mod)" !b
+module namespace `!p snip.rv = snip.basename` = "http://`basename $( pwd )`/#`!p snip.rv = snip.basename`";
 $0
 endsnippet
 
-snippet import "import module at" !b
+# import required unregisterd modules used by this module
+snippet imp "import module at (imp)" !b
 import module namespace $1 = "http://`basename $( pwd )`/#$1" at "$1.xqm";
 $0
 endsnippet
 
-snippet commmentBlock "comment block" !b
+# declare registered namespace
+snippet decNS "declare namespace (decNS)" !b
+declare namespace ${1:test}="${0:http://exist-db.org/xquery/xqsuite}";
+endsnippet
+
+# declare variable
+snippet decV "declare variable (decV)" !b
+declare variable $`!p snip.rv = snip.basename`:$1
+$0
+endsnippet
+
+# declare function
+snippet decF "declare function (decF)" !b
 (:~
+: $1 ${3:(: function description :)}
+: @param $$2 ${4:(: parameter description :)}
+: @return ${5:(: return description :)}
 :
-@author $1
-@version $2
-:$0
-~:)
-endsnippet
-
-
-snippet decFunc "declare function" !b
-(:~
-${1: describe function }
-@name $2
-@param ${3:param} as $4
-@return ${5:return} as $6
 :)
-declare function `!p snip.rv = snip.basename`:$2 (${3} as $4 ) as $6 {
+declare function $`!p snip.rv = snip.basename`:${1:(:function-name:)}($${2:(:arg:)}){
+$0
+};
+endsnippet
 
+# declare test function
+snippet decAT "assert function true(decAT)" !b
+declare
+%test:name("given arg (${3:(:arg-test:)}) should be true when we ...")
+%test:args("$3")
+%test:assertTrue
+function $`!p snip.rv = snip.basename`:${1:(:function-name:)}($${2:(:arg:)}){
+	`!p snip.rv = snip.basename`:$1($$2)
+};
+$0
+endsnippet
 
-return
+snippet decAE "assert function equals (decAE)" !b
+declare
+%test:name("given arg (${2:(:input:)}) function should return [ ${3:(:output:)} ]")
+%test:args("$2")
+%test:assertEquals('$3')
+function $`!p snip.rv = snip.basename`:${1:(:function-name:)}($arg){
+	`!p snip.rv = snip.basename`:$1($arg)
+};
+$0
+endsnippet
+
+# expressions
+snippet log "Log to system out)" !b
+let $log-out := util:log-system-out(${1:(: msg :)} )
+$0
+endsnippet
+
+# expressions
+snippet let "Let Binding (let)" !b
+let $${1:ValueName} := ${0:ExprSingle}
+endsnippet
+
+snippet ret  "return (ret)" !b
+return ($0)
+endsnippet
+
+# Added pragma() with autocomplete
+snippet pragma "pragma (pragma)" b
+pragma(${1:msg}`!p snip.rv = complete(t[1], ["msg", "lib", "startaddress", "mangle"])`, ${2});
 ${0}
-}
+endsnippet
+
+# opIndexAssign operator. Displays an error if there less than 2 parameters.
+snippet "substring-(before|after)\(" "xpath function" r
+substring-before(${1: $source},${0: $search })
 endsnippet
 
 
-snippet let "LetBinding" !b
-let $${1:ValueName} := ${2:ExprSingle}
+snippet xqDoc  "xqDoc module comment block" !b
+(:~
+This module provides the functions that $1 
+@author `whoami`
+@version 1.0
+~:)
 $0
 endsnippet
 

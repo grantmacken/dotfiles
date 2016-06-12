@@ -14,20 +14,21 @@ else
 	let $VARPATH=expand('$HOME/.cache/nvim')
 endif
 
-silent! call MakeDirIfNoExists('$VARPATH/backup')
-
 " }}}
 " Global Mappings "{{{
 " Use spacebar instead of '\' as leader. Require before loading plugins.
 let g:mapleader="\<Space>"
 let g:maplocalleader=','
-
 " Release keymappings for plug-in.
 nnoremap <Space>  <Nop>
 xnoremap <Space>  <Nop>
 nnoremap ,        <Nop>
 xnoremap ,        <Nop>
-"
+
+" terminal 
+
+" temp mappings top of file
+nnoremap <silent> <F3>  :echo synIDattr(synID(line("."), col("."), 1), "name")<CR>
 " }}}
 " Add In Plugings {{{
 
@@ -46,11 +47,14 @@ Plug 'tpope/vim-eunuch'
 Plug 'dbakker/vim-projectroot' "cwd to projectroot for opened project files
 " git gists and github
 " Plug 'lambdalisue/vim-gista' " not yet compatible with neomake
-Plug 'lambdalisue/vim-gita'
+"
 Plug 'airblade/vim-gitgutter'
+Plug 'jreybert/vimagit'
+" Plugt'lambdalisue/vim-gita'
 " Code Compile Test. Async Checking and Linting Builds
 Plug 'pgdouyon/vim-accio'
 " Code Completion and Snippets
+Plug 'ervandew/supertab'
 Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
@@ -60,9 +64,9 @@ Plug 'ujihisa/neco-look' "deoplete spelling source ... word completion with 'loo
 Plug 'Shougo/neoinclude.vim' "deoplete file/include source and extends tag source
 Plug 'Shougo/neco-vim'  "deoplete source for vim
 Plug 'Konfekt/FastFold' "recomended Shougo plugin
+Plug 'wellle/tmux-complete.vim' " https://github.com/wellle/tmux-complete.vim
 
 Plug 'majutsushi/tagbar', {'on': 'TagbarToggle'}
-" Plug 'ervandew/supertab'
 " Plug 'benekastah/neomake'			" linting
 " Plug 'janko-m/vim-test'				" do everthing with accio
 " Plug 'Chiel92/vim-autoformat'	" formating TODO: https://github.com/Chiel92/vim-autoformat
@@ -71,12 +75,11 @@ Plug 'simnalamburt/vim-mundo'	" history
 Plug 'rbgrouleff/bclose.vim' "delete buffer without closing window
 Plug 'szw/vim-maximizer' " zoom vim window
 " Editing Code manipulation
-" Plug 'unblevable/quick-scope' "https://github.com/unblevable/quick-scope
+Plug 'unblevable/quick-scope' "https://github.com/unblevable/quick-scope
 " Plug 'junegunn/vim-easy-align' " https://github.com/junegunn/vim-easy-align
 " Plug 'cohama/lexima.vim'
 " Plug 'Raimondi/delimitMate' " https://github.com/Raimondi/delimitMate
 Plug 'tpope/vim-commentary'  , { 'on': ['<Plug>Commentary', '<Plug>CommentaryLine', '<Plug>ChangeCommentary'] }
-" Plug 'sickill/vim-pasta'
 " Plug 'nathanaelkane/vim-indent-guides'
 Plug 'ntpeters/vim-better-whitespace'
 "Plug 'cazador481/fakeclip.neovim'
@@ -124,35 +127,40 @@ Plug 'othree/xml.vim' " close tags while you type
 " TMUX:
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'tmux-plugins/vim-tmux'
+" VIM:
+Plug 'junegunn/vader.vim' " testing vim plugings -- use for syntax
 " XQUERY
 "Plug 'vim-scripts/XQuery-indentomnicompleteftplugin' " might have to install manually
 call plug#end()
 
 "}}}
 " Editor UI Appearance {{{
+" let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1 " Have thin cursor shap in insert mode
+" let $NVIM_TUI_ENABLE_TRUE_COLOR=1 " enable true color support
 
 set noshowmode          " Don't show mode in cmd window
 set shortmess=aoOTI     " Shorten messages and don't show intro
 set scrolloff=2         " Keep at least 2 lines above/below
 set sidescrolloff=2     " Keep at least 2 lines left/right
-set pumheight=20        " Pop-up menu's line height
 set number              " Show line numbers
 set relativenumber      " Use relative instead of absolute line numbers
 set noruler             " Disable default status ruler
 set list                " Show hidden characters
 
+set wildmode=longest,full
+set wildignorecase
+
 set showtabline=2       " Always show the tabs line
 set tabpagemax=30       " Maximum number of tab pages
-set winwidth=30         " Minimum width for current window
-set winheight=1         " Minimum height for current window
+
 set previewheight=8     " Completion preview height
+set pumheight=20        " Pop-up menu's line height
 set helpheight=12       " Minimum help window height
 
-set notitle             " No need for a title
 set noshowcmd           " Don't show command in status line
 set cmdheight=2         " Height of the command line
 set cmdwinheight=5      " Command-line lines
-set noequalalways       " Don't resize windows on split or close
+
 " nvim default set laststatus=2   Always show a status line
 set colorcolumn=120     " Highlight the 120 th character limit
 
@@ -160,46 +168,87 @@ set colorcolumn=120     " Highlight the 120 th character limit
 set showbreak=↪
 " set fillchars=vert:│,fold:─
 " nvim defaults set listchars=tab:\⋮\ ,extends:⟫,precedes:⟪,nbsp:.,trail:·
-
 "}}}
 " Colorscheme {{{
 
-syntax enable
+" syntax enable
 set background=dark
 set t_Co=256                   " 256 colors for the terminal
 
 let g:seoul256_background = 236
 colorscheme seoul256
 
+" execute ':highlight Pmenu ctermbg=DarkGrey'
+" 
+highlight Pmenu ctermbg=DarkGrey
+highlight TermCursor ctermfg=red guifg=red
+
 " }}}
 " Tabs and Indents {{{
 
 set textwidth=120   " Text width maximum 120 chars before wrapping
-set noexpandtab     " Don't expand tabs to spaces.
-set tabstop=2       " The number of spaces a tab is
+set expandtab       " expand tabs to spaces except for Make see runtime
 set softtabstop=2   " While performing editing operations
+" /usr/share/nvim/runtime/ftplugin/make.vim
+set nosmarttab
+set tabstop=2       " The number of spaces a tab is
+set shiftwidth=2    " Number of spaces to use in auto(indent)
 set autoindent      " Use same indenting on new lines
 set smartindent     " Smart autoindenting on new lines
 set shiftround      " Round indent to multiple of 'shiftwidth'
-set shiftwidth=2    " Number of spaces to use in auto(indent)
 
+" }}}
+" Files and Directories {{{
+"set nobackup
+"set nowritebackup
+set noswapfile
+set nobackup
+set undofile 
+set undolevels=5000
+set undoreload=10000
+let g:undo_dir=expand($VARPATH . '/undo')
+silent! call MakeDirIfNoExists( g:undo_dir )
+" save everything here
+" exec "set backupdir=" . g:undo_dir
+exec "set undodir=" . g:undo_dir
+
+" http://robots.thoughtbot.com/post/18739402579/global-gitignore#comment-45841328i
+" set autowriteall  "Save buffer automatically when changing files
+" set autoread      "Always reload buffer when external changes detected
+let g:spell_add=expand($VARPATH . '/spell/en.utf-8.add')
+exec "set spellfile=" . g:spell_add
 " }}}
 " PLUGGED
 " Autocompletion with deoplete and ultisnips {{{
-
-" set completeopt=menuone,preview " Show preview and menu even for one item
+"
+"complete options
+" :h complete
+"  (default: ".,w,b,u,t")
+"  current buffer, window buffers, unloaded buffers, tags
+" NOTE: set for k 
+" 
+set completeopt+=menuone
 set completeopt+=noinsert       " auto select feature like neocomplete
 set completeopt+=noselect
+" set completeopt+=preview
 " set completeopt+=longest
+
+" NOTE: set 
+let g:SuperTabDefaultCompletionType = "<c-n>" " Make the tabing on completion menu go from top to bottom
+let g:SuperTabClosePreviewOnPopupClose = 1 " Close the preview when completion ends
 
 "===============================================================================
 " DEOPLETE
 "==============================================================================
+" enable at startup
 let g:deoplete#enable_at_startup = 1
+" disable autocomplete
+" let g:deoplete#disable_auto_complete = 1
 let g:deoplete#enable_smart_case = 1
 let g:deoplete#auto_completion_start_length = 3
 
-
+let g:deoplete#max_menu_width = 120
+let g:deoplete#max_abbr_width = 80
 "augroup omnifuncs
 "	autocmd!
 "	autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
@@ -269,85 +318,176 @@ nnoremap <silent> <F2>  :UltiSnipsEdit<CR>
 let g:UltiSnipsSnippetsDir = split(&runtimepath, ',')[0] . '/snips'
 let g:UltiSnipsSnippetDirectories = [g:UltiSnipsSnippetsDir]
 let g:UltiSnipsEditSplit = "vertical"
+"https://github.com/simonweil/dotfiles/blob/master/nvimrc
+" Don't map any tabs, I'll do it later
+
+let g:UltiSnipsExpandTrigger = '<NOP>'
+let g:UltiSnipsJumpForwardTrigger = '<NOP>'
+let g:UltiSnipsJumpBackwardTrigger = '<NOP>'
+let g:SuperTabMappingForward = '<NOP>'
+let g:SuperTabMappingBackward = '<NOP>'
+" Don't unmap my mappings
+let g:UltiSnipsMappingsToIgnore = [ "SmartTab", "SmartShiftTab" ]
+
+" Make <CR> smart
+let g:ulti_expand_res = 0
+function! Ulti_ExpandOrEnter()
+    " First try to expand a snippet
+    call UltiSnips#ExpandSnippet()
+    if g:ulti_expand_res
+        " if successful, just return
+        return ''
+    elseif pumvisible()
+        " if in completion menu - just close it and leave the cursor at the
+        " end of the completion
+        return deoplete#mappings#close_popup()
+    else
+        " otherwise, just do an "enter"
+        return "\<return>"
+    endif
+endfunction
+inoremap <return> <C-R>=Ulti_ExpandOrEnter()<CR>
+
+" Enable tabbing and shift-tabbing through list of results
+function! g:SmartTab()
+    if pumvisible()
+	return SuperTab("n")
+    else
+	call UltiSnips#JumpForwards()
+	if g:ulti_jump_forwards_res == 0
+	    return SuperTab("n")
+	endif
+        return ''
+    endif
+endfunction
+inoremap <silent> <tab> <C-R>=g:SmartTab()<cr>
+snoremap <silent> <tab> <Esc>:call g:SmartTab()<cr>
+
+function! g:SmartShiftTab()
+    if pumvisible()
+	return SuperTab("p")
+    else
+	call UltiSnips#JumpBackwards()
+	if g:ulti_jump_backwards_res == 0
+	    return SuperTab("p")
+	endif
+        return ''
+    endif
+endfunction
+inoremap <silent> <s-tab> <C-R>=g:SmartShiftTab()<cr>
+snoremap <silent> <s-tab> <Esc>:call g:SmartShiftTab()<cr>
+
 
 " Disable built-in cx-ck to be able to go backward
-inoremap <C-x><C-k> <NOP>
+" inoremap <C-x><C-k> <NOP>
 
-" let g:UltiSnipsListSnippets = "<c-tab>"
-" let g:UltiSnipsExpandTrigger="<tab>"
-" let g:UltiSnipsJumpForwardTrigger="<tab>"
-" let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
-
-" Make UltiSnips works nicely with Deoplete
-" http://howivim.com/2016/fatih-arslan/
-" function! g:UltiSnips_Complete() abort
-" 	call UltiSnips#ExpandSnippet()
-" 	if g:ulti_expand_res == 0
-" 		" is completion menu open? cycle to next item
-" 		if pumvisible()
-" 			return "\<C-n>"
-" 		else
-" 			" is there a snippet that can be expanded?
-" 			call UltiSnips#JumpForwards()
-" 			if g:ulti_jump_forwards_res == 0
-" 				return "\<TAB>"
-" 			endif
-" 		endif
-" 	endif
-" 	return ""
+" function! g:UltiSnips_Complete()
+"   call UltiSnips#ExpandSnippet()
+"   if g:ulti_expand_res == 0
+"     if pumvisible()
+"       return "\<C-n>"
+"     else
+"       call UltiSnips#JumpForwards()
+"       if g:ulti_jump_forwards_res == 0
+"         return "\<TAB>"
+"       endif
+"     endif
+"   endif
+"   return ""
 " endfunction
-"
-function! g:UltiSnips_Complete()
-  call UltiSnips#ExpandSnippet()
-  if g:ulti_expand_res == 0
-    if pumvisible()
-      return "\<C-n>"
-    else
-      call UltiSnips#JumpForwards()
-      if g:ulti_jump_forwards_res == 0
-        return "\<TAB>"
-      endif
-    endif
-  endif
-  return ""
-endfunction
 
-function! g:UltiSnips_Reverse()
-  call UltiSnips#JumpBackwards()
-  if g:ulti_jump_backwards_res == 0
-    return "\<C-P>"
-  endif
+" function! g:UltiSnips_Reverse()
+"   call UltiSnips#JumpBackwards()
+"   if g:ulti_jump_backwards_res == 0
+"     return "\<C-P>"
+"   endif
 
-  return ""
-endfunction
+"   return ""
+" endfunction
 
+" if !exists("g:UltiSnipsJumpForwardTrigger")
+"   let g:UltiSnipsJumpForwardTrigger = "<tab>"
+" endif
 
+" if !exists("g:UltiSnipsJumpBackwardTrigger")
+"   let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+" endif
 
-if !exists("g:UltiSnipsJumpForwardTrigger")
-  let g:UltiSnipsJumpForwardTrigger = "<tab>"
-endif
+" " MAPPINGS
+" au InsertEnter * exec "inoremap <silent> " . g:UltiSnipsExpandTrigger . " <C-R>=g:UltiSnips_Complete()<cr>"
+" au InsertEnter * exec "inoremap <silent> " . g:UltiSnipsJumpBackwardTrigger . " <C-R>=g:UltiSnips_Reverse()<cr>"
 
-if !exists("g:UltiSnipsJumpBackwardTrigger")
-  let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
-endif
-
-" MAPPINGS
-au InsertEnter * exec "inoremap <silent> " . g:UltiSnipsExpandTrigger . " <C-R>=g:UltiSnips_Complete()<cr>"
-au InsertEnter * exec "inoremap <silent> " . g:UltiSnipsJumpBackwardTrigger . " <C-R>=g:UltiSnips_Reverse()<cr>"
-
-" Manually trigger tag autocomplete
-inoremap <silent> <expr> <C-]> DeopleteManualTagComplete()
-" <C-h>, <BS>: close popup and delete backword char
-inoremap <expr><C-h> deoplete#mappings#smart_close_popup()."\<C-h>"
-inoremap <expr><BS> deoplete#mappings#smart_close_popup()."\<C-h>"
-" insert <TAB> or select next match
-" au BufEnter * exec "inoremap <silent> " . g:UltiSnipsExpandTrigger . " <C-R>=g:UltiSnips_Complete()<cr>"
+" " Manually trigger tag autocomplete
+" inoremap <silent> <expr> <C-]> DeopleteManualTagComplete()
+" " <C-h>, <BS>: close popup and delete backword char
+" inoremap <expr><C-h> deoplete#mappings#smart_close_popup()."\<C-h>"
+" inoremap <expr><BS> deoplete#mappings#smart_close_popup()."\<C-h>"
+" " insert <TAB> or select next match
+" " au BufEnter * exec "inoremap <silent> " . g:UltiSnipsExpandTrigger . " <C-R>=g:UltiSnips_Complete()<cr>"
 
 " }}}
-" Maximize window with vim-maximizer {{{
+" Windows and Buffers
+" <F12> open|close terminal
+" <F11> Maximize window with vim-maximizer
+" <F10> open|closetags window with tagbar
+" window  settings {{{
+set notitle             " No need for a title
+set noequalalways       " Don't resize windows on split or close
+set winwidth=30         " Minimum width for current window
+set winheight=1         " Minimum height for current window
+set splitbelow
+set splitright
+"}}}
+" {{{ terminal buffer
+" when in terminal go back to previous window
+" https://neovim.io/doc/user/nvim_terminal_emulator.html#nvim-terminal-emulator
+tnoremap <F12> <C-\><C-n><C-w><C-p>
+tnoremap <A-h> <C-\><C-n><C-w>h
+tnoremap <A-j> <C-\><C-n><C-w>j
+tnoremap <A-k> <C-\><C-n><C-w>k
+tnoremap <A-l> <C-\><C-n><C-w>l
+nnoremap <A-h> <C-w>h
+nnoremap <A-j> <C-w>j
+nnoremap <A-k> <C-w>k
+nnoremap <A-l> <C-w>l
+" https://neovim.io/doc/user/options.html#%27term%27
+" https://neovim.io/doc/user/autocmd.html#TermClose
+" TermChanged, TermClose, TermResponse 
+
+set switchbuf+=useopen
+function! TermEnter()
+  let bufcount = bufnr("$")
+  let currbufnr = 1
+  let nummatches = 0
+  let firstmatchingbufnr = 0
+  while currbufnr <= bufcount
+    if(bufexists(currbufnr))
+      let currbufname = bufname(currbufnr)
+      if(match(currbufname, "term://") > -1)
+        echo currbufnr . ": ". bufname(currbufnr)
+        let nummatches += 1
+        let firstmatchingbufnr = currbufnr
+        break
+      endif
+    endif
+    let currbufnr = currbufnr + 1
+  endwhile
+  if(nummatches >= 1)
+    execute ":sbuffer ". firstmatchingbufnr
+    startinsert
+  else
+    execute ":botright 10 split \| terminal"
+  endif
+endfunction
+
+map <F12> :call TermEnter()<CR>
+
+" }}}
+" maximizer {{{
 let g:maximizer_set_default_mapping = 1
 let g:maximizer_default_mapping_key = '<F11>'
-" }}}" Tags created by universal-ctags and views created with tagbar {{{
+" }}}
+" Tags created by universal-ctags and views created with tagbar {{{
 " Notes: ctags config
 map <F10> :TagbarToggle<CR>
 " Note: <leader>'t'  Fuzzy Find
@@ -416,7 +556,7 @@ nmap gcu <Plug>Commentary<Plug>CommentaryLine
 
 map <leader>r :call OpenRanger()<CR>
 let g:loaded_netrwPlugin = 1
-nnoremap <silent> <F9> :ProjectRootExe Dirvish<cr>
+" nnoremap <silent> <F9> :ProjectRootExe Dirvish<cr>
 "autocmd User ProjectionistActivate silent! call snippet#InsertSkeleton()
 " nnoremap <leader>d :Dirvish %:p:h<CR>
 
@@ -456,21 +596,30 @@ endif
 " Sessions with obsession and prosession {{{
 " What not to save in sessions:
 " set sessionoptions-=options  neovim default
+silent! call MakeDirIfNoExists(expand($VARPATH . '/session'))
+" save everything here
+
 set sessionoptions-=globals
 set sessionoptions-=folds
 set sessionoptions-=help
 let g:prosession_tmux_title = 1
 let g:prosession_on_startup = 1
 let g:prosession_default_session = 0
-let g:prosession_dir = '~/.cache/nvim/session'
+let g:prosession_dir = expand($VARPATH . '/session')
 " }}}
-" Linters and Checkers with Accio {{{
+" Linters and Checkers with Accio
+" <F8> sav and run checker
+" {{{
 
-" ----------------------------------------------------------------------
+" ---------------------------------------------------------------------
 " Accio
 " ----------------------------------------------------------------------
 
-let g:accio_create_empty_quickfix = 0
+" autocmd BufWrite <buffer> Accio ["xqm"]
+
+nnoremap <silent> <F8> :Accio ["xqm"]<CR>
+
+let g:accio_create_empty_quickfix = 1
 let g:accio_auto_copen = 0 "automatically open quick list
 let g:accio_update_interval = 250
 
@@ -488,7 +637,7 @@ let g:accio_update_interval = 250
 " @see 'nvim/compiler/xqm.vim'
 " Mapping for quicklist
 nnoremap <silent> <leader>l :call ToggleList("Location List", 'l')<CR>
-nnoremap <silent> <F5> :call ToggleList("Quickfix List", 'c')<CR>
+nnoremap <silent> <F6> :call ToggleList("Quickfix List", 'c')<CR>
 " http://vim.wikia.com/wiki/Toggle_to_open_or_close_the_quickfix_window
 
 function! GetBufferList()
@@ -708,7 +857,7 @@ autocmd BufNewFile,BufRead *.snippets set filetype=snippets "add new snippets fi
 autocmd BufEnter * call <SID>AutoProjectRootCD()
 	" when entering a buffer look for project root and change dir"
 	" our shell commands 'make' etc run from project root
-	"
+	" 
 autocmd User ProjectionistActivate
 		\ if &filetype !=# '' && &filetype !=# 'dirvish' |
 		\   for [s:root, s:value] in projectionist#query("framework") |

@@ -23,7 +23,7 @@
 "
 "     * Search for "@@@" in this file and make the changes mentioned.
 "
-"     * Start up vim and do ":set omnifunc=YOURFILENAME#Complete" where
+"     * Start up vim and do ":set omnifunc=xquerycomplete#Complete" where
 "     "YOURFILENAME" is the name of the file you created in step 1 above.
 "
 "     * Start typing something and then type Control-X Control-O to bring
@@ -35,7 +35,7 @@
 
 "  @@@ This function needs to be named based on the current file name.
 "  @@@ Change the part before the "#" to this filename.
-function! omnipytemplate#Complete(findstart, base)
+function! xquerycomplete#Complete(findstart, base)
 python << PYTHONEOF
 
 #  @@@ Change this to 2 if you have problems and watch syslog
@@ -43,6 +43,7 @@ python << PYTHONEOF
 debug_level = 0
 
 import vim
+import re
 
 
 #################
@@ -124,7 +125,6 @@ def do_findstart(completion_context):
 
    debug('findstart with completion context: "%s"' % completion_context)
 
-
    #  @@@ Sample body which reports the start of the current word
    import re
    return len(re.match(r'^(.*)\b\w+$', completion_context).group(1))
@@ -132,9 +132,8 @@ def do_findstart(completion_context):
    #  completion not possible
    return -1
 
-
 ######################
-def do_complete(base):
+def do_complete(base, line):
    '''Find completions and return a list of available completions.
    "base" is the completion word to match against, it is the text between
    what "findstart()" returned and the cursor.
@@ -143,17 +142,18 @@ def do_complete(base):
 
    The return value must be a list of dictionaries.
    '''
-
    completions = []
 
    #  @@@  Perform completions here
-   completions.append(completion('simple'))
+   completions.append(completion('simple', menu = line, kind = 'K'))
    completions.append(completion('abbreviation', abbr = 'abbr'))
-   completions.append(completion('information',
-         info = 'This is text that will show up in the preview window.'))
-
+   completions.append(completion('information',  info = 'This is text that will show up in the preview window.'))
    return completions
 
+########################################
+
+def dostuff():
+    stuff
 
 ########################################
 findstart = int(vim.eval('a:findstart'))
@@ -165,7 +165,17 @@ completion_context = line[:col]
 if findstart == 1:
    vimreturn(do_findstart(completion_context))
 
-vim.command('silent let l:completions = %s' % repr(do_complete(base)))
+regx1 = re.compile('([%~#`\@+=\d]+)')
+
+actions = ((regex1, dostuff))
+
+for regex, action in actions:
+    m = re.match(regex, line)
+    if m: 
+        action()
+        break
+
+vim.command('silent let l:completions = %s' % repr(do_complete(base,line )))
 PYTHONEOF
 return l:completions
 endfunction
