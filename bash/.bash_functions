@@ -61,7 +61,7 @@ function mxExistClient(){
 
 function mxExistDBLog(){
   mxInit
-  tailf "${XMLDB_LOG}" | awk -v m="\x01" -v N="8" '{$N=m$N; print substr($0,index($0,m)+1)}'
+  tail -f -n 20 "${XMLDB_LOG}" | awk -v m="\x01" -v N="8" '{$N=m$N; print substr($0,index($0,m)+1)}'
   #awk '{ printf("%-15s\t%s\t%s\t%s\n", $1,  $4, $5 , $8)}'
 }
 

@@ -62,16 +62,14 @@ Plug 'Shougo/context_filetype.vim'
 Plug 'Shougo/neco-syntax' "deoplete syntax source drop in replacement for  autoload/syntaxcomplete.vim
 Plug 'ujihisa/neco-look' "deoplete spelling source ... word completion with 'look' command ref man look
 Plug 'Shougo/neoinclude.vim' "deoplete file/include source and extends tag source
-Plug 'Shougo/neco-vim'  "deoplete source for vim
 Plug 'Konfekt/FastFold' "recomended Shougo plugin
 Plug 'wellle/tmux-complete.vim' " https://github.com/wellle/tmux-complete.vim
-
 Plug 'majutsushi/tagbar', {'on': 'TagbarToggle'}
 " Plug 'benekastah/neomake'			" linting
 " Plug 'janko-m/vim-test'				" do everthing with accio
 " Plug 'Chiel92/vim-autoformat'	" formating TODO: https://github.com/Chiel92/vim-autoformat
 Plug 'simnalamburt/vim-mundo'	" history
-" Plug 'christoomey/vim-tmux-runner'
+Plug 'christoomey/vim-tmux-runner'
 Plug 'rbgrouleff/bclose.vim' "delete buffer without closing window
 Plug 'szw/vim-maximizer' " zoom vim window
 " Editing Code manipulation
@@ -106,6 +104,11 @@ Plug 'junegunn/limelight.vim', { 'on': 'Limelight' } " focus tool. Good for pres
 Plug 'tpope/vim-obsession'
 Plug 'dhruvasagar/vim-prosession' " each git project has associated vim session
 " language-specific plugins
+Plug 'vitalk/vim-shebang' "https://github.com/vitalk/vim-shebang
+" https://github.com/vitalk/vim-fancy
+" https://github.com/vitalk/vim-simple-todo
+" Nginx:
+Plug 'othree/nginx-contrib-vim', {'for': 'nginx'}
 " JavaScript:  https://davidosomething.com/blog/vim-for-javascript/
 Plug 'othree/yajs.vim', { 'for': 'javascript' } " SYNTAX object/method data comes from Mozilla's WebIDL
 " Plug 'othree/es.next.syntax.vim'
@@ -115,6 +118,8 @@ Plug 'gavocanov/vim-js-indent' " INDENT
 "Plug 'ternjs/tern_for_vim', { 'do': 'npm install' } " setup tern
 Plug 'carlitux/deoplete-ternjs' " COMPLETION: deoplete tern as recomended by Shougo
 " Plug 'othree/jspc.vim' ... COMPLETION:  function param completion
+" LUA:
+Plug 'tbastos/vim-lua', { 'for': 'lua' } " LUA syntax and indentation support
 " JSON:
 Plug 'elzr/vim-json', { 'for': 'json' } " JSON support
 " CSS:
@@ -441,18 +446,20 @@ set splitright
 " {{{ terminal buffer
 " when in terminal go back to previous window
 " https://neovim.io/doc/user/nvim_terminal_emulator.html#nvim-terminal-emulator
-tnoremap <F12> <C-\><C-n><C-w><C-p>
-tnoremap <A-h> <C-\><C-n><C-w>h
-tnoremap <A-j> <C-\><C-n><C-w>j
-tnoremap <A-k> <C-\><C-n><C-w>k
-tnoremap <A-l> <C-\><C-n><C-w>l
-nnoremap <A-h> <C-w>h
-nnoremap <A-j> <C-w>j
-nnoremap <A-k> <C-w>k
-nnoremap <A-l> <C-w>l
+" tnoremap <F12> <C-\><C-n><C-w><C-p>
+" tnoremap <A-h> <C-\><C-n><C-w>h
+" tnoremap <A-j> <C-\><C-n><C-w>j
+" tnoremap <A-k> <C-\><C-n><C-w>k
+" tnoremap <A-l> <C-\><C-n><C-w>l
+" nnoremap <A-h> <C-w>h
+" nnoremap <A-j> <C-w>j
+" nnoremap <A-k> <C-w>k
+" nnoremap <A-l> <C-w>l
 " https://neovim.io/doc/user/options.html#%27term%27
 " https://neovim.io/doc/user/autocmd.html#TermClose
 " TermChanged, TermClose, TermResponse 
+" when in terminal go back to previous window
+tnoremap <F12> <C-\><C-n><C-w><C-p>
 
 set switchbuf+=useopen
 function! TermEnter()
@@ -607,10 +614,31 @@ let g:prosession_on_startup = 1
 let g:prosession_default_session = 0
 let g:prosession_dir = expand($VARPATH . '/session')
 " }}}
+" TMUX Ruuner
+" {{{
+
+" }}}
 " Linters and Checkers with Accio
 " <F8> sav and run checker
 " {{{
-
+let g:VtrGitCdUpOnOpen = 1 " open runner at git repo
+let g:VtrUseVtrMaps = 1
+" Mapping      |   Command
+ " -----------------------------
+" <leader>rr   |   VtrResizeRunner<cr>
+" <leader>ror  |   VtrReorientRunner<cr>
+" <leader>sc   |   VtrSendCommandToRunner<cr>
+" <leader>sl   |   VtrSendLinesToRunner<cr>
+" <leader>or   |   VtrOpenRunner<cr>
+" <leader>kr   |   VtrKillRunner<cr>
+" <leader>fr   |   VtrFocusRunner<cr>
+" <leader>dr   |   VtrDetachRunner<cr>
+" <leader>ar   |   VtrReattachRunner<cr>
+" <leader>cr   |   VtrClearRunner<cr>
+" <leader>fc   |   VtrFlushCommand<cr>
+" 
+" visual mode
+" <leader>sv   | VtrSendSelectedToRunner<cr>
 " ---------------------------------------------------------------------
 " Accio
 " ----------------------------------------------------------------------
@@ -845,31 +873,32 @@ endfunction
 " }}}
 " {{{ initialise
 augroup init
-	autocmd!
-autocmd BufWritePost $MYVIMRC nested source $MYVIMR
-" autocmd BufEnter * :syntax sync fromstart
-" NOTE: filetype
-" detection -- '/usr/share/nvim/runtime/filetype.vim'
-" make recognizes  mk extension
-" xquery recognizes xql xqm xq
-autocmd BufNewFile,BufRead .env.* setfiletype sh
-autocmd BufNewFile,BufRead *.snippets set filetype=snippets "add new snippets filetpe
-autocmd BufEnter * call <SID>AutoProjectRootCD()
-	" when entering a buffer look for project root and change dir"
-	" our shell commands 'make' etc run from project root
-	" 
-autocmd User ProjectionistActivate
-		\ if &filetype !=# '' && &filetype !=# 'dirvish' |
-		\   for [s:root, s:value] in projectionist#query("framework") |
-		\     if index(split(&filetype, '\.'), s:value) < 0 |
-		\       let &filetype = join([&filetype, s:value], ".") |
-		\     endif |
-		\   endfor |
-		\ endif
-  " Included syntax
-	if exists('$TMUX') && !exists('$NORENAME')
-		au BufEnter * if empty(&buftype) | call system('tmux rename-window '.expand('%:t:S')) | endif
-		au VimLeave * call system('tmux set-window automatic-rename on')
-	endif
+  autocmd!
+  autocmd BufWritePost $MYVIMRC nested source $MYVIMR
+  " autocmd BufEnter * :syntax sync fromstart
+  " NOTE: filetype
+  " detection -- '/usr/share/nvim/runtime/filetype.vim'
+  " make recognizes  mk extension
+  " xquery recognizes xql xqm xq
+  autocmd BufNewFile,BufRead *.conf set filetype=nginx "add nginx filetype for any conf extension
+  autocmd BufNewFile,BufRead .env.* setfiletype sh
+  autocmd BufNewFile,BufRead *.snippets set filetype=snippets "add new snippets filetpe
+  autocmd BufEnter * call <SID>AutoProjectRootCD()
+  " when entering a buffer look for project root and change dir"
+  " our shell commands 'make' etc run from project root
+  " 
+  autocmd User ProjectionistActivate
+        \ if &filetype !=# '' && &filetype !~# 'dirvish|git' |
+        \   for [s:root, s:value] in projectionist#query("framework") |
+        \     if index(split(&filetype, '\.'), s:value) < 0 |
+        \       let &filetype = join([&filetype, s:value], ".") |
+        \     endif |
+        \   endfor |
+        \ endif
+
+  if exists('$TMUX') && !exists('$NORENAME')
+    au BufEnter * if empty(&buftype) | call system('tmux rename-window '.expand('%:t:S')) | endif
+    au VimLeave * call system('tmux set-window automatic-rename on')
+  endif
 augroup END
 " }}}

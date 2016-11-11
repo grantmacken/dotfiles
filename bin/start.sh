@@ -14,9 +14,9 @@
 xinput --set-prop "Cooler Master Storm Alcor Mouse" "Device Accel Constant Deceleration" 5
 xinput --set-prop "Cooler Master Storm Alcor Mouse" "Device Accel Velocity Scaling" 1
 
-cd "${PROJECTS}"
-#gnome-terminal -e "tmux -u -2 new -s '${BASE_SESSION}'"
-gnome-terminal ---geometry 173x47+1920+24 -e "tmux -u -2 new -s '${BASE_SESSION}'"
+#cd "${PROJECTS}"
+# gnome-terminal -e "tmux -u -2 new -s '${BASE_SESSION}'"
+# gnome-terminal ---geometry 173x47+1920+24 -e "tmux -u -2 new -s '${BASE_SESSION}'"
 
 #http://unix.stackexchange.com/questions/81335/xubuntu-mouse-sensitivity-way-too-high
 ## xset q | grep -A 1 Pointer

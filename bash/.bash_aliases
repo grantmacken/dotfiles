@@ -29,16 +29,24 @@ alias dotfiles-reload='source $HOME/.bashrc'
 alias p="cd $PROJECTS"
 alias p.="cd $PROJECTS/dotfiles"
 alias p..="cd $PROJECTS/mk-tasks"
-alias p...="cd $PROJECTS/nginx-exist"   
+alias p...="cd $PROJECTS/openresty-existdb"
 alias p1="cd $PROJECTS/gmack.nz"
-alias tp.="cd $PROJECTS/dotfiles;tmux attach -t dotfiles"
-alias tp..="cd $PROJECTS/mk-tasks;tmux attach -t tasks"
-alias tp-tasks="cd $PROJECTS/mk-tasks;tmux attach -t tasks"
-alias tp...="cd $PROJECTS/nginx-exist;tmux attach -t servers"   
-alias tp-servers="cd $PROJECTS/nginx-exist;tmux attach -t servers"   
-alias tp1="cd $PROJECTS/gmack.nz;tmux attach -t gmack"
-alias tp-gmack="cd $PROJECTS/gmack.nz;tmux attach -t gmack"
+
+
+alias dbStop="sudo systemctl stop exist.service"
+alias dbStatus="sudo systemctl status exist.service"
+alias dbStart="sudo systemctl start exist.service"
+alias ngStop="sudo systemctl stop nginx.service"
+alias ngStatus="sudo systemctl status nginx.service"
+alias ngStart="sudo systemctl start nginx.service"
+
+
+alias dbLog="journalctl -u exist.service -o cat -f"
+alias ngLog="journalctl -u nginx.service -o cat -f"
+alias xmldbLog="tail -f -n 40 /usr/local/eXist/webapp/WEB-INF/logs/xmldb.log  | grep -oP '^(\d{4}-\d{2}-\d{2}).+$'"
+alias restxqLog="less /usr/local/eXist/webapp/WEB-INF/logs/restxq.log"
 
 alias tpInstall="~/.tmux/plugins/tpm/bin/install_plugins"
 alias tpUpdate="~/.tmux/plugins/tpm/bin/update_plugins"
 #alias tmux='TERMINFO=/usr/share/terminfo/x/xterm-16color TERM=xterm-16color tmux -2'
+alias featon="ssh featon -t tmux a"
