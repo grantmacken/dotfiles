@@ -45,6 +45,7 @@ Plug 'tpope/vim-projectionist'
 Plug 'justinmk/vim-dirvish'
 Plug 'tpope/vim-eunuch'
 Plug 'dbakker/vim-projectroot' "cwd to projectroot for opened project files
+Plug 'kassio/neoterm'
 " git gists and github
 " Plug 'lambdalisue/vim-gista' " not yet compatible with neomake
 "
@@ -59,7 +60,6 @@ Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'Shougo/context_filetype.vim'
-Plug 'Shougo/neco-syntax' "deoplete syntax source drop in replacement for  autoload/syntaxcomplete.vim
 Plug 'ujihisa/neco-look' "deoplete spelling source ... word completion with 'look' command ref man look
 Plug 'Shougo/neoinclude.vim' "deoplete file/include source and extends tag source
 Plug 'Konfekt/FastFold' "recomended Shougo plugin
@@ -69,7 +69,7 @@ Plug 'majutsushi/tagbar', {'on': 'TagbarToggle'}
 " Plug 'janko-m/vim-test'				" do everthing with accio
 " Plug 'Chiel92/vim-autoformat'	" formating TODO: https://github.com/Chiel92/vim-autoformat
 Plug 'simnalamburt/vim-mundo'	" history
-Plug 'christoomey/vim-tmux-runner'
+" Plug 'christoomey/vim-tmux-runner'
 Plug 'rbgrouleff/bclose.vim' "delete buffer without closing window
 Plug 'szw/vim-maximizer' " zoom vim window
 " Editing Code manipulation
@@ -101,7 +101,7 @@ Plug 'junegunn/goyo.vim', { 'on': 'Goyo' } " distraction-free writing
 Plug 'junegunn/limelight.vim', { 'on': 'Limelight' } " focus tool. Good for presentating with vim
 " Plug 'ron89/thesaurus_query.vim' TODO https://github.com/Ron89/thesaurus_query.vim
 " sessions:
-Plug 'tpope/vim-obsession'
+Plug 'tpope/vim-obsession'        " 
 Plug 'dhruvasagar/vim-prosession' " each git project has associated vim session
 " language-specific plugins
 Plug 'vitalk/vim-shebang' "https://github.com/vitalk/vim-shebang
@@ -489,6 +489,13 @@ endfunction
 
 map <F12> :call TermEnter()<CR>
 
+nnoremap <silent> <F8> :TREPLSendLine<CR>
+vnoremap <silent> <F8> :TREPLSendSelection<CR>
+noremap  <silent> <F7> :TREPLSendFile<CR>
+
+command! Tmake :T make %
+
+
 " }}}
 " maximizer {{{
 let g:maximizer_set_default_mapping = 1
@@ -605,24 +612,24 @@ endif
 " set sessionoptions-=options  neovim default
 silent! call MakeDirIfNoExists(expand($VARPATH . '/session'))
 " save everything here
-
+" ls  $HOME/.cache/nvim/session/
+" rm  $HOME/.cache/nvim/session/*
 set sessionoptions-=globals
 set sessionoptions-=folds
 set sessionoptions-=help
-let g:prosession_tmux_title = 1
+" let g:prosession_tmux_title = 1
+" let g:prosession_tmux_title_format = 'neovim @@@'
 let g:prosession_on_startup = 1
 let g:prosession_default_session = 0
+let g:prosession_per_branch = 0
+" let g:prosession_branch_cmd = 'git rev-parse --abbrev-ref HEAD 2>/dev/null' " for each branch 
 let g:prosession_dir = expand($VARPATH . '/session')
-" }}}
-" TMUX Ruuner
-" {{{
-
 " }}}
 " Linters and Checkers with Accio
 " <F8> sav and run checker
 " {{{
-let g:VtrGitCdUpOnOpen = 1 " open runner at git repo
-let g:VtrUseVtrMaps = 1
+" let g:VtrGitCdUpOnOpen = 1 " open runner at git repo
+" let g:VtrUseVtrMaps = 1
 " Mapping      |   Command
  " -----------------------------
 " <leader>rr   |   VtrResizeRunner<cr>
@@ -645,7 +652,6 @@ let g:VtrUseVtrMaps = 1
 
 " autocmd BufWrite <buffer> Accio ["xqm"]
 
-nnoremap <silent> <F8> :Accio ["xqm"]<CR>
 
 let g:accio_create_empty_quickfix = 1
 let g:accio_auto_copen = 0 "automatically open quick list
