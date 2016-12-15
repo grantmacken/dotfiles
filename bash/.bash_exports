@@ -21,6 +21,7 @@ export MANPAGER="nvim -c 'set ft=man' -"
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CACHE_HOME="$HOME/.cache"
+# export NVIM_LISTEN_ADDRESS=/tmp/nvimsocket
 
 #export FZF_DEFAULT_COMMAND='ag -g ""'
 # To apply the command to CTRL-T as well
