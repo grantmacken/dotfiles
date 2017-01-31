@@ -16,6 +16,9 @@ endif
 
 " }}}
 " Global Mappings "{{{
+let g:python_host_prog = '/home/gmack/.pyenv/versions/neovim2/bin/python'
+let g:python3_host_prog = '/home/gmack/.pyenv/versions/neovim3/bin/python'
+"
 " Use spacebar instead of '\' as leader. Require before loading plugins.
 let g:mapleader="\<Space>"
 let g:maplocalleader=','
@@ -45,7 +48,10 @@ Plug 'tpope/vim-projectionist'
 Plug 'justinmk/vim-dirvish'
 Plug 'tpope/vim-eunuch'
 Plug 'dbakker/vim-projectroot' "cwd to projectroot for opened project files
+" neovim terminal
 Plug 'kassio/neoterm'
+Plug 'hkupty/nvimux'
+
 " git gists and github
 " Plug 'lambdalisue/vim-gista' " not yet compatible with neomake
 "
@@ -74,7 +80,7 @@ Plug 'rbgrouleff/bclose.vim' "delete buffer without closing window
 Plug 'szw/vim-maximizer' " zoom vim window
 " Editing Code manipulation
 Plug 'unblevable/quick-scope' "https://github.com/unblevable/quick-scope
-" Plug 'junegunn/vim-easy-align' " https://github.com/junegunn/vim-easy-align
+Plug 'junegunn/vim-easy-align' " https://github.com/junegunn/vim-easy-align
 " Plug 'cohama/lexima.vim'
 " Plug 'Raimondi/delimitMate' " https://github.com/Raimondi/delimitMate
 Plug 'tpope/vim-commentary'  , { 'on': ['<Plug>Commentary', '<Plug>CommentaryLine', '<Plug>ChangeCommentary'] }
@@ -174,7 +180,7 @@ set showbreak=↪
 " set fillchars=vert:│,fold:─
 " nvim defaults set listchars=tab:\⋮\ ,extends:⟫,precedes:⟪,nbsp:.,trail:·
 "}}}
-" Colorscheme {{{
+"- Colorscheme {{{
 
 " syntax enable
 set background=dark
@@ -201,6 +207,13 @@ set shiftwidth=2    " Number of spaces to use in auto(indent)
 set autoindent      " Use same indenting on new lines
 set smartindent     " Smart autoindenting on new lines
 set shiftround      " Round indent to multiple of 'shiftwidth'
+
+" easy-align
+" Start interactive EasyAlign in visual mode (e.g. vipga)
+xmap ga <Plug>(EasyAlign)
+
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign)
 
 " }}}
 " Files and Directories {{{
@@ -444,6 +457,19 @@ set splitbelow
 set splitright
 "}}}
 " {{{ terminal buffer
+"  nvimux is just a series of keybindings to allow neovim to work similarly to TMUX.
+"  let g:nvimux_prefix='<C-b>'
+"  let g:nvimux_quickterm_scope = 'g'
+"  let g:nvimux_quickterm_direction = 'botright'
+"  let g:nvimux_quickterm_orientation = 'vertical'
+"  let g:nvimux_quickterm_size = ''
+"  nvimux_override_n=":term<CR>"
+let g:nvimux_custom_bindings = [
+    \['\|', ':NvimuxVerticalSplit<CR>', ['n', 'v', 'i', 't']],
+    \['-', ':NvimuxHorizontalSplit<CR>', ['n', 'v', 'i', 't']],
+    \]
+
+"
 " when in terminal go back to previous window
 " https://neovim.io/doc/user/nvim_terminal_emulator.html#nvim-terminal-emulator
 " tnoremap <F12> <C-\><C-n><C-w><C-p>
@@ -459,41 +485,41 @@ set splitright
 " https://neovim.io/doc/user/autocmd.html#TermClose
 " TermChanged, TermClose, TermResponse 
 " when in terminal go back to previous window
-tnoremap <F12> <C-\><C-n><C-w><C-p>
+" tnoremap <F12> <C-\><C-n><C-w><C-p>
 
-set switchbuf+=useopen
-function! TermEnter()
-  let bufcount = bufnr("$")
-  let currbufnr = 1
-  let nummatches = 0
-  let firstmatchingbufnr = 0
-  while currbufnr <= bufcount
-    if(bufexists(currbufnr))
-      let currbufname = bufname(currbufnr)
-      if(match(currbufname, "term://") > -1)
-        echo currbufnr . ": ". bufname(currbufnr)
-        let nummatches += 1
-        let firstmatchingbufnr = currbufnr
-        break
-      endif
-    endif
-    let currbufnr = currbufnr + 1
-  endwhile
-  if(nummatches >= 1)
-    execute ":sbuffer ". firstmatchingbufnr
-    startinsert
-  else
-    execute ":botright 10 split \| terminal"
-  endif
-endfunction
+" set switchbuf+=useopen
+" function! TermEnter()
+"   let bufcount = bufnr("$")
+"   let currbufnr = 1
+"   let nummatches = 0
+"   let firstmatchingbufnr = 0
+"   while currbufnr <= bufcount
+"     if(bufexists(currbufnr))
+"       let currbufname = bufname(currbufnr)
+"       if(match(currbufname, "term://") > -1)
+"         echo currbufnr . ": ". bufname(currbufnr)
+"         let nummatches += 1
+"         let firstmatchingbufnr = currbufnr
+"         break
+"       endif
+"     endif
+"     let currbufnr = currbufnr + 1
+"   endwhile
+"   if(nummatches >= 1)
+"     execute ":sbuffer ". firstmatchingbufnr
+"     startinsert
+"   else
+"     execute ":botright 10 split \| terminal"
+"   endif
+" endfunction
 
-map <F12> :call TermEnter()<CR>
+" map <F12> :call TermEnter()<CR>
 
-nnoremap <silent> <F8> :TREPLSendLine<CR>
-vnoremap <silent> <F8> :TREPLSendSelection<CR>
-noremap  <silent> <F7> :TREPLSendFile<CR>
+" nnoremap <silent> <F8> :TREPLSendLine<CR>
+" vnoremap <silent> <F8> :TREPLSendSelection<CR>
+" noremap  <silent> <F7> :TREPLSendFile<CR>
 
-command! Tmake :T make %
+" command! Tmake :T make %
 
 
 " }}}

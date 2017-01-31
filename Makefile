@@ -5,6 +5,7 @@ assert-command-present = $(if $(shell which $1),,$(error '$1' missing and needed
 $(foreach src,$(APP_LIST),$(call assert-command-present,$(src)))
 
 XDG_CACHE_HOME ?= $(HOME)/.cache
+XDG_CONFIG_HOME ?= $(HOME)/.config
 
 GIT_USER="$(shell git config --get user.name )"
 GIT_REMOTE_ORIGIN_URl="$(shell git config --get remote.origin.url )"
@@ -12,16 +13,92 @@ GIT_REPO_FULL_NAME="$(shell echo $(GIT_REMOTE_ORIGIN_URl) | sed -e 's/git@github
 GIT_REPO_NAME="$(shell echo $(GIT_REPO_FULL_NAME) |cut -d/ -f2 )"
 GIT_REPO_OWNER_LOGIN="$(shell echo $(GIT_REPO_FULL_NAME) |cut -d/ -f1 )"
 
-default: stow-all
+OS_NAME := $(shell cat /etc/*release | grep -oP '^NAME="\K\w+')
+BASH_PROFILE=/usr/share/defaults/etc/profile.d
+
+$(info 'OS NAME: $(OS_NAME) ')
+
+SOLUS_SYSTEMD_PATH := /usr/lib/systemd/system
+
+assert-is-root = $(if $(shell id -u | grep -oP '^0$$'),\
+ $(info OK! root user, so we can change some system files),\
+ $(error changing system files so need to sudo) )
+
+#@stow -v -t ~ bash
+#@stow -v -t ~ tmux
+#@stow -v -t ~/.config/nvim nvim
+#@stow -v -t ~/bin  bin
+
+default: $(HOME).config/seoul256-gnome-terminal
 
 stow-all:
-	mkdir -p "$(XDG_CACHE_HOME)/nvim/"{backup,session,swap,tags,undo,view}
 	@echo 'TASK': use stow to create symlinks in home dir
+	$(if $(wildcard  $(HOME)/bin ),,mkdir $(HOME)/bin)
+	$(if $(wildcard  $(XDG_CONFIG_HOME)/bash ),,mkdir $(XDG_CONFIG_HOME)/bash)
 	@stow -v -t ~ bash
-	@stow -v -t ~ tmux
-	@stow -v -t ~ vim
-	@stow -v -t ~ ctags
-	@stow -v -t ~/.config/nvim nvim
-	@stow -v -t ~/bin  bin
 
-.PHONY: stow-all
+backup-brashrc:
+	@mv $(HOME)/.bashrc $(HOME)/.bashrc-$(date +%F).bk
+
+stow-tmux:
+	$(if $(wildcard  $(HOME)/.tmux/plugins ),,git clone https://github.com/tmux-plugins/tpm $(HOME)/.tmux/plugins/tpm)
+	@stow -v -t ~ tmux
+	$(if $(wildcard  $(HOME)/.tmux/plugins/tmux-sensible),\
+ cd $(HOME)/.tmux/plugins/tpm/bin && ./update_plugins all ,\
+ cd $(HOME)/.tmux/plugins/tpm/bin && ./install_plugins)
+
+stow-neovim:
+	@mkdir -p $(XDG_CACHE_HOME)/nvim
+	@mkdir -p $(XDG_CONFIG_HOME)/nvim
+	$(if $(wildcard  $(HOME).local/share/nvim/site/autoload/plug.vim ),,\
+ curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
+ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim )
+	@stow -v -t $(XDG_CONFIG_HOME)/nvim nvim
+
+neovimFix:
+	infocmp $TERM | sed 's/kbs=^[hH]/kbs=\\177/' > $TERM.ti
+	tic $TERM.ti
+
+$(HOME).config/seoul256-gnome-terminal: 
+	git clone https://github.com/anuragsoni/seoul256-gnome-terminal.git $(HOME)/.config/seoul256-gnome-terminal
+	source $(HOME)/.config/seoul256-gnome-terminal/seoul256-dark.sh
+
+
+# https://github.com/zchee/deoplete-jedi/wiki/Setting-up-Python-for-Neovim
+# TODO!
+
+pyEnv:
+	@echo 'todo'
+	curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer | bash
+
+caps2esc:
+	@echo 'TASK': map esc to capslock
+
+# setup plugin enviroment for neovim
+# set up local py enviroment
+# to run neovim
+
+define caps2escService
+[Unit]
+Description=caps2esc
+
+[Service]
+ExecStart=/bin/nice -n -20 /home/gmack/bin/caps2esc
+
+[Install]
+WantedBy=multi-user.target
+endef
+
+capsService: export caps2escService:=$(caps2escService)
+capsService:
+	@echo "setup caps2Sec under systemd"
+	@$(call assert-is-root)
+	$(if $(wildcard ../../oblitum/caps2esc/caps2esc), $(info 'good to go') ,$(error 'oh no!'))
+	@cp ../../oblitum/caps2esc/caps2esc /home/gmack/bin
+	@echo '====================================================================================='
+	@echo "$${caps2escService}" >  $(SOLUS_SYSTEMD_PATH)/caps2esc.service
+	@cat  /usr/lib/systemd/system/caps2esc.service
+	@systemctl enable caps2esc.service
+	@systemctl start caps2esc.service
+	@journalctl -f -u caps2esc.service -o cat
+
