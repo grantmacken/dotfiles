@@ -33,7 +33,7 @@ xnoremap ,        <Nop>
 " temp mappings top of file
 nnoremap <silent> <F3>  :echo synIDattr(synID(line("."), col("."), 1), "name")<CR>
 " }}}
-" Add In Plugings {{{
+" Add In Plugins {{{
 
 function! DoRemote(arg)
   UpdateRemotePlugins
@@ -54,6 +54,9 @@ Plug 'hkupty/nvimux'
 
 " git gists and github
 " Plug 'lambdalisue/vim-gista' " not yet compatible with neomake
+" Plug 'lambdalisue/vim-gita', {'on': ['Gita']}
+" Plug 'lambdalisue/vim-gista', {'on': ['Gista']} 
+Plug 'lambdalisue/lista.nvim'
 "
 Plug 'airblade/vim-gitgutter'
 Plug 'jreybert/vimagit'
