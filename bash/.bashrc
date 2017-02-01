@@ -10,3 +10,5 @@ if [ -d $HOME/.config/bash ] ; then
 fi
 
 
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
