@@ -1,5 +1,5 @@
 # dotfilesi
-Work In Progress [dotfile](https://github.com/webpro/awesome-dotfiless) hacked by Grant Mackenzie
+Work In Progress [dotfiles](https://github.com/webpro/awesome-dotfiless) hacked by Grant Mackenzie
 
 After a brief search on how best to organize my dofiles under git control, I set
 upon using [stow](http://mywiki.wooledge.org/DotFiles) ]
@@ -9,7 +9,7 @@ directory. In my projects directory have various folders named after the ```GIT 
 
  So my dotfile repo is cloned into a folder under my name in the projects dir
 
-   ``` ~/projects/$(git config --get user.name)/dotfilesi ```
+   ``` ~/projects/$(git config --get user.name)/dotfiles ```
 
 in the dotfiles project I have some folders
 
