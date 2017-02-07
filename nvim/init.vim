@@ -1,5 +1,6 @@
 " XDG Paths {{{
 
+nnoremap <silent> <F8> :TREPLSendLine<CR>
 function! MakeDirIfNoExists(path)
 		if !isdirectory(expand(a:path))
 				call mkdir(expand(a:path), "p")
@@ -50,14 +51,15 @@ Plug 'tpope/vim-eunuch'
 Plug 'dbakker/vim-projectroot' "cwd to projectroot for opened project files
 " neovim terminal
 Plug 'kassio/neoterm'
-Plug 'hkupty/nvimux'
-
+" Plug 'hkupty/nvimux'
+" Plug 'christoomey/vim-tmux-navigator'
+Plug 'tmux-plugins/vim-tmux-focus-events'
+Plug 'roxma/vim-tmux-clipboard'
 " git gists and github
 " Plug 'lambdalisue/vim-gista' " not yet compatible with neomake
 " Plug 'lambdalisue/vim-gita', {'on': ['Gita']}
 " Plug 'lambdalisue/vim-gista', {'on': ['Gista']} 
 Plug 'lambdalisue/lista.nvim'
-"
 Plug 'airblade/vim-gitgutter'
 Plug 'jreybert/vimagit'
 " Plugt'lambdalisue/vim-gita'
@@ -138,9 +140,10 @@ Plug 'hail2u/vim-css3-syntax', { 'for': 'css' } " CSS3 syntax support
 Plug 'othree/html5.vim' "HTML 5 with  WAI-ARIA attribute support
 Plug 'othree/xml.vim' " close tags while you type
 " Plug 'tejr/vim-tmux'
-" TMUX:
-Plug 'christoomey/vim-tmux-navigator'
+" tmux:
+
 Plug 'tmux-plugins/vim-tmux'
+
 " VIM:
 Plug 'junegunn/vader.vim' " testing vim plugings -- use for syntax
 " XQUERY
@@ -149,6 +152,7 @@ call plug#end()
 
 "}}}
 " Editor UI Appearance {{{
+"  color support
 " let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1 " Have thin cursor shap in insert mode
 " let $NVIM_TUI_ENABLE_TRUE_COLOR=1 " enable true color support
 
@@ -467,62 +471,75 @@ set splitright
 "  let g:nvimux_quickterm_orientation = 'vertical'
 "  let g:nvimux_quickterm_size = ''
 "  nvimux_override_n=":term<CR>"
-let g:nvimux_custom_bindings = [
-    \['\|', ':NvimuxVerticalSplit<CR>', ['n', 'v', 'i', 't']],
-    \['-', ':NvimuxHorizontalSplit<CR>', ['n', 'v', 'i', 't']],
-    \]
+" let g:nvimux_custom_bindings = [
+"     \['\|', ':NvimuxVerticalSplit<CR>', ['n', 'v', 'i', 't']],
+"     \['-', ':NvimuxHorizontalSplit<CR>', ['n', 'v', 'i', 't']],
+"     \]
 
 "
 " when in terminal go back to previous window
 " https://neovim.io/doc/user/nvim_terminal_emulator.html#nvim-terminal-emulator
 " tnoremap <F12> <C-\><C-n><C-w><C-p>
-" tnoremap <A-h> <C-\><C-n><C-w>h
-" tnoremap <A-j> <C-\><C-n><C-w>j
-" tnoremap <A-k> <C-\><C-n><C-w>k
-" tnoremap <A-l> <C-\><C-n><C-w>l
-" nnoremap <A-h> <C-w>h
-" nnoremap <A-j> <C-w>j
-" nnoremap <A-k> <C-w>k
-" nnoremap <A-l> <C-w>l
+
+
+
+tnoremap <A-h> <C-\><C-n><C-w>h
+tnoremap <A-j> <C-\><C-n><C-w>j
+tnoremap <A-k> <C-\><C-n><C-w>k
+tnoremap <A-l> <C-\><C-n><C-w>l
+nnoremap <A-h> <C-w>h
+nnoremap <A-j> <C-w>j
+nnoremap <A-k> <C-w>k
+nnoremap <A-l> <C-w>l
 " https://neovim.io/doc/user/options.html#%27term%27
 " https://neovim.io/doc/user/autocmd.html#TermClose
 " TermChanged, TermClose, TermResponse 
+let g:neoterm_size = 5 
+set switchbuf+=useopen
+function! TermEnter()
+  let bufcount = bufnr("$")
+  let currbufnr = 1
+  let nummatches = 0
+  let firstmatchingbufnr = 0
+  while currbufnr <= bufcount
+    if(bufexists(currbufnr))
+      let currbufname = bufname(currbufnr)
+      if(match(currbufname, "term://") > -1)
+        echo currbufnr . ": ". bufname(currbufnr)
+        let nummatches += 1
+        let firstmatchingbufnr = currbufnr
+        break
+      endif
+    endif
+    let currbufnr = currbufnr + 1
+  endwhile
+  if(nummatches >= 1)
+    execute ":sbuffer ". firstmatchingbufnr
+    startinsert
+  else
+    execute ":Topen"
+  endif
+endfunction
+" map esc in term
+tnoremap <Esc> <C-\><C-n>
+nnoremap <silent> <F6> :call TermEnter()<CR>
 " when in terminal go back to previous window
-" tnoremap <F12> <C-\><C-n><C-w><C-p>
+tnoremap <silent>  <F6> <C-\><C-n><C-w><C-p>
+" neoterm
+"--------
+"help neoterm
 
-" set switchbuf+=useopen
-" function! TermEnter()
-"   let bufcount = bufnr("$")
-"   let currbufnr = 1
-"   let nummatches = 0
-"   let firstmatchingbufnr = 0
-"   while currbufnr <= bufcount
-"     if(bufexists(currbufnr))
-"       let currbufname = bufname(currbufnr)
-"       if(match(currbufname, "term://") > -1)
-"         echo currbufnr . ": ". bufname(currbufnr)
-"         let nummatches += 1
-"         let firstmatchingbufnr = currbufnr
-"         break
-"       endif
-"     endif
-"     let currbufnr = currbufnr + 1
-"   endwhile
-"   if(nummatches >= 1)
-"     execute ":sbuffer ". firstmatchingbufnr
-"     startinsert
-"   else
-"     execute ":botright 10 split \| terminal"
-"   endif
-" endfunction
+" let g:neoterm_autoinsert = 1
+nnoremap <silent> <F8> :TREPLSendLine<CR>
+vnoremap <silent> <F8> :TREPLSendSelection<CR>
+noremap  <silent> <F7> :TREPLSendFile<CR>
+" nnoremap  <silent> <F6> :Topen<CR>
+" set <S-F3>=^[O1;2R
+" nnoremap <S-F3> :Tclose<CR>
+" nnoremap <silent> <F12> :Ttoggle<CR>
+" tnoremap <silent> <F12> <C-\><C-n><C-w><C-p>
 
-" map <F12> :call TermEnter()<CR>
-
-" nnoremap <silent> <F8> :TREPLSendLine<CR>
-" vnoremap <silent> <F8> :TREPLSendSelection<CR>
-" noremap  <silent> <F7> :TREPLSendFile<CR>
-
-" command! Tmake :T make %
+command! Tmake :T make %
 
 
 " }}}
@@ -700,7 +717,7 @@ let g:accio_update_interval = 250
 " @see 'nvim/compiler/xqm.vim'
 " Mapping for quicklist
 nnoremap <silent> <leader>l :call ToggleList("Location List", 'l')<CR>
-nnoremap <silent> <F6> :call ToggleList("Quickfix List", 'c')<CR>
+nnoremap <silent> <leader>q  :call ToggleList("Quickfix List", 'c')<CR>
 " http://vim.wikia.com/wiki/Toggle_to_open_or_close_the_quickfix_window
 
 function! GetBufferList()
