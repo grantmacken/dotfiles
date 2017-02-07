@@ -28,6 +28,7 @@ dir.
         @stow -v -t ~/.config/nvim nvim
         @stow -v -t ~/bin bin
         @stow -v -t ~ tmux
+
 ```
 
 #WARNING
@@ -37,3 +38,44 @@ you need to backup and remove your .bashrc
 then modify the .bashrc in the in the bash dir to suit your requirements. 
 
 
+##Some Set Up Tasks
+
+Keyboard: set capslock to escape
+          neovim backspace fix
+
+TODO! : automate - fetch from git - make - setup service
+
+```
+make caps2sec
+make neovimBackspaceFix
+```
+
+Neovim 
+
+- use XDG dirs
+- use plugin manager vim-plug
+- set up local pyEnv for neovim deoplete
+- stow nvim config
+
+```
+make pyEnv
+make stow-neovim
+```
+
+Neovim Configuration Hilights
+ TODO!
+
+Terminal
+
+- nice colors: seoul256-gnome-terminal
+- a tidy bashrc with config scripts in XDG dir configuring prompt exports etc
+   - an minimal prompt
+   - $HOME script enviroments
+     - python: pyEnv
+     - perl TODO!
+
+
+Tmux
+ - Sessions
+ - Plugins
+ 
