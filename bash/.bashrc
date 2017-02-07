@@ -9,6 +9,4 @@ if [ -d $HOME/.config/bash ] ; then
     unset script
 fi
 
-
-
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+# source /usr/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh
