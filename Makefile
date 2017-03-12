@@ -14,11 +14,12 @@ GIT_REPO_NAME="$(shell echo $(GIT_REPO_FULL_NAME) |cut -d/ -f2 )"
 GIT_REPO_OWNER_LOGIN="$(shell echo $(GIT_REPO_FULL_NAME) |cut -d/ -f1 )"
 
 OS_NAME := $(shell cat /etc/*release | grep -oP '^NAME="\K\w+')
-BASH_PROFILE=/usr/share/defaults/etc/profile.d
+SYSTEMD_PATH := $(shell pgrep -fau $$(whoami) systemd | grep user | cut -d ' ' -f 2)
+# BASH_PROFILE=/usr/share/defaults/etc/profile.d
+# NOTE: use googles dns nameserver with dig
+# dig @8.8.8.8 +short gmack.nz
 
 $(info 'OS NAME: $(OS_NAME) ')
-
-SOLUS_SYSTEMD_PATH := /usr/lib/systemd/system
 
 assert-is-root = $(if $(shell id -u | grep -oP '^0$$'),\
  $(info OK! root user, so we can change some system files),\
@@ -29,13 +30,18 @@ assert-is-root = $(if $(shell id -u | grep -oP '^0$$'),\
 #@stow -v -t ~/.config/nvim nvim
 #@stow -v -t ~/bin  bin
 
-default: $(HOME).config/seoul256-gnome-terminal
+default: solus-packages
+
+pkg: solus-packages
 
 stow-all:
 	@echo 'TASK': use stow to create symlinks in home dir
 	$(if $(wildcard  $(HOME)/bin ),,mkdir $(HOME)/bin)
 	$(if $(wildcard  $(XDG_CONFIG_HOME)/bash ),,mkdir $(XDG_CONFIG_HOME)/bash)
 	@stow -v -t ~ bash
+
+solus-packages: bin/my-solus-packages.list
+	@sudo bin/install-solus-packages.sh $<
 
 backup-brashrc:
 	@mv $(HOME)/.bashrc $(HOME)/.bashrc-$(date +%F).bk
@@ -55,7 +61,7 @@ stow-neovim:
  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim )
 	@stow -v -t $(XDG_CONFIG_HOME)/nvim nvim
 
-neovimFix:
+neovimBackspaceFix:
 	infocmp $TERM | sed 's/kbs=^[hH]/kbs=\\177/' > $TERM.ti
 	tic $TERM.ti
 
@@ -96,9 +102,33 @@ capsService:
 	$(if $(wildcard ../../oblitum/caps2esc/caps2esc), $(info 'good to go') ,$(error 'oh no!'))
 	@cp ../../oblitum/caps2esc/caps2esc /home/gmack/bin
 	@echo '====================================================================================='
-	@echo "$${caps2escService}" >  $(SOLUS_SYSTEMD_PATH)/caps2esc.service
+	@echo "$${caps2escService}" >  $(SYSTEMD_PATH)/caps2esc.service
 	@cat  /usr/lib/systemd/system/caps2esc.service
 	@systemctl enable caps2esc.service
 	@systemctl start caps2esc.service
 	@journalctl -f -u caps2esc.service -o cat
+
+define myTmuxService
+[Unit]
+Description=Terminal Multiplexer
+Documentation=man:tmux(1)
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+Environment=DISPLAY=:0
+ExecStart=$(shell which tmux) -2 new-session -d %u
+ExecStop=$(shell which tmux) kill-session -t %u
+
+[Install]
+WantedBy=default.target
+endef
+
+# sudo loginctl enable-linger $(whoami)
+
+tmuxService: export myTmuxService:=$(myTmuxService)
+tmuxService:
+	@echo "setup tmux under systemd"
+	@mkdir -p $(HOME)/.config/systemd/user
+	@echo "$${myTmuxService}" > $(HOME)/.config/systemd/user/tmux.service
 

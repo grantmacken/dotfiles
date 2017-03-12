@@ -1,6 +1,8 @@
 # dotfilesi
 Work In Progress [dotfiles](https://github.com/webpro/awesome-dotfiless) hacked by Grant Mackenzie
 
+Rationale: My current working desktop environment, that can be downloaded to set up a new setup. 
+
 After a brief search on how best to organize my dofiles under git control, I set
 upon using [stow](http://mywiki.wooledge.org/DotFiles) ]
 
@@ -28,12 +30,11 @@ dir.
         @stow -v -t ~/.config/nvim nvim
         @stow -v -t ~/bin bin
         @stow -v -t ~ tmux
-
 ```
 
 #WARNING
 
-If you are going use this, 
+If you are going stow bash, 
 you need to backup and remove your .bashrc
 then modify the .bashrc in the in the bash dir to suit your requirements. 
 
@@ -71,11 +72,23 @@ Terminal
 - a tidy bashrc with config scripts in XDG dir configuring prompt exports etc
    - an minimal prompt
    - $HOME script enviroments
-     - python: pyEnv
-     - perl TODO!
-
+   - python: pyEnv
+   - perl TODO!
 
 Tmux
  - Sessions
  - Plugins
  
+
+ Bin
+  -- Solus App Install List
+
+
+
+```
+eopkg help
+sudo  eopkg ur
+sudo  eopkg up
+make solus-packages
+  ```
+  

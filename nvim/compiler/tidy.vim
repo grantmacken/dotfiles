@@ -12,10 +12,13 @@ endif
 let s:cpo_save = &cpoptions
 set cpoptions&vim
 
-CompilerSet makeprg=tidy\ --quiet\ 1\ --doctype\ omit\ --show-errors\ 6\ --gnu-emacs\ yes\ %
+" @tidy -q -xml -utf8 -e  --show-warnings no $@  --gnu-emacs\ yes\ 
+"
+CompilerSet makeprg=tidy\ -q\ -xml\ -utf8\ -e\ --show-warning\ yes\ --gnu-emacs\ yes\ %
 
 " sample warning: foo.html:8:1: Warning: inserting missing 'foobar' element
 " sample error:   foo.html:9:2: Error: <foobar> is not recognized!
+" 
 CompilerSet errorformat=%f:%l:%c:\ Error:%m,%f:%l:%c:\ Warning:%m,%-G%.%#
 
 let &cpoptions = s:cpo_save

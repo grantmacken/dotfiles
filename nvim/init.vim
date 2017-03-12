@@ -52,7 +52,7 @@ Plug 'dbakker/vim-projectroot' "cwd to projectroot for opened project files
 " neovim terminal
 Plug 'kassio/neoterm'
 " Plug 'hkupty/nvimux'
-" Plug 'christoomey/vim-tmux-navigator'
+Plug 'christoomey/vim-tmux-navigator'
 Plug 'tmux-plugins/vim-tmux-focus-events'
 Plug 'roxma/vim-tmux-clipboard'
 " git gists and github
@@ -64,6 +64,12 @@ Plug 'airblade/vim-gitgutter'
 Plug 'jreybert/vimagit'
 " Plugt'lambdalisue/vim-gita'
 " Code Compile Test. Async Checking and Linting Builds
+" https://github.com/pgdouyon/vim-accio
+" Populating the quickfix list
+" Placing signs on the error lines
+" Echoing the error message when the cursor is on an error line.
+" @see compiler
+" 
 Plug 'pgdouyon/vim-accio'
 " Code Completion and Snippets
 Plug 'ervandew/supertab'
@@ -480,17 +486,20 @@ set splitright
 " when in terminal go back to previous window
 " https://neovim.io/doc/user/nvim_terminal_emulator.html#nvim-terminal-emulator
 " tnoremap <F12> <C-\><C-n><C-w><C-p>
-
-
-
-tnoremap <A-h> <C-\><C-n><C-w>h
-tnoremap <A-j> <C-\><C-n><C-w>j
-tnoremap <A-k> <C-\><C-n><C-w>k
-tnoremap <A-l> <C-\><C-n><C-w>l
-nnoremap <A-h> <C-w>h
-nnoremap <A-j> <C-w>j
-nnoremap <A-k> <C-w>k
-nnoremap <A-l> <C-w>l
+" set ttimeoutlen=1
+let g:tmux_navigator_save_on_switch = 1
+tnoremap <silent> <c-h> :TmuxNavigateLeft<cr>
+tnoremap <silent> <c-j> :TmuxNavigateDown<cr>
+tnoremap <silent> <c-k> :TmuxNavigateUp<cr>
+tnoremap <silent> <c-l> :TmuxNavigateRight
+" tnoremap <A-h> <C-\><C-n><C-w>h
+" tnoremap <A-j> <C-\><C-n><C-w>j
+" tnoremap <A-k> <C-\><C-n><C-w>k
+" tnoremap <A-l> <C-\><C-n><C-w>l
+" nnoremap <A-h> <C-w>h
+" nnoremap <A-j> <C-w>j
+" nnoremap <A-k> <C-w>k
+" nnoremap <A-l> <C-w>l
 " https://neovim.io/doc/user/options.html#%27term%27
 " https://neovim.io/doc/user/autocmd.html#TermClose
 " TermChanged, TermClose, TermResponse 

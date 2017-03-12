@@ -1,0 +1,16 @@
+
+#!/bin/bash
+
+projectDir="$HOME/projects/grantmacken/gmack.nz"
+projectName='gmack'
+cd "${projectDir}" && gnome-terminal --geometry 169x47+49+24 -e "tmux new-session -t ${1}"
+
+# gnome-terminal ---geometry 173x47+1920+24 -e "tmux -u -2 new -s '${BASE_SESSION}'"
+
+#######################################################################################
+# open to the left in the current project
+# the will create a tmux grouped session in the 2nd monitor
+# the window content is mirrored but the windows can be tabbed independently
+# so you can have different windows for each monitor but they belong to the same session
+########################################################################################
+
