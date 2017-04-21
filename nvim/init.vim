@@ -52,9 +52,9 @@ Plug 'dbakker/vim-projectroot' "cwd to projectroot for opened project files
 " neovim terminal
 Plug 'kassio/neoterm'
 " Plug 'hkupty/nvimux'
-Plug 'christoomey/vim-tmux-navigator'
-Plug 'tmux-plugins/vim-tmux-focus-events'
-Plug 'roxma/vim-tmux-clipboard'
+" Plug 'christoomey/vim-tmux-navigator'
+" Plug 'tmux-plugins/vim-tmux-focus-events'
+" Plug 'roxma/vim-tmux-clipboard'
 " git gists and github
 " Plug 'lambdalisue/vim-gista' " not yet compatible with neomake
 " Plug 'lambdalisue/vim-gita', {'on': ['Gita']}
@@ -110,7 +110,7 @@ Plug 'itchyny/lightline.vim' " will call gita for git updates
 " Plug 'cocopon/lightline-hybrid.vim'
 " Plug 'bling/vim-bufferline'  TODO
 "Plug 'shinchu/lightline-seoul256.vim' " now in lightline colorschemes
-Plug 'edkolev/tmuxline.vim'
+" Plug 'edkolev/tmuxline.vim'
 " Plug 'itchyny/vim-gitbranch'
 " writing
 Plug 'reedes/vim-pencil'
@@ -118,8 +118,10 @@ Plug 'junegunn/goyo.vim', { 'on': 'Goyo' } " distraction-free writing
 Plug 'junegunn/limelight.vim', { 'on': 'Limelight' } " focus tool. Good for presentating with vim
 " Plug 'ron89/thesaurus_query.vim' TODO https://github.com/Ron89/thesaurus_query.vim
 " sessions:
-Plug 'tpope/vim-obsession'        " 
-Plug 'dhruvasagar/vim-prosession' " each git project has associated vim session
+Plug 'mhinz/vim-startify'
+" 
+" Plug 'tpope/vim-obsession'        " 
+" Plug 'dhruvasagar/vim-prosession' " each git project has associated vim session
 " language-specific plugins
 Plug 'vitalk/vim-shebang' "https://github.com/vitalk/vim-shebang
 " https://github.com/vitalk/vim-fancy
@@ -148,7 +150,7 @@ Plug 'othree/xml.vim' " close tags while you type
 " Plug 'tejr/vim-tmux'
 " tmux:
 
-Plug 'tmux-plugins/vim-tmux'
+" Plug 'tmux-plugins/vim-tmux'
 
 " VIM:
 Plug 'junegunn/vader.vim' " testing vim plugings -- use for syntax
@@ -167,6 +169,7 @@ set shortmess=aoOTI     " Shorten messages and don't show intro
 set scrolloff=2         " Keep at least 2 lines above/below
 set sidescrolloff=2     " Keep at least 2 lines left/right
 set number              " Show line numbers
+set numberwidth=3
 set relativenumber      " Use relative instead of absolute line numbers
 set noruler             " Disable default status ruler
 set list                " Show hidden characters
@@ -220,7 +223,8 @@ set shiftwidth=2    " Number of spaces to use in auto(indent)
 set autoindent      " Use same indenting on new lines
 set smartindent     " Smart autoindenting on new lines
 set shiftround      " Round indent to multiple of 'shiftwidth'
-
+set foldmethod=syntax
+set foldnestmax=1
 " easy-align
 " Start interactive EasyAlign in visual mode (e.g. vipga)
 xmap ga <Plug>(EasyAlign)
@@ -482,24 +486,35 @@ set splitright
 "     \['-', ':NvimuxHorizontalSplit<CR>', ['n', 'v', 'i', 't']],
 "     \]
 
-"
+" Go to tab by number
+noremap <leader>1 1gt
+noremap <leader>2 2gt
+noremap <leader>3 3gt
+noremap <leader>4 4gt
+noremap <leader>5 5gt
+noremap <leader>6 6gt
+noremap <leader>7 7gt
+noremap <leader>8 8gt
+noremap <leader>9 9gt
+noremap <leader>0 :tablast<cr>
+ 
 " when in terminal go back to previous window
 " https://neovim.io/doc/user/nvim_terminal_emulator.html#nvim-terminal-emulator
 " tnoremap <F12> <C-\><C-n><C-w><C-p>
 " set ttimeoutlen=1
-let g:tmux_navigator_save_on_switch = 1
-tnoremap <silent> <c-h> :TmuxNavigateLeft<cr>
-tnoremap <silent> <c-j> :TmuxNavigateDown<cr>
-tnoremap <silent> <c-k> :TmuxNavigateUp<cr>
-tnoremap <silent> <c-l> :TmuxNavigateRight
-" tnoremap <A-h> <C-\><C-n><C-w>h
-" tnoremap <A-j> <C-\><C-n><C-w>j
-" tnoremap <A-k> <C-\><C-n><C-w>k
-" tnoremap <A-l> <C-\><C-n><C-w>l
-" nnoremap <A-h> <C-w>h
-" nnoremap <A-j> <C-w>j
-" nnoremap <A-k> <C-w>k
-" nnoremap <A-l> <C-w>l
+" let g:tmux_navigator_save_on_switch = 1
+" tnoremap <silent> <c-h> :TmuxNavigateLeft<cr>
+" tnoremap <silent> <c-j> :TmuxNavigateDown<cr>
+" tnoremap <silent> <c-k> :TmuxNavigateUp<cr>
+" tnoremap <silent> <c-l> :TmuxNavigateRight
+tnoremap <A-h> <C-\><C-n><C-w>h
+tnoremap <A-j> <C-\><C-n><C-w>j
+tnoremap <A-k> <C-\><C-n><C-w>k
+tnoremap <A-l> <C-\><C-n><C-w>l
+nnoremap <A-h> <C-w>h
+nnoremap <A-j> <C-w>j
+nnoremap <A-k> <C-w>k
+nnoremap <A-l> <C-w>l
 " https://neovim.io/doc/user/options.html#%27term%27
 " https://neovim.io/doc/user/autocmd.html#TermClose
 " TermChanged, TermClose, TermResponse 
@@ -662,23 +677,52 @@ else
   "                  `----------- Search directories recursively
 endif
 " }}}
-" Sessions with obsession and prosession {{{
+" Sessions with startify  {{{
 " What not to save in sessions:
 " set sessionoptions-=options  neovim default
 silent! call MakeDirIfNoExists(expand($VARPATH . '/session'))
+let g:startify_session_dir = expand($VARPATH . '/session')
+let g:startify_session_autoload = 1
+let g:startify_session_persistence = 1
+let g:startify_session_delete_buffers = 1
+    " let g:startify_session_before_save = [
+    "     \ 'echo "Cleaning up before saving.."',
+    "     \ 'silent! NERDTreeTabsClose'
+" \ ]
+" let g:startify_session_remove_lines = []
+" let g:startify_session_savevars = []
+" let g:startify_session_savecmds = []
+let g:startify_files_number = 5
+let g:startify_relative_path = 1
+let g:startify_change_to_vcs_root = 1
+let g:startify_fortune_use_unicode = 1
+hi StartifyBracket ctermfg=240
+hi StartifyFile    ctermfg=147
+hi StartifyFooter  ctermfg=240
+hi StartifyHeader  ctermfg=114
+hi StartifyNumber  ctermfg=215
+hi StartifyPath    ctermfg=245
+hi StartifySlash   ctermfg=240
+hi StartifySpecial ctermfg=240
+" let g:startify_session_sort = 0
+" let g:startify_session_number = 999
 " save everything here
 " ls  $HOME/.cache/nvim/session/
 " rm  $HOME/.cache/nvim/session/*
 set sessionoptions-=globals
 set sessionoptions-=folds
 set sessionoptions-=help
+set sessionoptions-=tabpages
+" http://vim.wikia.com/wiki/Quick_tips_for_using_tab_pages
+" set sessionoptions=blank,buffers,curdirs,tabpages,winsize
+
 " let g:prosession_tmux_title = 1
 " let g:prosession_tmux_title_format = 'neovim @@@'
-let g:prosession_on_startup = 1
-let g:prosession_default_session = 0
-let g:prosession_per_branch = 0
+" let g:prosession_on_startup = 1
+" let g:prosession_default_session = 0
+" let g:prosession_per_branch = 0
 " let g:prosession_branch_cmd = 'git rev-parse --abbrev-ref HEAD 2>/dev/null' " for each branch 
-let g:prosession_dir = expand($VARPATH . '/session')
+" let g:prosession_dir = expand($VARPATH . '/session')
 " }}}
 " Linters and Checkers with Accio
 " <F8> sav and run checker
@@ -823,7 +867,6 @@ let g:lightline.component_expand = {
 let g:lightline.component_type = {
      \ 'accio': 'error',
      \ }
-
 let g:accio_mode_map = {
 			\'mode': 'passive',
 			\ 'active_filetypes': ['xquery']
@@ -861,6 +904,7 @@ let g:lightline.tabline_subseparator = g:lightline.subseparator
 " 		    \ 'statusline': 1,
 " 		    \ 'tabline': 1
 " 		    \ }
+"
 
 function! LightLineReadonly()
 	return &readonly ? '' : ''
@@ -887,44 +931,64 @@ return	exists('*accio#statusline') ? accio#statusline('  %d ', '') : ''
 endfunction " }}}
 
 "}}}
-" functions {{{ 
+" functions {{{
 
+" function! OnTabEnter(path)
+"   if isdirectory(a:path)
+"     let dirname = a:path
+"   else
+"     let dirname = fnamemodify(a:path, ":h")
+"   endif
+"   execute "tcd ". dirname
+" endfunction()
+
+function! CdTop()
+  let topdir=system("git rev-parse --show-toplevel")
+  execute ":lcd " . topdir
+endfunction
+
+function! DefaultWorkspace()
+    tabnew ~/projects/grantmacken/dotfiles/ 
+    tabnew ~/projects/grantmacken/gmack.nz/
+    tabnew ~/projects/grantmacken/openresty-install/
+    tabnew ~/projects/grantmacken/mk-tasks/
+endfunction
 
 function! <SID>AutoProjectRootCD()
-	try
-		if &ft != 'help'
-			ProjectRootCD
-		endif
-	catch
-		" Silently ignore invalid buffers
-	endtry
+  try
+    if &ft != 'help'
+      execute ":lcd " . ProjectRootCD
+    endif
+  catch
+    " Silently ignore invalid buffers
+  endtry
 endfunction
 
-function! OpenRanger()
-	" let currentPath = expand("%:p:h")
-	" let projectDir = projectroot#guess()
-	let tempStr = '/tmp/chosenfile'
-	let rangerStr = 'ranger'
-	let rangerStr .= ' --choosedir=' . projectroot#guess() . ' '
-	let rangerStr .= ' --choosefiles=' .  tempStr . ' '
-	let rangerStr .= expand("%:p:h")
-	" let rangerStr .= expand("%:p:h")
-	let rangerCallback = { 'name': 'ranger' }
-	function! rangerCallback.on_exit(id, code)
-		Bclose!
-		try
-			if filereadable('/tmp/chosenfile')
-				exec system('sed -ie "s/ /\\\ /g" /tmp/chosenfile')
-				exec 'argadd ' . system('cat /tmp/chosenfile | tr "\\n" " "')
-				exec 'edit ' . system('head -n1 /tmp/chosenfile')
-				call system('rm /tmp/chosenfile')
-			endif
-		endtry
-	endfunction
-	enew
-	call termopen(rangerStr, rangerCallback)
-	startinsert
-endfunction
+" function! OpenRanger()
+" 	" let currentPath = expand("%:p:h")
+" 	" let projectDir = projectroot#guess()
+" 	let tempStr = '/tmp/chosenfile'
+" 	let rangerStr = 'ranger'
+" 	let rangerStr .= ' --choosedir=' . projectroot#guess() . ' '
+" 	let rangerStr .= ' --choosefiles=' .  tempStr . ' '
+" 	let rangerStr .= expand("%:p:h")
+" 	" let rangerStr .= expand("%:p:h")
+" 	let rangerCallback = { 'name': 'ranger' }
+" 	function! rangerCallback.on_exit(id, code)
+" 		Bclose!
+" 		try
+" 			if filereadable('/tmp/chosenfile')
+" 				exec system('sed -ie "s/ /\\\ /g" /tmp/chosenfile')
+" 				exec 'argadd ' . system('cat /tmp/chosenfile | tr "\\n" " "')
+" 				exec 'edit ' . system('head -n1 /tmp/chosenfile')
+" 				call system('rm /tmp/chosenfile')
+" 			endif
+" 		endtry
+" 	endfunction
+" 	enew
+" 	call termopen(rangerStr, rangerCallback)
+" 	startinsert
+" endfunction
 
 function! CreateArticle( file )
 	call MakeDirIfNoExists( strftime("content/posts/articles/%Y/%m/%d") )
@@ -941,6 +1005,9 @@ augroup init
   " detection -- '/usr/share/nvim/runtime/filetype.vim'
   " make recognizes  mk extension
   " xquery recognizes xql xqm xq
+
+  " autocmd TabNewEntered * call OnTabEnter(expand("<amatch>"))
+
   autocmd BufNewFile,BufRead *.conf set filetype=nginx "add nginx filetype for any conf extension
   autocmd BufNewFile,BufRead .env.* setfiletype sh
   autocmd BufNewFile,BufRead *.snippets set filetype=snippets "add new snippets filetpe
@@ -957,9 +1024,11 @@ augroup init
         \   endfor |
         \ endif
 
-  if exists('$TMUX') && !exists('$NORENAME')
-    au BufEnter * if empty(&buftype) | call system('tmux rename-window '.expand('%:t:S')) | endif
-    au VimLeave * call system('tmux set-window automatic-rename on')
-  endif
+  " if exists('$TMUX') && !exists('$NORENAME')
+  "   au BufEnter * if empty(&buftype) | call system('tmux rename-window '.expand('%:t:S')) | endif
+  "   au VimLeave * call system('tmux set-window automatic-rename on')
+  " endif
 augroup END
 " }}}
+"
+command! -register DefaultWorkspace call DefaultWorkspace()

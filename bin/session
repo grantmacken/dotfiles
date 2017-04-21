@@ -1,9 +1,14 @@
-
 #!/bin/bash
 
-projectDir="$HOME/projects/grantmacken/gmack.nz"
-projectName='gmack'
-cd "${projectDir}" && gnome-terminal --geometry 169x47+49+24 -e "tmux new-session -t ${1}"
+sessionDir='~/.cache/nvim/session/'
+session="$1"
+if [ -z ${session} ] ;then
+session='gmack.nz'
+fi
+projectDir="$HOME/projects/grantmacken/${session}"
+sessionDir='~/.cache/nvim/session/'
+cd "${projectDir}" && gnome-terminal --geometry 169x47+49+24 -- nvim -S ${sessionDir}${session}
+# cd ${projectDir} && gnome-terminal --geometry 169x47+49+24 -e "nvr issue.md" 
 
 # gnome-terminal ---geometry 173x47+1920+24 -e "tmux -u -2 new -s '${BASE_SESSION}'"
 

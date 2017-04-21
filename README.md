@@ -51,12 +51,20 @@ make caps2sec
 make neovimBackspaceFix
 ```
 
-Neovim 
+# NEOVIM 
 
 - use XDG dirs
 - use plugin manager vim-plug
 - set up local pyEnv for neovim deoplete
 - stow nvim config
+
+
+notes:
+set each tab to have its own working directory (cwd)
+
+
+https://dmerej.info/blog/post/vim-cwd-and-neovim/
+
 
 ```
 make pyEnv
@@ -75,6 +83,7 @@ Terminal
    - python: pyEnv
    - perl TODO!
 
+TODO! WIP:  rm tmux 
 Tmux
  - Sessions
  - Plugins

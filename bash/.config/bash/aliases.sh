@@ -9,6 +9,9 @@ if [[ ! "$PATH" == *${PROJECTS}/bin* ]]; then
   export PATH="$PATH:${PROJECTS}/bin"
 fi
 
+export JWT_AUTH_TOKEN="$(<$PROJECTS/.site-access-token)"
+export NVIM_LISTEN_ADDRESS=/tmp/nvimsocket
+
 alias vim='nvim'
 alias vi='nvim'
 alias v='nvim'
