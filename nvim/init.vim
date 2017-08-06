@@ -1,22 +1,23 @@
+scriptencoding utf-8
 " XDG Paths {{{
 
-nnoremap <silent> <F8> :TREPLSendLine<CR>
-function! MakeDirIfNoExists(path)
-		if !isdirectory(expand(a:path))
-				call mkdir(expand(a:path), "p")
-		endif
-endfunction
-
 if exists("$XDG_CONFIG_HOME")
-	let $VIMPATH=expand('$XDG_CONFIG_HOME/nvim')
-	let $VARPATH=expand('$XDG_CACHE_HOME/nvim')
+  let $VIMPATH=expand('$XDG_CONFIG_HOME/nvim')
+  let $VARPATH=expand('$XDG_CACHE_HOME/nvim')
+  let $DATAPATH=expand('$XDG_DATA_HOME/nvim')
 else
-	let $VIMPATH=expand('$HOME/.config/nvim')
-	let $VARPATH=expand('$HOME/.cache/nvim')
+  let $VIMPATH=expand('$HOME/.config/nvim')
+  let $VARPATH=expand('$HOME/.cache/nvim')
+  let $DATAPATH=expand('$HOME/.local/share/nvim')
 endif
 
 " }}}
 " Global Mappings "{{{
+" https://github.com/zchee/deoplete-jedi/wiki/Setting-up-Python-for-Neovim
+" pyenv activate neovim3
+" pip install neovim
+" https://github.com/mhinz/neovim-remote
+" let g:neoterm_automap_keys = ',tt'
 let g:python_host_prog = '/home/gmack/.pyenv/versions/neovim2/bin/python'
 let g:python3_host_prog = '/home/gmack/.pyenv/versions/neovim3/bin/python'
 "
@@ -28,70 +29,226 @@ nnoremap <Space>  <Nop>
 xnoremap <Space>  <Nop>
 nnoremap ,        <Nop>
 xnoremap ,        <Nop>
+" }}}
+" Editor UI Appearance {{{
+" MOUSE
+set mouse=a
+set mousemodel=popup_setpos
+" window  settings {{{
+set notitle             " No need for a title
+set noequalalways       " Don't resize windows on split or close
+set winwidth=30         " Minimum width for current window
+set winheight=1         " Minimum height for current window
+set splitbelow
+set splitright
+"}}}
 
-" terminal 
+" set noruler             " Disable default status ruler
+set helpheight=12       " Minimum help window height
+" panes: gutter, tabline, commandline , help {{{
+" left gutter
+set number              " Show line numbers
+set numberwidth=3
+set relativenumber      " Use relative instead of absolute line numbers
 
-" temp mappings top of file
-nnoremap <silent> <F3>  :echo synIDattr(synID(line("."), col("."), 1), "name")<CR>
+" Bottom Command
+" ----------------
+set noshowmode          " Don't show mode in cmd window
+set cmdheight=2         " Height of the command line
+set cmdwinheight=5      " Command-line lines
+set inccommand=nosplit  " Neovim highlight
+set gdefault            " Force Vim to always do global substitutions.
+set shortmess+=c
+" set shortmess=aoOTI     " Shorten messages and don't show intro
+" set shortmess+=c        " https://github.com/roxma/nvim-completion-manager
+" set noshowcmd           " Don't show command in status line
+
+" Top  tabline
+" ----------------
+set showtabline=2       " Always show the tabs line
+" set tabpagemax=30     " Already set to 50 in neovim  Maximum number of tab pages
+" }}}
+" nvim default set laststatus=2   Always show a status line
+" main buffer window pane
+set colorcolumn=120     " Highlight the 120 th character limit
+set synmaxcol=200
+set scrolloff=2         " Keep at least 2 lines above/below
+set sidescrolloff=2     " Keep at least 2 lines left/right
+" Complete Options
+" -----------------
+" :h complete
+"  (default: ".,w,b,u,t")
+"  current buffer, window buffers, unloaded buffers, tags
+" bu
+set completeopt+=menuone
+set completeopt+=noinsert       " auto select feature like neocomplete
+set completeopt+=noselect
+" set completeopt+=preview
+" set completeopt+=longest
+
+" Popup Menu Styling
+" ------------------
+"set previewheight=8     " Completion preview height
+set pumheight=20        " Pop-up menu's line height
+"complete options
+" :h complete
+"  (default: ".,w,b,u,t")
+"  current buffer, window buffers, unloaded buffers, tags
+" bu
+set completeopt+=menuone
+set completeopt+=noinsert       " auto select feature like neocomplete
+set completeopt+=noselect
+" set completeopt+=preview
+" set completeopt+=longest
+
+" Spelling
+" --------
+let g:spell_add=expand($VARPATH . '/spell/en.utf-8.add')
+exec "set spellfile=" . g:spell_add
+
+" SEARCH
+" set wildmode=longest,full
+" set wildignorecase
+
+"}}}
+" Typography: Widths, Tabs, Indents Folds{{{
+set textwidth=120   " Text width maximum 120 chars before wrapping
+set expandtab       " expand tabs to spaces except for Make see runtime
+set softtabstop=2   " While performing editing operations
+" /usr/share/nvim/runtime/ftplugin/make.vim
+" set nosmarttab
+set tabstop=2       " The number of spaces a tab is
+set shiftwidth=2    " Number of spaces to use in auto(indent)
+set autoindent      " Use same indenting on new lines
+set smartindent     " Smart autoindenting on new lines
+set shiftround      " Round indent to multiple of 'shiftwidth'
+" folds
+set foldmethod=marker
+set foldnestmax=1
+" Changing characters to fill special ui elements
+set breakindent
+set showbreak=↪
+set list                " Show hidden characters
+" set fillchars=vert:│,fold:─
+" nvim defaults set listchars=tab:\⋮\ ,extends:⟫,precedes:⟪,nbsp:.,trail:·
+" }}}
+" File and Project Management {{{
+let g:loaded_netrwPlugin = 1
+set noswapfile
+set nobackup
+set undofile
+set undolevels=5000
+set undoreload=10000
+" http://robots.thoughtbot.com/post/18739402579/global-gitignore#comment-45841328i
+" set autowriteall  "Save buffer automatically when changing files
+set autoread      "Always reload buffer when external changes detected
+" https://bluz71.github.io/2017/05/15/vim-tips-tricks.html
+"augroup autoSaveAndRead
+" autocmd!
+"  autocmd TextChanged,InsertLeave,FocusLost * silent! wall
+"  autocmd CursorHold * silent! checktime
+"augroup END
+" Save everything here
+" ls  $HOME/.cache/nvim/session/
+" rm  $HOME/.cache/nvim/session/*
+set sessionoptions-=globals
+set sessionoptions-=help
+" Project and File Management Plugins
+" - eunuch
+" - projectionist
+" - startify
+" - fzf
 " }}}
 " Add In Plugins {{{
-
 function! DoRemote(arg)
   UpdateRemotePlugins
 endfunction
 
 call plug#begin(expand('$VIMPATH/plugged'))
-" File and Project Management
+" File_And_Project_Management {{{
+" ---------------------------
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-Plug 'tpope/vim-projectionist'
-" Plug 'tpope/vim-fugitive'
 Plug 'justinmk/vim-dirvish'
 Plug 'tpope/vim-eunuch'
-Plug 'dbakker/vim-projectroot' "cwd to projectroot for opened project files
+Plug 'tpope/vim-projectionist'
+" }}}
+" ---------------------------
 " neovim terminal
-Plug 'kassio/neoterm'
 " Plug 'hkupty/nvimux'
-" Plug 'christoomey/vim-tmux-navigator'
-" Plug 'tmux-plugins/vim-tmux-focus-events'
-" Plug 'roxma/vim-tmux-clipboard'
 " git gists and github
 " Plug 'lambdalisue/vim-gista' " not yet compatible with neomake
 " Plug 'lambdalisue/vim-gita', {'on': ['Gita']}
-" Plug 'lambdalisue/vim-gista', {'on': ['Gista']} 
-Plug 'lambdalisue/lista.nvim'
+" Plug 'lambdalisue/vim-gista', {'on': ['Gista']}
+" Plug 'lambdalisue/lista.nvim'
 Plug 'airblade/vim-gitgutter'
 Plug 'jreybert/vimagit'
 " Plugt'lambdalisue/vim-gita'
-" Code Compile Test. Async Checking and Linting Builds
-" https://github.com/pgdouyon/vim-accio
-" Populating the quickfix list
-" Placing signs on the error lines
-" Echoing the error message when the cursor is on an error line.
+"projectionist#query("framework")
+"
+" Code Lint Compile Build Test
+" ----------------------------
+Plug 'w0rp/ale'
+" let g:airline#extensions#ale#enabled = 1
+" navigate between errors
+" nmap <silent> <C-k> <Plug>(ale_previous_wrap)
+" nmap <silent> <C-j> <Plug>(ale_next_wrap)
+" use quicklist instead of locallist
+" let g:ale_set_loclist = 0
+" let g:ale_set_quickfix = 1
+"
+
+Plug 'pgdouyon/vim-accio' "@see https://github.com/pgdouyon/vim-accio
+" Used for Async
+" - Check             [ 'format', 'lint' ] ( on buffer text change  )
+" - Compile Builds    [ 'compile' ]        ( on save compile  )
+" - Test              [ 'prove' ]          ( on build run asseertion and functional tests )
+
+
+" Feedback
+" - Populating the quickfix list
+" - Placing signs on the line of the found error
+" - Echoing the error message when the cursor is on an error line.
 " @see compiler
-" 
-Plug 'pgdouyon/vim-accio'
-" Code Completion and Snippets
+
+Plug 'kassio/neoterm'
+" Plug 'janko-m/vim-test'
+"
+" Plug 'sbdchd/neoformat'
+"
+" Auto Completions and Snippets.
+" ------------------------------
+" Plug 'roxma/nvim-completion-manager' " can't handle multiple invim instances
+" Plug 'roxma/python-support.nvim'
+" let g:python_support_python2_require = 0
+" Plug 'roxma/nvim-cm-tern',  {'do': 'npm install'}
 Plug 'ervandew/supertab'
 Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
-Plug 'SirVer/ultisnips'
+Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins' }
+Plug 'SirVer/ultisnips'     " https://github.com/SirVer/ultisnips
 Plug 'honza/vim-snippets'
+" deoplete sources
 Plug 'Shougo/context_filetype.vim'
-Plug 'ujihisa/neco-look' "deoplete spelling source ... word completion with 'look' command ref man look
+Plug 'https://github.com/Shougo/neco-syntax' " https://github.com/Shougo/neco-syntax
 Plug 'Shougo/neoinclude.vim' "deoplete file/include source and extends tag source
-Plug 'Konfekt/FastFold' "recomended Shougo plugin
-Plug 'wellle/tmux-complete.vim' " https://github.com/wellle/tmux-complete.vim
-Plug 'majutsushi/tagbar', {'on': 'TagbarToggle'}
-" Plug 'benekastah/neomake'			" linting
-" Plug 'janko-m/vim-test'				" do everthing with accio
-" Plug 'Chiel92/vim-autoformat'	" formating TODO: https://github.com/Chiel92/vim-autoformat
-Plug 'simnalamburt/vim-mundo'	" history
+Plug 'fszymanski/deoplete-emoji'
+Plug 'ujihisa/neco-look' "deoplete spelling source ... word completion with 'look' command ref man look
+Plug 'Konfekt/FastFold'      "recomended Shougo plugin
+" Plug 'wellle/tmux-complete.vim' " https://github.com/wellle/tmux-complete.vim
+" Plug 'majutsushi/tagbar', {'on': 'TagbarToggle'}
+" Plug 'benekastah/neomake'     " linting
+" Plug 'janko-m/vim-test'       " do everthing with accio
+" Plug 'Chiel92/vim-autoformat' " formating TODO: https://github.com/Chiel92/vim-autoformat
+" Plug 'simnalamburt/vim-mundo'   " history
 " Plug 'christoomey/vim-tmux-runner'
 Plug 'rbgrouleff/bclose.vim' "delete buffer without closing window
 Plug 'szw/vim-maximizer' " zoom vim window
 " Editing Code manipulation
-Plug 'unblevable/quick-scope' "https://github.com/unblevable/quick-scope
+Plug 'unblevable/quick-scope'  " https://github.com/unblevable/quick-scope
 Plug 'junegunn/vim-easy-align' " https://github.com/junegunn/vim-easy-align
+" yanking
+Plug 'machakann/vim-highlightedyank' " highligh yank text
+Plug 'bfredl/nvim-miniyank'          " https://github.com/bfredl/nvim-miniyank
 " Plug 'cohama/lexima.vim'
 " Plug 'Raimondi/delimitMate' " https://github.com/Raimondi/delimitMate
 Plug 'tpope/vim-commentary'  , { 'on': ['<Plug>Commentary', '<Plug>CommentaryLine', '<Plug>ChangeCommentary'] }
@@ -103,10 +260,8 @@ Plug 'ntpeters/vim-better-whitespace'
 " Plug 'Shougo/echodoc'  " recomended plugin .. to look at function auguments
 " Visual
 " Plug 'ryanoasis/vim-devicons'
-Plug 'junegunn/seoul256.vim'
-"Plug 'vim-airline/vim-airline'
-"Plug 'vim-airline/vim-airline-themes'
-Plug 'itchyny/lightline.vim' " will call gita for git updates
+
+" Plug 'itchyny/lightline.vim' " will call gita for git updates
 " Plug 'cocopon/lightline-hybrid.vim'
 " Plug 'bling/vim-bufferline'  TODO
 "Plug 'shinchu/lightline-seoul256.vim' " now in lightline colorschemes
@@ -119,192 +274,210 @@ Plug 'junegunn/limelight.vim', { 'on': 'Limelight' } " focus tool. Good for pres
 " Plug 'ron89/thesaurus_query.vim' TODO https://github.com/Ron89/thesaurus_query.vim
 " sessions:
 Plug 'mhinz/vim-startify'
-" 
-" Plug 'tpope/vim-obsession'        " 
+"
+" Plug 'tpope/vim-obsession'        "
 " Plug 'dhruvasagar/vim-prosession' " each git project has associated vim session
 " language-specific plugins
 Plug 'vitalk/vim-shebang' "https://github.com/vitalk/vim-shebang
 " https://github.com/vitalk/vim-fancy
 " https://github.com/vitalk/vim-simple-todo
-" Nginx:
-Plug 'othree/nginx-contrib-vim', {'for': 'nginx'}
-" JavaScript:  https://davidosomething.com/blog/vim-for-javascript/
-Plug 'othree/yajs.vim', { 'for': 'javascript' } " SYNTAX object/method data comes from Mozilla's WebIDL
-" Plug 'othree/es.next.syntax.vim'
-" Plug 'othree/javascript-libraries-syntax.vim'
-Plug 'gavocanov/vim-js-indent' " INDENT
-"Plug 'heavenshell/vim-jsdoc' "  jsdocs  https://github.com/heavenshell/vim-jsdoc
-"Plug 'ternjs/tern_for_vim', { 'do': 'npm install' } " setup tern
-Plug 'carlitux/deoplete-ternjs' " COMPLETION: deoplete tern as recomended by Shougo
+Plug 'othree/yajs.vim', { 'for': 'javascript' }          " JAVASCRPT SYNTAX object/method data comes from Mozilla's WebIDL
+Plug 'HerringtonDarkholme/yats.vim',{'for':'javascript'} " TYPESCRIPT
+Plug 'gavocanov/vim-js-indent'                           " JAVASCRIPT INDENT
+Plug 'elzr/vim-json', { 'for': 'json' } "                  JSON support
+Plug 'ap/vim-css-color', { 'for': 'css' }       "   CSS set the background of hex color values to the color
+Plug 'hail2u/vim-css3-syntax', { 'for': 'css' } "   CSS3 syntax support
+Plug 'othree/html5.vim'                         "   HTML 5 with  WAI-ARIA attribute support
+Plug 'othree/xml.vim'                           "   XML tags while you type
+Plug 'tbastos/vim-lua', { 'for': 'lua' } "          LUA syntax and indentation support
+Plug 'othree/nginx-contrib-vim', {'for': 'nginx'} " NGINX
+Plug 'ledger/vim-ledger'                          " lEDGER
+Plug 'junegunn/vader.vim'                         " VIM    testing vim plugings -- use for syntax
+
+" Plug 'heavenshell/vim-jsdoc' "  jsdocs  https://github.com/heavenshell/vim-jsdoc
+" Plug 'ternjs/tern_for_vim', { 'do': 'npm install' } " setup tern
+" Plug 'carlitux/deoplete-ternjs' " COMPLETION: deoplete tern as recomended by Shougo
 " Plug 'othree/jspc.vim' ... COMPLETION:  function param completion
-" LUA:
-Plug 'tbastos/vim-lua', { 'for': 'lua' } " LUA syntax and indentation support
-" JSON:
-Plug 'elzr/vim-json', { 'for': 'json' } " JSON support
-" CSS:
-Plug 'ap/vim-css-color', { 'for': 'css' } " set the background of hex color values to the color
-Plug 'hail2u/vim-css3-syntax', { 'for': 'css' } " CSS3 syntax support
-" HTML XML:
-Plug 'othree/html5.vim' "HTML 5 with  WAI-ARIA attribute support
-Plug 'othree/xml.vim' " close tags while you type
-" Plug 'tejr/vim-tmux'
-" tmux:
-
 " Plug 'tmux-plugins/vim-tmux'
-
+" Plug 'othree/javascript-libraries-syntax.vim'
+" Plug 'othree/es.next.syntax.vim'a
+" JavaScript:  https://davidosomething.com/blog/vim-for-javascript/
 " VIM:
-Plug 'junegunn/vader.vim' " testing vim plugings -- use for syntax
 " XQUERY
 "Plug 'vim-scripts/XQuery-indentomnicompleteftplugin' " might have to install manually
 call plug#end()
 
 "}}}
-" Editor UI Appearance {{{
-"  color support
-" let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1 " Have thin cursor shap in insert mode
-" let $NVIM_TUI_ENABLE_TRUE_COLOR=1 " enable true color support
-
-set noshowmode          " Don't show mode in cmd window
-set shortmess=aoOTI     " Shorten messages and don't show intro
-set scrolloff=2         " Keep at least 2 lines above/below
-set sidescrolloff=2     " Keep at least 2 lines left/right
-set number              " Show line numbers
-set numberwidth=3
-set relativenumber      " Use relative instead of absolute line numbers
-set noruler             " Disable default status ruler
-set list                " Show hidden characters
-
-set wildmode=longest,full
-set wildignorecase
-
-set showtabline=2       " Always show the tabs line
-set tabpagemax=30       " Maximum number of tab pages
-
-set previewheight=8     " Completion preview height
-set pumheight=20        " Pop-up menu's line height
-set helpheight=12       " Minimum help window height
-
-set noshowcmd           " Don't show command in status line
-set cmdheight=2         " Height of the command line
-set cmdwinheight=5      " Command-line lines
-
-" nvim default set laststatus=2   Always show a status line
-set colorcolumn=120     " Highlight the 120 th character limit
-
-" Changing characters to fill special ui elements
-set showbreak=↪
-" set fillchars=vert:│,fold:─
-" nvim defaults set listchars=tab:\⋮\ ,extends:⟫,precedes:⟪,nbsp:.,trail:·
-"}}}
-"- Colorscheme {{{
-
+" Themes and Colorscheme {{{
+Plug 'junegunn/seoul256.vim'
+Plug 'trevordmiller/nova-vim'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+let g:airline#extensions#ale#enabled = 1
+call plug#end()
 " syntax enable
 set background=dark
-set t_Co=256                   " 256 colors for the terminal
-
-let g:seoul256_background = 236
-colorscheme seoul256
-
+" set t_Co=256                   " 256 colors for the terminal
+" let g:seoul256_background = 236
+" colorscheme seoul256
+set termguicolors
+colorscheme nova
 " execute ':highlight Pmenu ctermbg=DarkGrey'
-" 
-highlight Pmenu ctermbg=DarkGrey
-highlight TermCursor ctermfg=red guifg=red
-
+" highlight Pmenu ctermbg=DarkGrey
+" highlight TermCursor ctermfg=red guifg=red
 " }}}
-" Tabs and Indents {{{
 
-set textwidth=120   " Text width maximum 120 chars before wrapping
-set expandtab       " expand tabs to spaces except for Make see runtime
-set softtabstop=2   " While performing editing operations
-" /usr/share/nvim/runtime/ftplugin/make.vim
-set nosmarttab
-set tabstop=2       " The number of spaces a tab is
-set shiftwidth=2    " Number of spaces to use in auto(indent)
-set autoindent      " Use same indenting on new lines
-set smartindent     " Smart autoindenting on new lines
-set shiftround      " Round indent to multiple of 'shiftwidth'
-set foldmethod=syntax
-set foldnestmax=1
-" easy-align
-" Start interactive EasyAlign in visual mode (e.g. vipga)
-xmap ga <Plug>(EasyAlign)
+" PLUGINS
+" - dirvish
+" - fzf
+"===========
+" DIRVISH
+" "============
+"@see https://github.com/justinmk/vim-dirvish
+"@help dirvish-options
+" NOTES:
+"  Shdo mv {} {}copy.txt
+"  Shodo! mv % %copy.txt
+let g:dirvish_mode = 1
+let g:dirvish_relative_paths = 0
+let g:dirvish_mode = ':sort r /\/$/'
 
-" Start interactive EasyAlign for a motion/text object (e.g. gaip)
-nmap ga <Plug>(EasyAlign)
+augroup my_dirvish_events
+  autocmd!
+  " Same as FZF
+  autocmd FileType dirvish
+    \  nnoremap <silent><buffer> t :call dirvish#open('tabedit', 0)<CR>
+    \ |xnoremap <silent><buffer> t :call dirvish#open('tabedit', 0)<CR>
+  " Enable :Gstatus and friends.
+  " autocmd FileType dirvish call fugitive#detect(@%)
+  "|
 
+  " Map `gr` to reload the Dirvish buffer.
+  autocmd FileType dirvish nnoremap <silent><buffer> gr :<C-U>Dirvish %<CR>
+
+  " autocmd FileType dirvish nnoremap <silent> <Tab> <Esc>:call g:SmartTab()<CR>
+
+  " Map `gh` to hide dot-prefixed files.
+  " To "toggle" this, just press `R` to reload.
+  autocmd FileType dirvish nnoremap <silent><buffer>
+    \ gh :silent keeppatterns g@\v/\.[^\/]+/?$@d<cr>
+augroup END
+" Fuzzy Find Files and things in files with FZF {{{
+" https://github.com/junegunn/fzf/wiki/
+" https://github.com/junegunn/fzf.vim
+" Default fzf layout
+" - down / up / left / right
+" - window (nvim only)
+"let $FZF_DEFAULT_OPTS .= ' --inline-info'
+let g:fzf_layout = { 'down': '~40%' }
+
+" ctrl-[a-z], alt-[a-z], f[1-4], or any single character
+let g:fzf_action = {
+  \ 'ctrl-p': 'edit',
+  \ 'ctrl-t': 'tabedit',
+  \ 'ctrl-o': 'botright split',
+  \ 'ctrl-a':  'vertical botright split' }
+"nnoremap <silent> <Leader><Leader> :Files<CR>
+nnoremap <silent> <Leader>f  :GitFiles<CR>
+nnoremap <silent> <Leader>b  :Buffers<CR>
+nnoremap <silent> <Leader>t  :Tags<CR>
+nnoremap <silent> <Leader>ag :Ag <C-R><C-W><CR>
+
+" --column: Show column number
+" --line-number: Show line number
+" --no-heading: Do not show file headings in results
+" --fixed-strings: Search term as a literal string
+" --ignore-case: Case insensitive search
+" --no-ignore: Do not respect .gitignore, etc...
+" --hidden: Search hidden files and folders
+" --follow: Follow symlinks
+" --glob: Additional conditions for search (in this case ignore everything in the .git/ folder)
+" --color: Search color options
+"
+command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
+if executable('rg')
+
+  set grepprg=rg\ --vimgrep
+  "                 |
+  "                 `------------ Format results for Vim, include multiple matches per line
+  set grepformat=%f:%l:%c:%m
+else
+  set grepprg=grep\ -rnH\ --exclude='.*.swp'\ --exclude='*~'\ --exclude=tags
+  "                  |||
+  "                  ||`--------- Always print file names
+  "                  |`---------- Print line numbers
+  "                  `----------- Search directories recursively
+endif
 " }}}
-" Files and Directories {{{
-"set nobackup
-"set nowritebackup
-set noswapfile
-set nobackup
-set undofile 
-set undolevels=5000
-set undoreload=10000
-let g:undo_dir=expand($VARPATH . '/undo')
-silent! call MakeDirIfNoExists( g:undo_dir )
-" save everything here
-" exec "set backupdir=" . g:undo_dir
-exec "set undodir=" . g:undo_dir
-
-" http://robots.thoughtbot.com/post/18739402579/global-gitignore#comment-45841328i
-" set autowriteall  "Save buffer automatically when changing files
-" set autoread      "Always reload buffer when external changes detected
-let g:spell_add=expand($VARPATH . '/spell/en.utf-8.add')
-exec "set spellfile=" . g:spell_add
 " }}}
 " PLUGGED
-" Autocompletion with deoplete and ultisnips {{{
-"
-"complete options
-" :h complete
-"  (default: ".,w,b,u,t")
-"  current buffer, window buffers, unloaded buffers, tags
-" NOTE: set for k 
-" 
-set completeopt+=menuone
-set completeopt+=noinsert       " auto select feature like neocomplete
-set completeopt+=noselect
-" set completeopt+=preview
-" set completeopt+=longest
+" nvim-miniyank
+" https://github.com/bfredl/nvim-miniyank
+" map p <Plug>(miniyank-autoput)
+" map P <Plug>(miniyank-autoPut)
 
-" NOTE: set 
-let g:SuperTabDefaultCompletionType = "<c-n>" " Make the tabing on completion menu go from top to bottom
-let g:SuperTabClosePreviewOnPopupClose = 1 " Close the preview when completion ends
+" map <Leader>p <Plug>(miniyank-startput)
+" map <Leader>P <Plug>(miniyank-startPut)
 
-"===============================================================================
-" DEOPLETE
-"==============================================================================
-" enable at startup
+" map <leader>n <Plug>(miniyank-cycle)
+" map <Leader>c <Plug>(miniyank-tochar)
+" map <Leader>l <Plug>(miniyank-toline)
+" map <Leader>b <Plug>(miniyank-toblock)
+
+" Auto Completions and Snippets and Templates {{{
+" -----------------------------------------------
+"  Autocompletionn
+" deoplete with
+"  - echodoc
+"  - vim-projectionist
+"  - ultisnips
+"@ see https://noahfrederick.com/log/vim-templates-with-ultisnips-and-projectionist
+"@ https://www.youtube.com/watch?v=QsLTYEVJ6JU
+"http://www.dirv.me/generating-src-spec-vim/index.html
+
+"===========
+" SUPERTAB     https://github.com/ervandew/supertab.git
+"============
+
+let g:SuperTabDefaultCompletionType = "<c-n>" " make the tabing on completion menu go from top to bottom
+let g:SuperTabClosePreviewOnPopupClose = 1    " Close the preview when completion ends
+" let g:SuperTabLongestEnhanced  = 1 " Enhanced longest match support: default 0
+" let g:SuperTabLongestHighlight = 1 " default 0
+" neovim
+
+"=============
+"   ECHODOC
+"==============
+" let g:echodoc_enable_at_startup = 1
+" set cmdheight=2 @see above
+" cmdheight
+
+"==============
+"   DEOPLETE
+"===============
 let g:deoplete#enable_at_startup = 1
-" disable autocomplete
-" let g:deoplete#disable_auto_complete = 1
+if !exists('g:deoplete#omni#input_patterns')
+  let g:deoplete#omni#input_patterns = {}
+endif
 let g:deoplete#enable_smart_case = 1
+" let g:deoplete#disable_auto_complete = 1
 let g:deoplete#auto_completion_start_length = 3
-
 let g:deoplete#max_menu_width = 120
 let g:deoplete#max_abbr_width = 80
-"augroup omnifuncs
-"	autocmd!
-"	autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
-"   autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-"   autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-"   autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-"  " autocmd FileType javascript setlocal omnifunc=jspc#omni
-"   autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-"   autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-"   autocmd FileType xquery setlocal omnifunc=xquerycomplete#CompleteXQuery
-"augroup end
+let g:deoplete#max_menu_width = 120
+let g:deoplete#autocomplete_delay = 50
 
 " sources:
 " Note: come with default sources
-" buffer	    It collects keywords from current buffer and the buffers which have same 'filetype'.
-" member	    It collects members from current buffer.
-" tag		      It collects keywords from ctags files
-" file	      This source collects keywords from local files.
-" omni		    This source collects keywords from 'omnifunc'. Note: It is not asynchronous.
-" dictionary	This source collects keywords from 'dictionary'.
-" Note: can have external sources :Help deoplete-external-sources
+" buffer      It collects keywords from current buffer and the buffers which have same 'filetype'.
+" member:     It collects members from current buffer.
+" tag:        It collects keywords from ctags files
+" file:       This source collects keywords from local files.
+" omni:       This source collects keywords from 'omnifunc'. Note: It is not asynchronous.
+" dictionary: This source collects keywords from 'dictionary'.
+" around:     This source collects candidates around the cursor external sources
+"
+" Help deoplete-external-sources
 " ---------------------------------------------------------------------------------------------------
 " UltiSnips ... https://github.com/SirVer/ultisnips
 " https://github.com/SirVer/ultisnips/blob/master/rplugin/python3/deoplete/sources/ultisnips.py
@@ -320,159 +493,115 @@ let g:deoplete#max_abbr_width = 80
 " ---------------------------------------------------------------------------------------------------
 " file/include ... neoinclude
 " ---------------------------------------------------------------------------------------------------
+" omnifuncs
+" augroup omnifuncs
+"   autocmd!
+"   autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+"   autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+"   autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+"   autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+"   autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+"   autocmd FileType xquery setlocal omnifunc=xquerycomplete#Complete
+" augroup end
+
 let g:deoplete#ignore_sources = {}
 let g:deoplete#ignore_sources._ = ['buffer', 'member', 'tag', 'file']
 
 let g:deoplete#sources = {}
-" let g:deoplete#sources._ = ['buffer', 'member', 'tag', 'file', 'dictionary', 'syntax', 'look', 'file/include' ]
+let g:deoplete#sources._ = [ 'buffer', 'member', 'tag', 'file', 'dictionary', 'syntax', 'around', 'file/include' ]
+
+
 " '_'  value is used for default filetypes
 
 let g:deoplete#sources.xquery = ['ultisnips', 'tag', 'syntax']  " set values for each filetype
-let g:deoplete#sources.html = ['ultisnips', 'buffer', 'tag']  " set values for each filetype
-let g:deoplete#sources.javascript = [ 'ternjs', 'ultisnips', 'buffer', 'tag']  " set values for each filetype
-let g:deoplete#sources.vim = ['vim', 'buffer', 'tag']  " set values for each filetype
+" let g:deoplete#sources.xquery = ['omni']  " set values for each filetype
+" let g:deoplete#sources.html = ['ultisnips', 'buffer', 'tag']  " set values for each filetype
+" let g:deoplete#sources.javascript = [ 'ternjs', 'ultisnips', 'buffer', 'tag']  " set values for each filetype
+" let g:deoplete#sources.vim = ['vim', 'buffer', 'tag']  " set values for each filetype
 
 " Use partial fuzzy matches like YouCompleteMe
 call deoplete#custom#set('_', 'matchers', ['matcher_fuzzy'])
-"call deoplete#custom#set('_', 'converters', ['converter_remove_paren'])
+" "call deoplete#custom#set('_', 'converters', ['converter_remove_paren'])
 call deoplete#custom#set('_', 'disabled_syntaxes', ['Comment', 'String'])
 
-" Manual Tag complete
-function! g:DeopleteManualTagComplete() abort
-  if pumvisible()
-    return g:deoplete#mappings#close_popup()
-  else
-    return g:deoplete#mappings#manual_complete('tag')
-  endif
-endfunction
-"===============================================================================
-" UltiSnips
-"===============================================================================
-" creating and editing snips
-nnoremap <silent> <F2>  :UltiSnipsEdit<CR>
-let g:UltiSnipsSnippetsDir = split(&runtimepath, ',')[0] . '/snips'
-let g:UltiSnipsSnippetDirectories = [g:UltiSnipsSnippetsDir]
-let g:UltiSnipsEditSplit = "vertical"
-"https://github.com/simonweil/dotfiles/blob/master/nvimrc
-" Don't map any tabs, I'll do it later
-
+"===============
+"   UltiSnips
+"===============
+" functions and mappings to make ultisnips and deoplete work together
+"@see https://github.com/simonweil/dotfiles/blob/master/nvimrc
+"@see https://github.com/SirVer/ultisnips/blob/master/autoload/UltiSnips/map_keys.vim#L56
 let g:UltiSnipsExpandTrigger = '<NOP>'
 let g:UltiSnipsJumpForwardTrigger = '<NOP>'
 let g:UltiSnipsJumpBackwardTrigger = '<NOP>'
 let g:SuperTabMappingForward = '<NOP>'
 let g:SuperTabMappingBackward = '<NOP>'
-" Don't unmap my mappings
-let g:UltiSnipsMappingsToIgnore = [ "SmartTab", "SmartShiftTab" ]
+let g:UltiSnipsMappingsToIgnore = [ "SmartTab", "SmartShiftTab" ] " Don't unmap my mappings
+let g:ulti_expand_res = 0    " Make <CR> smart
 
-" Make <CR> smart
-let g:ulti_expand_res = 0
 function! Ulti_ExpandOrEnter()
-    " First try to expand a snippet
-    call UltiSnips#ExpandSnippet()
-    if g:ulti_expand_res
-        " if successful, just return
-        return ''
-    elseif pumvisible()
-        " if in completion menu - just close it and leave the cursor at the
-        " end of the completion
-        return deoplete#mappings#close_popup()
-    else
-        " otherwise, just do an "enter"
-        return "\<return>"
-    endif
+  " First try to expand a snippet
+  call UltiSnips#ExpandSnippet()
+  if g:ulti_expand_res
+    " if successful, just return
+    return ''
+  elseif pumvisible()
+    " if in completion menu - just close it and leave the cursor at the
+    " end of the completion
+    return deoplete#mappings#close_popup()
+  else
+    " otherwise, just do an "enter"
+    return "\<return>"
+  endif
 endfunction
-inoremap <return> <C-R>=Ulti_ExpandOrEnter()<CR>
 
 " Enable tabbing and shift-tabbing through list of results
 function! g:SmartTab()
-    if pumvisible()
-	return SuperTab("n")
-    else
-	call UltiSnips#JumpForwards()
-	if g:ulti_jump_forwards_res == 0
-	    return SuperTab("n")
-	endif
-        return ''
+  if pumvisible()
+    return SuperTab("n")
+  else
+    call UltiSnips#JumpForwards()
+    if g:ulti_jump_forwards_res == 0
+      return SuperTab("n")
     endif
+    return ''
+  endif
 endfunction
-inoremap <silent> <tab> <C-R>=g:SmartTab()<cr>
-snoremap <silent> <tab> <Esc>:call g:SmartTab()<cr>
 
 function! g:SmartShiftTab()
-    if pumvisible()
-	return SuperTab("p")
-    else
-	call UltiSnips#JumpBackwards()
-	if g:ulti_jump_backwards_res == 0
-	    return SuperTab("p")
-	endif
-        return ''
+  if pumvisible()
+    return SuperTab("p")
+  else
+    call UltiSnips#JumpBackwards()
+    if g:ulti_jump_backwards_res == 0
+      return SuperTab("p")
     endif
+    return ''
+  endif
 endfunction
-inoremap <silent> <s-tab> <C-R>=g:SmartShiftTab()<cr>
-snoremap <silent> <s-tab> <Esc>:call g:SmartShiftTab()<cr>
 
 
-" Disable built-in cx-ck to be able to go backward
-" inoremap <C-x><C-k> <NOP>
+" COMPLETION MAPPINGS
+" -------------------
+inoremap <return> <C-R>=Ulti_ExpandOrEnter()<CR>
+inoremap <silent> <Tab> <C-R>=g:SmartTab()<CR>
+snoremap <silent> <Tab> <Esc>:call g:SmartTab()<CR>
+inoremap <silent> <s-Tab> <C-R>=g:SmartShiftTab()<CR>
+snoremap <silent> <s-Tab> <Esc>:call g:SmartShiftTab()<CR>
 
-" function! g:UltiSnips_Complete()
-"   call UltiSnips#ExpandSnippet()
-"   if g:ulti_expand_res == 0
-"     if pumvisible()
-"       return "\<C-n>"
-"     else
-"       call UltiSnips#JumpForwards()
-"       if g:ulti_jump_forwards_res == 0
-"         return "\<TAB>"
-"       endif
-"     endif
-"   endif
-"   return ""
-" endfunction
+" Creating and Editing Snips
+" --------------------------
+nnoremap <silent> <F2>  :UltiSnipsEdit<CR>
+let g:UltiSnipsSnippetsDir = split(&runtimepath, ',')[0] . '/snips'
+let g:UltiSnipsSnippetDirectories = [g:UltiSnipsSnippetsDir]
+let g:UltiSnipsEditSplit = "vertical"
 
-" function! g:UltiSnips_Reverse()
-"   call UltiSnips#JumpBackwards()
-"   if g:ulti_jump_backwards_res == 0
-"     return "\<C-P>"
-"   endif
-
-"   return ""
-" endfunction
-
-" if !exists("g:UltiSnipsJumpForwardTrigger")
-"   let g:UltiSnipsJumpForwardTrigger = "<tab>"
-" endif
-
-" if !exists("g:UltiSnipsJumpBackwardTrigger")
-"   let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
-" endif
-
-" " MAPPINGS
-" au InsertEnter * exec "inoremap <silent> " . g:UltiSnipsExpandTrigger . " <C-R>=g:UltiSnips_Complete()<cr>"
-" au InsertEnter * exec "inoremap <silent> " . g:UltiSnipsJumpBackwardTrigger . " <C-R>=g:UltiSnips_Reverse()<cr>"
-
-" " Manually trigger tag autocomplete
-" inoremap <silent> <expr> <C-]> DeopleteManualTagComplete()
-" " <C-h>, <BS>: close popup and delete backword char
-" inoremap <expr><C-h> deoplete#mappings#smart_close_popup()."\<C-h>"
-" inoremap <expr><BS> deoplete#mappings#smart_close_popup()."\<C-h>"
-" " insert <TAB> or select next match
-" " au BufEnter * exec "inoremap <silent> " . g:UltiSnipsExpandTrigger . " <C-R>=g:UltiSnips_Complete()<cr>"
-
+" let g:SuperTabCrMapping = 1 " (default value: 0)
 " }}}
 " Windows and Buffers
 " <F12> open|close terminal
 " <F11> Maximize window with vim-maximizer
 " <F10> open|closetags window with tagbar
-" window  settings {{{
-set notitle             " No need for a title
-set noequalalways       " Don't resize windows on split or close
-set winwidth=30         " Minimum width for current window
-set winheight=1         " Minimum height for current window
-set splitbelow
-set splitright
-"}}}
+
 " {{{ terminal buffer
 "  nvimux is just a series of keybindings to allow neovim to work similarly to TMUX.
 "  let g:nvimux_prefix='<C-b>'
@@ -497,28 +626,29 @@ noremap <leader>7 7gt
 noremap <leader>8 8gt
 noremap <leader>9 9gt
 noremap <leader>0 :tablast<cr>
- 
+
 " when in terminal go back to previous window
 " https://neovim.io/doc/user/nvim_terminal_emulator.html#nvim-terminal-emulator
 " tnoremap <F12> <C-\><C-n><C-w><C-p>
 " set ttimeoutlen=1
-" let g:tmux_navigator_save_on_switch = 1
-" tnoremap <silent> <c-h> :TmuxNavigateLeft<cr>
-" tnoremap <silent> <c-j> :TmuxNavigateDown<cr>
-" tnoremap <silent> <c-k> :TmuxNavigateUp<cr>
-" tnoremap <silent> <c-l> :TmuxNavigateRight
+" term colors
+" hi! link TermCursor Cursor
+" hi! TermCursorNC ctermfg=15 guifg=#fdf6e3 ctermbg=14 guibg=#93a1a1 cterm=NONE gui=NONE
+"
 tnoremap <A-h> <C-\><C-n><C-w>h
 tnoremap <A-j> <C-\><C-n><C-w>j
 tnoremap <A-k> <C-\><C-n><C-w>k
 tnoremap <A-l> <C-\><C-n><C-w>l
-nnoremap <A-h> <C-w>h
+nnoremap <A-h> ii<C-w>h
 nnoremap <A-j> <C-w>j
 nnoremap <A-k> <C-w>k
 nnoremap <A-l> <C-w>l
+
+tnoremap <expr> <A-r> '<C-\><C-n>"'.nr2char(getchar()).'pi'
 " https://neovim.io/doc/user/options.html#%27term%27
 " https://neovim.io/doc/user/autocmd.html#TermClose
-" TermChanged, TermClose, TermResponse 
-let g:neoterm_size = 5 
+" TermChanged, TermClose, TermResponse
+let g:neoterm_size = 5
 set switchbuf+=useopen
 function! TermEnter()
   let bufcount = bufnr("$")
@@ -549,21 +679,36 @@ tnoremap <Esc> <C-\><C-n>
 nnoremap <silent> <F6> :call TermEnter()<CR>
 " when in terminal go back to previous window
 tnoremap <silent>  <F6> <C-\><C-n><C-w><C-p>
-" neoterm
-"--------
+
+"========
+" NEOTERM
+"========
 "help neoterm
+"@see https://github.com/kassio/neoterm
+" :Tnew  " open new termnal
+" :T pwd " send cmd to term
+" :Tclear "
+" :Tclose " close window , buffer still exists so,
+" can still send commands to it with :T
+"  :T %  " can sen special commands
+"help cmdline-special
 
 " let g:neoterm_autoinsert = 1
 nnoremap <silent> <F8> :TREPLSendLine<CR>
 vnoremap <silent> <F8> :TREPLSendSelection<CR>
 noremap  <silent> <F7> :TREPLSendFile<CR>
+
 " nnoremap  <silent> <F6> :Topen<CR>
+"
 " set <S-F3>=^[O1;2R
-" nnoremap <S-F3> :Tclose<CR>
+"  nnoremap <S-F3> :Tclose<CR>
 " nnoremap <silent> <F12> :Ttoggle<CR>
 " tnoremap <silent> <F12> <C-\><C-n><C-w><C-p>
 
-command! Tmake :T make %
+command! -nargs=+ Tmake :T make <args>
+command! -nargs=+ Tlog :T tail -f <args>
+
+" pip3 install --user neovim-remote
 
 
 " }}}
@@ -573,59 +718,59 @@ let g:maximizer_default_mapping_key = '<F11>'
 " }}}
 " Tags created by universal-ctags and views created with tagbar {{{
 " Notes: ctags config
-map <F10> :TagbarToggle<CR>
+" map <F10> :TagbarToggle<CR>
 " Note: <leader>'t'  Fuzzy Find
 "let g:gutentags_cache_dir = '$VARPATH/tags'
-let g:tagbar_type_css = {
-			\ 'ctagstype' : 'Css',
-			\ 'kinds'     : [
-			\ 'c:classes',
-			\ 's:selectors',
-			\ 'i:identities'
-			\ ]
-			\ }
+" let g:tagbar_type_css = {
+" 			\ 'ctagstype' : 'Css',
+" 			\ 'kinds'     : [
+" 			\ 'c:classes',
+" 			\ 's:selectors',
+" 			\ 'i:identities'
+" 			\ ]
+" 			\ }
 
-let g:tagbar_type_make = {
-			\ 'kinds':[
-			\ 'm:macros',
-			\ 't:targets'
-			\ ]
-			\}
+" let g:tagbar_type_make = {
+" 			\ 'kinds':[
+" 			\ 'm:macros',
+" 			\ 't:targets'
+" 			\ ]
+" 			\}
 
-let g:tagbar_type_markdown = {
-			\ 'ctagstype' : 'markdown',
-			\ 'kinds' : [
-			\ 'h:Heading_L1',
-			\ 'i:Heading_L2',
-			\ 'k:Heading_L3'
-			\ ]
-			\ }
+" let g:tagbar_type_markdown = {
+" 			\ 'ctagstype' : 'markdown',
+" 			\ 'kinds' : [
+" 			\ 'h:Heading_L1',
+" 			\ 'i:Heading_L2',
+" 			\ 'k:Heading_L3'
+" 			\ ]
+" 			\ }
 
-let g:tagbar_type_xquery = {
-			\ 'ctagstype' : 'xquery',
-			\ 'kinds'     : [
-			\ 'f:function',
-			\ 'v:variable',
-			\ 'm:module',
-			\ ]
-			\ }
+" let g:tagbar_type_xquery = {
+" 			\ 'ctagstype' : 'xquery',
+" 			\ 'kinds'     : [
+" 			\ 'f:function',
+" 			\ 'v:variable',
+" 			\ 'm:module',
+" 			\ ]
+" 			\ }
 
-let g:tagbar_type_xsd = {
-			\ 'ctagstype' : 'XSD',
-			\ 'kinds'     : [
-			\ 'e:elements',
-			\ 'c:complexTypes',
-			\ 's:simpleTypes'
-			\ ]
-			\ }
+" let g:tagbar_type_xsd = {
+" 			\ 'ctagstype' : 'XSD',
+" 			\ 'kinds'     : [
+" 			\ 'e:elements',
+" 			\ 'c:complexTypes',
+" 			\ 's:simpleTypes'
+" 			\ ]
+" 			\ }
 
-let g:tagbar_type_xslt = {
-			\ 'ctagstype' : 'xslt',
-			\ 'kinds' : [
-			\ 'v:variables',
-			\ 't:templates'
-			\ ]
-			\}
+" let g:tagbar_type_xslt = {
+" 			\ 'ctagstype' : 'xslt',
+" 			\ 'kinds' : [
+" 			\ 'v:variables',
+" 			\ 't:templates'
+" 			\ ]
+" 			\}
 " }}}
 " Comments with vim-commentary {{{
 "
@@ -645,38 +790,6 @@ let g:loaded_netrwPlugin = 1
 " nnoremap <leader>d :Dirvish %:p:h<CR>
 
 "}}}
-" Fuzzy Find Files and things in files with FZF {{{
-" https://github.com/junegunn/fzf/wiki/
-" https://github.com/junegunn/fzf.vim
-" Default fzf layout
-" - down / up / left / right
-" - window (nvim only)
-"let $FZF_DEFAULT_OPTS .= ' --inline-info'
-let g:fzf_layout = { 'down': '~40%' }
-" ctrl-[a-z], alt-[a-z], f[1-4], or any single character
-let g:fzf_action = {
-  \ 'ctrl-m': 'edit',
-  \ 'ctrl-t': 'tabedit',
-  \ 'ctrl-x': 'botright split',
-  \ 'ctrl-v':  'vertical botright split' }
-"nnoremap <silent> <Leader><Leader> :Files<CR>
-nnoremap <silent> <Leader>f  :GitFiles<CR>
-nnoremap <silent> <Leader>b  :Buffers<CR>
-nnoremap <silent> <Leader>t  :Tags<CR>
-nnoremap <silent> <Leader>ag :Ag <C-R><C-W><CR>
-if executable('ag')
-  set grepprg=ag\ --vimgrep
-  "                 |
-  "                 `------------ Format results for Vim, include multiple matches per line
-  set grepformat=%f:%l:%c:%m
-else
-  set grepprg=grep\ -rnH\ --exclude='.*.swp'\ --exclude='*~'\ --exclude=tags
-  "                  |||
-  "                  ||`--------- Always print file names
-  "                  |`---------- Print line numbers
-  "                  `----------- Search directories recursively
-endif
-" }}}
 " Sessions with startify  {{{
 " What not to save in sessions:
 " set sessionoptions-=options  neovim default
@@ -692,10 +805,26 @@ let g:startify_session_delete_buffers = 1
 " let g:startify_session_remove_lines = []
 " let g:startify_session_savevars = []
 " let g:startify_session_savecmds = []
-let g:startify_files_number = 5
+let g:startify_files_number = 1
 let g:startify_relative_path = 1
 let g:startify_change_to_vcs_root = 1
 let g:startify_fortune_use_unicode = 1
+let g:startify_session_number = 5
+let g:startify_session_sort = 1
+
+let g:startify_list_order = [
+      \ ['  SESSIONS:'],
+      \ 'sessions',
+      \ ['   MRU files: '],
+      \ 'files',
+      \ ['   MRU in current directory:'],
+      \ 'dir',
+      \ ['   BOOKMARKS:'],
+      \ 'bookmarks',
+      \ ['   COMMANDS:'],
+      \ 'commands',
+      \ ]
+
 hi StartifyBracket ctermfg=240
 hi StartifyFile    ctermfg=147
 hi StartifyFooter  ctermfg=240
@@ -710,9 +839,8 @@ hi StartifySpecial ctermfg=240
 " ls  $HOME/.cache/nvim/session/
 " rm  $HOME/.cache/nvim/session/*
 set sessionoptions-=globals
-set sessionoptions-=folds
 set sessionoptions-=help
-set sessionoptions-=tabpages
+
 " http://vim.wikia.com/wiki/Quick_tips_for_using_tab_pages
 " set sessionoptions=blank,buffers,curdirs,tabpages,winsize
 
@@ -721,36 +849,15 @@ set sessionoptions-=tabpages
 " let g:prosession_on_startup = 1
 " let g:prosession_default_session = 0
 " let g:prosession_per_branch = 0
-" let g:prosession_branch_cmd = 'git rev-parse --abbrev-ref HEAD 2>/dev/null' " for each branch 
+" let g:prosession_branch_cmd = 'git rev-parse --abbrev-ref HEAD 2>/dev/null' " for each branch
 " let g:prosession_dir = expand($VARPATH . '/session')
 " }}}
-" Linters and Checkers with Accio
+" Linters and Checkers with Accio" {{{
 " <F8> sav and run checker
-" {{{
-" let g:VtrGitCdUpOnOpen = 1 " open runner at git repo
-" let g:VtrUseVtrMaps = 1
-" Mapping      |   Command
- " -----------------------------
-" <leader>rr   |   VtrResizeRunner<cr>
-" <leader>ror  |   VtrReorientRunner<cr>
-" <leader>sc   |   VtrSendCommandToRunner<cr>
-" <leader>sl   |   VtrSendLinesToRunner<cr>
-" <leader>or   |   VtrOpenRunner<cr>
-" <leader>kr   |   VtrKillRunner<cr>
-" <leader>fr   |   VtrFocusRunner<cr>
-" <leader>dr   |   VtrDetachRunner<cr>
-" <leader>ar   |   VtrReattachRunner<cr>
-" <leader>cr   |   VtrClearRunner<cr>
-" <leader>fc   |   VtrFlushCommand<cr>
-" 
-" visual mode
-" <leader>sv   | VtrSendSelectedToRunner<cr>
 " ---------------------------------------------------------------------
 " Accio
 " ----------------------------------------------------------------------
-
 " autocmd BufWrite <buffer> Accio ["xqm"]
-
 
 let g:accio_create_empty_quickfix = 1
 let g:accio_auto_copen = 0 "automatically open quick list
@@ -806,158 +913,16 @@ endfunction
 " nmap <Leader><Space>n :cnext<CR>      " next error/warning
 " nmap <Leader><Space>p :cprev<CR>      " previous error/warning
 " autocmd! InsertChange,TextChanged *.html update | :Accio [ "tidy", "xmlwf", "xmllint" ]
-
 " }}}
-" Status and Tabbar with lightline {{{
-
-let g:lightline = {}
-
-let g:lightline.colorscheme = 'seoul256'
-
-let g:lightline.active = {
-    \ 'right': [ [ 'accio', 'lineinfo' ],
-    \            [ 'percent' ],
-    \            [ 'fileformat', 'fileencoding', 'filetype' ] ] }
-
-let g:lightline.inactive = {
-    \ 'left': [ [ 'filename' ] ],
-    \ 'right': [ [ 'lineinfo' ],
-    \            [ 'percent' ] ] }
-
-let g:lightline.tabline = {
-    \ 'left': [ [ 'tabs' ] ],
-    \ 'right': [ [ 'close' ] ] }
-
-let g:lightline.tab = {
-    \ 'active': [ 'tabnum', 'filename', 'modified' ],
-    \ 'inactive': [ 'tabnum', 'filename', 'modified' ] }
-
-
-let g:lightline.component = {
-    \ 'mode': '%{lightline#mode()}',
-    \ 'absolutepath': '%F',
-    \ 'relativepath': '%f',
-    \ 'filename': '%t',
-    \ 'modified': '%M',
-    \ 'bufnum': '%n',
-    \ 'paste': '%{&paste?"PASTE":""}',
-    \ 'readonly': '%R',
-    \ 'charvalue': '%b',
-    \ 'charvaluehex': '%B',
-    \ 'fileencoding': '%{strlen(&fenc)?&fenc:&enc}',
-    \ 'fileformat': '%{&fileformat}',
-    \ 'filetype': '%{strlen(&filetype)?&filetype:"no ft"}',
-    \ 'percent': '%3p%%',
-    \ 'percentwin': '%P',
-    \ 'spell': '%{&spell?&spelllang:"no spell"}',
-    \ 'lineinfo': ' %3l:%-2v',
-    \ 'line': '%l',
-    \ 'column': '%c',
-    \ 'close': '%999X X ' }
-
-let g:lightline.component_visible_condition = {
-    \ 'modified': '&modified||!&modifiable',
-    \ 'readonly': '&readonly',
-    \ 'paste': '&paste' }
-
-let g:lightline.component_expand = {
-     \ 'accio': 'LightLineErrors',
-     \ }
-
-let g:lightline.component_type = {
-     \ 'accio': 'error',
-     \ }
-let g:accio_mode_map = {
-			\'mode': 'passive',
-			\ 'active_filetypes': ['xquery']
-			\}
-
-" let g:lightline.component_function = {
-" 		\ 'readonly': 'LightLineReadonly', }
-
-let g:lightline.tab_component_function = {
-      \ 'filename': 'lightline#tab#filename',
-      \ 'modified': 'lightline#tab#modified',
-      \ 'readonly': 'lightline#tab#readonly',
-      \ 'tabnum': 'lightline#tab#tabnum' }
-
-let g:lightline.mode_map = {
-    \ 'n' : 'NORMAL',
-    \ 'i' : 'INSERT',
-    \ 'R' : 'REPLACE',
-    \ 'v' : 'VISUAL',
-    \ 'V' : 'V-LINE',
-    \ "\<C-v>": 'V-BLOCK',
-    \ 'c' : 'COMMAND',
-    \ 's' : 'SELECT',
-    \ 'S' : 'S-LINE',
-    \ "\<C-s>": 'S-BLOCK',
-    \ 't': 'TERMINAL',
-    \ '?': '' }
-
-let g:lightline.separator = { 'left': '', 'right': '' }
-let g:lightline.subseparator = { 'left': '', 'right': '' }
-let g:lightline.tabline_separator = g:lightline.separator
-let g:lightline.tabline_subseparator = g:lightline.subseparator
-
-" let g:lightline.enable = {
-" 		    \ 'statusline': 1,
-" 		    \ 'tabline': 1
-" 		    \ }
-"
-
-function! LightLineReadonly()
-	return &readonly ? '' : ''
-endfunction
-
-function! LightLineModified()
-  return &ft =~ 'help' ? '' : &modified ? '+' : &modifiable ? '' : '-'
-endfunction
-
-function! LightLineGitBranch() " {{{
-  return winwidth(0) > 70 ? gita#statusline#preset('branch') : ''
-endfunction " }}}
-
-function! LightLineGitTraffic() " {{{
-  return winwidth(0) > 70 ? gita#statusline#preset('traffic') : ''
-endfunction " }}}
-
-function! LightLineGitStatus() " {{{
-  return winwidth(0) > 70 ? gita#statusline#preset('status') : ''
-endfunction " }}}
-
-function! LightLineErrors() " {{{
-return	exists('*accio#statusline') ? accio#statusline('  %d ', '') : ''
-endfunction " }}}
-
-"}}}
 " functions {{{
-
-" function! OnTabEnter(path)
-"   if isdirectory(a:path)
-"     let dirname = a:path
-"   else
-"     let dirname = fnamemodify(a:path, ":h")
-"   endif
-"   execute "tcd ". dirname
-" endfunction()
-
-function! CdTop()
-  let topdir=system("git rev-parse --show-toplevel")
-  execute ":lcd " . topdir
-endfunction
-
-function! DefaultWorkspace()
-    tabnew ~/projects/grantmacken/dotfiles/ 
-    tabnew ~/projects/grantmacken/gmack.nz/
-    tabnew ~/projects/grantmacken/openresty-install/
-    tabnew ~/projects/grantmacken/mk-tasks/
-endfunction
-
 function! <SID>AutoProjectRootCD()
   try
-    if &ft != 'help'
-      execute ":lcd " . ProjectRootCD
+    if &filetype !=# '' && &filetype != 'help'
+     if !empty('b:projectionist')
+      execute ":Cd"
+    else
+     execute ":cd " . system("git rev-parse --show-toplevel")
+   endif
     endif
   catch
     " Silently ignore invalid buffers
@@ -990,10 +955,22 @@ endfunction
 " 	startinsert
 " endfunction
 
-function! CreateArticle( file )
-	call MakeDirIfNoExists( strftime("content/posts/articles/%Y/%m/%d") )
-	execute ':A ' . strftime("content/posts/articles/%Y/%m/%d/") . a:file  . '.md'
-endfunction
+" function! <SID>ProjectActivate()
+"   try
+"     if &filetype !=# '' && &filetype !~# 'dirvish|git'
+"       for [s:root, s:value] in projectionist#query("framework")
+"         if index(split(&filetype, '\.'), s:value) < 0
+"           let &filetype = join([&filetype, s:value], ".")
+"         endif
+"       endfor
+"       call snippet#InsertSkeleton()
+"     endif
+
+"   catch
+"     " Silently ignore invalid buffers
+"   endtry
+" endfunction
+
 "
 " }}}
 " {{{ initialise
@@ -1004,31 +981,21 @@ augroup init
   " NOTE: filetype
   " detection -- '/usr/share/nvim/runtime/filetype.vim'
   " make recognizes  mk extension
-  " xquery recognizes xql xqm xq
-
+" xquery recognizes xql xqm xq
   " autocmd TabNewEntered * call OnTabEnter(expand("<amatch>"))
 
   autocmd BufNewFile,BufRead *.conf set filetype=nginx "add nginx filetype for any conf extension
-  autocmd BufNewFile,BufRead .env.* setfiletype sh
+  " autocmd BufNewFile,BufRead .env.* setfiletype sh
+  autocmd BufNewFile,BufRead *.t set filetype=tap  "  using test more bash instead of perl
   autocmd BufNewFile,BufRead *.snippets set filetype=snippets "add new snippets filetpe
   autocmd BufEnter * call <SID>AutoProjectRootCD()
   " when entering a buffer look for project root and change dir"
   " our shell commands 'make' etc run from project root
-  " 
-  autocmd User ProjectionistActivate
-        \ if &filetype !=# '' && &filetype !~# 'dirvish|git' |
-        \   for [s:root, s:value] in projectionist#query("framework") |
-        \     if index(split(&filetype, '\.'), s:value) < 0 |
-        \       let &filetype = join([&filetype, s:value], ".") |
-        \     endif |
-        \   endfor |
-        \ endif
+  "@see https://subvisual.co/blog/posts/135-super-powered-vim-part-iii-skeletons/
+   " autocmd User ProjectionistActivate silent! call <SID>ProjectActivate()
+   " autocmd BufNewFile * silent! call snippet#insert_skeleton()
 
-  " if exists('$TMUX') && !exists('$NORENAME')
-  "   au BufEnter * if empty(&buftype) | call system('tmux rename-window '.expand('%:t:S')) | endif
-  "   au VimLeave * call system('tmux set-window automatic-rename on')
-  " endif
 augroup END
 " }}}
 "
-command! -register DefaultWorkspace call DefaultWorkspace()
+" command! -register DefaultWorkspace call DefaultWorkspace()
