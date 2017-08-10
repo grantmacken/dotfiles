@@ -41,7 +41,7 @@ endif
 " endif
 "
 ":verbose set iskeyword 
-"
+"-
 " Temporarily change isk to treat opening peren ( as a word
 " so the function dictionary works as intended
 
@@ -58,7 +58,7 @@ endfunction
 
 augroup xquery 
   autocmd BufWrite <buffer> Accio ["xQcompile"]
-  autocmd CursorHoldI,CursorHold,FocusLost,FocusGained * call lightline#update()
+  " autocmd CursorHoldI,CursorHold,FocusLost,FocusGained * call lightline#update()
   autocmd InsertEnter * call SetKW()
   autocmd InsertLeave * call UnSetKW()
 augroup END

@@ -1,14 +1,13 @@
 scriptencoding utf-8
 " XDG Paths {{{
-
-if exists("$XDG_CONFIG_HOME")
+if exists('$XDG_CONFIG_HOME')
   let $VIMPATH=expand('$XDG_CONFIG_HOME/nvim')
   let $VARPATH=expand('$XDG_CACHE_HOME/nvim')
-  let $DATAPATH=expand('$XDG_DATA_HOME/nvim')
+  let $DATAPATH=expand('$XDG_DATA_HOME/nvim/site')
 else
   let $VIMPATH=expand('$HOME/.config/nvim')
   let $VARPATH=expand('$HOME/.cache/nvim')
-  let $DATAPATH=expand('$HOME/.local/share/nvim')
+  let $DATAPATH=expand('$HOME/.local/share/nvim/site')
 endif
 
 " }}}
@@ -22,149 +21,20 @@ let g:python_host_prog = '/home/gmack/.pyenv/versions/neovim2/bin/python'
 let g:python3_host_prog = '/home/gmack/.pyenv/versions/neovim3/bin/python'
 "
 " Use spacebar instead of '\' as leader. Require before loading plugins.
-let g:mapleader="\<Space>"
-let g:maplocalleader=','
-" Release keymappings for plug-in.
-nnoremap <Space>  <Nop>
-xnoremap <Space>  <Nop>
-nnoremap ,        <Nop>
-xnoremap ,        <Nop>
-" }}}
-" Editor UI Appearance {{{
-" MOUSE
-set mouse=a
-set mousemodel=popup_setpos
-" window  settings {{{
-set notitle             " No need for a title
-set noequalalways       " Don't resize windows on split or close
-set winwidth=30         " Minimum width for current window
-set winheight=1         " Minimum height for current window
-set splitbelow
-set splitright
-"}}}
-
-" set noruler             " Disable default status ruler
-set helpheight=12       " Minimum help window height
-" panes: gutter, tabline, commandline , help {{{
-" left gutter
-set number              " Show line numbers
-set numberwidth=3
-set relativenumber      " Use relative instead of absolute line numbers
-
-" Bottom Command
-" ----------------
-set noshowmode          " Don't show mode in cmd window
-set cmdheight=2         " Height of the command line
-set cmdwinheight=5      " Command-line lines
-set inccommand=nosplit  " Neovim highlight
-set gdefault            " Force Vim to always do global substitutions.
-set shortmess+=c
-" set shortmess=aoOTI     " Shorten messages and don't show intro
-" set shortmess+=c        " https://github.com/roxma/nvim-completion-manager
-" set noshowcmd           " Don't show command in status line
-
-" Top  tabline
-" ----------------
-set showtabline=2       " Always show the tabs line
-" set tabpagemax=30     " Already set to 50 in neovim  Maximum number of tab pages
-" }}}
-" nvim default set laststatus=2   Always show a status line
-" main buffer window pane
-set colorcolumn=120     " Highlight the 120 th character limit
-set synmaxcol=200
-set scrolloff=2         " Keep at least 2 lines above/below
-set sidescrolloff=2     " Keep at least 2 lines left/right
-" Complete Options
-" -----------------
-" :h complete
-"  (default: ".,w,b,u,t")
-"  current buffer, window buffers, unloaded buffers, tags
-" bu
-set completeopt+=menuone
-set completeopt+=noinsert       " auto select feature like neocomplete
-set completeopt+=noselect
-" set completeopt+=preview
-" set completeopt+=longest
-
-" Popup Menu Styling
-" ------------------
-"set previewheight=8     " Completion preview height
-set pumheight=20        " Pop-up menu's line height
-"complete options
-" :h complete
-"  (default: ".,w,b,u,t")
-"  current buffer, window buffers, unloaded buffers, tags
-" bu
-set completeopt+=menuone
-set completeopt+=noinsert       " auto select feature like neocomplete
-set completeopt+=noselect
-" set completeopt+=preview
-" set completeopt+=longest
-
-" Spelling
-" --------
-let g:spell_add=expand($VARPATH . '/spell/en.utf-8.add')
-exec "set spellfile=" . g:spell_add
-
-" SEARCH
-" set wildmode=longest,full
-" set wildignorecase
-
-"}}}
-" Typography: Widths, Tabs, Indents Folds{{{
-set textwidth=120   " Text width maximum 120 chars before wrapping
-set expandtab       " expand tabs to spaces except for Make see runtime
-set softtabstop=2   " While performing editing operations
-" /usr/share/nvim/runtime/ftplugin/make.vim
-" set nosmarttab
-set tabstop=2       " The number of spaces a tab is
-set shiftwidth=2    " Number of spaces to use in auto(indent)
-set autoindent      " Use same indenting on new lines
-set smartindent     " Smart autoindenting on new lines
-set shiftround      " Round indent to multiple of 'shiftwidth'
-" folds
-set foldmethod=marker
-set foldnestmax=1
-" Changing characters to fill special ui elements
-set breakindent
-set showbreak=↪
-set list                " Show hidden characters
-" set fillchars=vert:│,fold:─
-" nvim defaults set listchars=tab:\⋮\ ,extends:⟫,precedes:⟪,nbsp:.,trail:·
-" }}}
-" File and Project Management {{{
-let g:loaded_netrwPlugin = 1
-set noswapfile
-set nobackup
-set undofile
-set undolevels=5000
-set undoreload=10000
-" http://robots.thoughtbot.com/post/18739402579/global-gitignore#comment-45841328i
-" set autowriteall  "Save buffer automatically when changing files
-set autoread      "Always reload buffer when external changes detected
-" https://bluz71.github.io/2017/05/15/vim-tips-tricks.html
-"augroup autoSaveAndRead
-" autocmd!
-"  autocmd TextChanged,InsertLeave,FocusLost * silent! wall
-"  autocmd CursorHold * silent! checktime
-"augroup END
-" Save everything here
-" ls  $HOME/.cache/nvim/session/
-" rm  $HOME/.cache/nvim/session/*
-set sessionoptions-=globals
-set sessionoptions-=help
-" Project and File Management Plugins
-" - eunuch
-" - projectionist
-" - startify
-" - fzf
+" let g:mapleader='\<Space>'
+" let g:maplocalleader=','
+" " Release keymappings for plug-in.
+" nnoremap <Space>  <Nop>
+" xnoremap <Space>  <Nop>
+" nnoremap ,        <Nop>
+" xnoremap ,        <Nop>
 " }}}
 " Add In Plugins {{{
 function! DoRemote(arg)
   UpdateRemotePlugins
 endfunction
 
-call plug#begin(expand('$VIMPATH/plugged'))
+call plug#begin( expand( $DATAPATH . '/plugged'))
 " File_And_Project_Management {{{
 " ---------------------------
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -308,7 +178,7 @@ Plug 'junegunn/vader.vim'                         " VIM    testing vim plugings 
 call plug#end()
 
 "}}}
-" Themes and Colorscheme {{{
+"Themes and Colorscheme {{{
 Plug 'junegunn/seoul256.vim'
 Plug 'trevordmiller/nova-vim'
 Plug 'vim-airline/vim-airline'
@@ -317,7 +187,6 @@ let g:airline#extensions#ale#enabled = 1
 call plug#end()
 " syntax enable
 set background=dark
-" set t_Co=256                   " 256 colors for the terminal
 " let g:seoul256_background = 236
 " colorscheme seoul256
 set termguicolors
@@ -326,13 +195,153 @@ colorscheme nova
 " highlight Pmenu ctermbg=DarkGrey
 " highlight TermCursor ctermfg=red guifg=red
 " }}}
+" BASIC SETTINGS {{{
+" ==================
 
-" PLUGINS
+let g:mapleader      = ' '
+let g:maplocalleader = ' '
+
+augroup vimrc
+  autocmd!
+augroup END
+
+
+" Editor UI Appearance {{{
+" MOUSE
+set mouse=a
+set mousemodel=popup_setpos
+" window  settings {{{
+set notitle             " No need for a title
+set noequalalways       " Don't resize windows on split or close
+set winwidth=30         " Minimum width for current window
+set winheight=1         " Minimum height for current window
+set splitbelow
+set splitright
+"}}}
+
+" set noruler             " Disable default status ruler
+set helpheight=12       " Minimum help window height
+" panes: gutter, tabline, commandline , help {{{
+" left gutter
+set number              " Show line numbers
+set numberwidth=3
+set relativenumber      " Use relative instead of absolute line numbers
+
+" Bottom Command
+" ----------------
+set noshowmode          " Don't show mode in cmd window
+set cmdheight=2         " Height of the command line
+set cmdwinheight=5      " Command-line lines
+set inccommand=nosplit  " Neovim highlight
+set gdefault            " Force Vim to always do global substitutions.
+set shortmess+=c
+" set shortmess=aoOTI     " Shorten messages and don't show intro
+" set shortmess+=c        " https://github.com/roxma/nvim-completion-manager
+" set noshowcmd           " Don't show command in status line
+
+" Top  tabline
+" ----------------
+set showtabline=2       " Always show the tabs line
+" set tabpagemax=30     " Already set to 50 in neovim  Maximum number of tab pages
+" }}}
+" nvim default set laststatus=2   Always show a status line
+" main buffer window pane
+set colorcolumn=120     " Highlight the 120 th character limit
+set synmaxcol=200
+set scrolloff=2         " Keep at least 2 lines above/below
+set sidescrolloff=2     " Keep at least 2 lines left/right
+" Complete Options
+" -----------------
+" :h complete
+"  (default: ".,w,b,u,t")
+"  current buffer, window buffers, unloaded buffers, tags
+" bu
+set completeopt+=menuone
+set completeopt+=noinsert       " auto select feature like neocomplete
+set completeopt+=noselect
+" set completeopt+=preview
+" set completeopt+=longest
+
+" Popup Menu Styling
+" ------------------
+"set previewheight=8     " Completion preview height
+set pumheight=20        " Pop-up menu's line height
+"complete options
+" :h complete
+"  (default: ".,w,b,u,t")
+"  current buffer, window buffers, unloaded buffers, tags
+" bu
+set completeopt+=menuone
+set completeopt+=noinsert       " auto select feature like neocomplete
+set completeopt+=noselect
+" set completeopt+=preview
+" set completeopt+=longest
+
+" Spelling
+" --------
+" let g:spell_add=expand($VARPATH . '/spell/en.utf-8.add')
+" exec "set spellfile=" . g:spell_add
+
+" SEARCH
+" set wildmode=longest,full
+" set wildignorecase
+
+"}}}
+" Typography: Widths, Tabs, Indents Folds{{{
+set textwidth=120   " Text width maximum 120 chars before wrapping
+set expandtab       " expand tabs to spaces except for Make see runtime
+set softtabstop=2   " While performing editing operations
+" /usr/share/nvim/runtime/ftplugin/make.vim
+" set nosmarttab
+set tabstop=2       " The number of spaces a tab is
+set shiftwidth=2    " Number of spaces to use in auto(indent)
+set autoindent      " Use same indenting on new lines
+set smartindent     " Smart autoindenting on new lines
+set shiftround      " Round indent to multiple of 'shiftwidth'
+" folds
+set foldmethod=marker
+set foldnestmax=1
+" Changing characters to fill special ui elements
+set breakindent
+set showbreak=↪
+set list                " Show hidden characters
+" set fillchars=vert:│,fold:─
+" nvim defaults set listchars=tab:\⋮\ ,extends:⟫,precedes:⟪,nbsp:.,trail:·
+" }}}
+" File and Project Management {{{
+let g:loaded_netrwPlugin = 1
+set noswapfile
+set nobackup
+set undofile
+set undolevels=5000
+set undoreload=10000
+" http://robots.thoughtbot.com/post/18739402579/global-gitignore#comment-45841328i
+" set autowriteall  "Save buffer automatically when changing files
+set autoread      "Always reload buffer when external changes detected
+" https://bluz71.github.io/2017/05/15/vim-tips-tricks.html
+"augroup autoSaveAndRead
+" autocmd!
+"  autocmd TextChanged,InsertLeave,FocusLost * silent! wall
+"  autocmd CursorHold * silent! checktime
+"augroup END
+" Save everything here
+" ls  $HOME/.cache/nvim/session/
+" rm  $HOME/.cache/nvim/session/*
+set sessionoptions-=globals
+set sessionoptions-=help
+" Project and File Management Plugins
+" - eunuch
+" - projectionist
+" - startify
+" - fzf
+" }}}
+" }}}
+" PLUGIN SETTINGS {{{
 " - dirvish
 " - fzf
 "===========
-" DIRVISH
-" "============
+" DIRVISH {{{
+"============ {{{
 "@see https://github.com/justinmk/vim-dirvish
 "@help dirvish-options
 " NOTES:
@@ -362,6 +371,7 @@ augroup my_dirvish_events
   autocmd FileType dirvish nnoremap <silent><buffer>
     \ gh :silent keeppatterns g@\v/\.[^\/]+/?$@d<cr>
 augroup END
+" }}}
 " Fuzzy Find Files and things in files with FZF {{{
 " https://github.com/junegunn/fzf/wiki/
 " https://github.com/junegunn/fzf.vim
@@ -439,7 +449,7 @@ endif
 " SUPERTAB     https://github.com/ervandew/supertab.git
 "============
 
-let g:SuperTabDefaultCompletionType = "<c-n>" " make the tabing on completion menu go from top to bottom
+let g:SuperTabDefaultCompletionType = '<c-n>' " make the tabing on completion menu go from top to bottom
 let g:SuperTabClosePreviewOnPopupClose = 1    " Close the preview when completion ends
 " let g:SuperTabLongestEnhanced  = 1 " Enhanced longest match support: default 0
 " let g:SuperTabLongestHighlight = 1 " default 0
@@ -535,7 +545,7 @@ let g:UltiSnipsJumpForwardTrigger = '<NOP>'
 let g:UltiSnipsJumpBackwardTrigger = '<NOP>'
 let g:SuperTabMappingForward = '<NOP>'
 let g:SuperTabMappingBackward = '<NOP>'
-let g:UltiSnipsMappingsToIgnore = [ "SmartTab", "SmartShiftTab" ] " Don't unmap my mappings
+let g:UltiSnipsMappingsToIgnore = [ 'SmartTab', 'SmartShiftTab' ] " Don't unmap my mappings
 let g:ulti_expand_res = 0    " Make <CR> smart
 
 function! Ulti_ExpandOrEnter()
@@ -557,11 +567,11 @@ endfunction
 " Enable tabbing and shift-tabbing through list of results
 function! g:SmartTab()
   if pumvisible()
-    return SuperTab("n")
+    return SuperTab('n')
   else
     call UltiSnips#JumpForwards()
     if g:ulti_jump_forwards_res == 0
-      return SuperTab("n")
+      return SuperTab('n')
     endif
     return ''
   endif
@@ -569,11 +579,11 @@ endfunction
 
 function! g:SmartShiftTab()
   if pumvisible()
-    return SuperTab("p")
+    return SuperTab('p')
   else
     call UltiSnips#JumpBackwards()
     if g:ulti_jump_backwards_res == 0
-      return SuperTab("p")
+      return SuperTab('p')
     endif
     return ''
   endif
@@ -593,7 +603,7 @@ snoremap <silent> <s-Tab> <Esc>:call g:SmartShiftTab()<CR>
 nnoremap <silent> <F2>  :UltiSnipsEdit<CR>
 let g:UltiSnipsSnippetsDir = split(&runtimepath, ',')[0] . '/snips'
 let g:UltiSnipsSnippetDirectories = [g:UltiSnipsSnippetsDir]
-let g:UltiSnipsEditSplit = "vertical"
+let g:UltiSnipsEditSplit = 'vertical'
 
 " let g:SuperTabCrMapping = 1 " (default value: 0)
 " }}}
@@ -651,27 +661,27 @@ tnoremap <expr> <A-r> '<C-\><C-n>"'.nr2char(getchar()).'pi'
 let g:neoterm_size = 5
 set switchbuf+=useopen
 function! TermEnter()
-  let bufcount = bufnr("$")
-  let currbufnr = 1
-  let nummatches = 0
-  let firstmatchingbufnr = 0
-  while currbufnr <= bufcount
-    if(bufexists(currbufnr))
-      let currbufname = bufname(currbufnr)
-      if(match(currbufname, "term://") > -1)
-        echo currbufnr . ": ". bufname(currbufnr)
-        let nummatches += 1
-        let firstmatchingbufnr = currbufnr
+  let l:bufcount = bufnr('$')
+  let l:currbufnr = 1
+  let l:nummatches = 0
+  let l:firstmatchingbufnr = 0
+  while l:currbufnr <= l:bufcount
+    if(bufexists(l:currbufnr))
+      let l:currbufname = bufname(l:currbufnr)
+      if(match(l:currbufname, 'term://') > -1)
+        echo l:currbufnr . ': '. bufname(l:currbufnr)
+        let l:nummatches += 1
+        let l:firstmatchingbufnr = l:currbufnr
         break
       endif
     endif
-    let currbufnr = currbufnr + 1
+    let l:currbufnr = l:currbufnr + 1
   endwhile
-  if(nummatches >= 1)
-    execute ":sbuffer ". firstmatchingbufnr
+  if(l:nummatches >= 1)
+    execute ':sbuffer '. l:firstmatchingbufnr
     startinsert
   else
-    execute ":Topen"
+    execute ':Topen'
   endif
 endfunction
 " map esc in term
@@ -707,9 +717,7 @@ noremap  <silent> <F7> :TREPLSendFile<CR>
 
 command! -nargs=+ Tmake :T make <args>
 command! -nargs=+ Tlog :T tail -f <args>
-
 " pip3 install --user neovim-remote
-
 
 " }}}
 " maximizer {{{
@@ -793,8 +801,7 @@ let g:loaded_netrwPlugin = 1
 " Sessions with startify  {{{
 " What not to save in sessions:
 " set sessionoptions-=options  neovim default
-silent! call MakeDirIfNoExists(expand($VARPATH . '/session'))
-let g:startify_session_dir = expand($VARPATH . '/session')
+let g:startify_session_dir =  expand($VARPATH . '/session')
 let g:startify_session_autoload = 1
 let g:startify_session_persistence = 1
 let g:startify_session_delete_buffers = 1
@@ -852,16 +859,18 @@ set sessionoptions-=help
 " let g:prosession_branch_cmd = 'git rev-parse --abbrev-ref HEAD 2>/dev/null' " for each branch
 " let g:prosession_dir = expand($VARPATH . '/session')
 " }}}
-" Linters and Checkers with Accio" {{{
+" Linting with ALE" {{{
+map ]a <Plug>(ale_next_wrap)
+nmap [a <Plug>(ale_previous_wrap)
 " <F8> sav and run checker
 " ---------------------------------------------------------------------
 " Accio
 " ----------------------------------------------------------------------
 " autocmd BufWrite <buffer> Accio ["xqm"]
 
-let g:accio_create_empty_quickfix = 1
-let g:accio_auto_copen = 0 "automatically open quick list
-let g:accio_update_interval = 250
+" let g:accio_create_empty_quickfix = 1
+" let g:accio_auto_copen = 0 "automatically open quick list
+" let g:accio_update_interval = 250
 
 " Note:  Noah Frederick's  after ... sets text and signs
 " @see gf 'after/plugin/accio.vim'
@@ -881,28 +890,28 @@ nnoremap <silent> <leader>q  :call ToggleList("Quickfix List", 'c')<CR>
 " http://vim.wikia.com/wiki/Toggle_to_open_or_close_the_quickfix_window
 
 function! GetBufferList()
-  redir =>buflist
+  redir =>l:buflist
   silent! ls!
   redir END
-  return buflist
+  return l:buflist
 endfunction
 
 function! ToggleList(bufname, pfx)
-	let buflist = GetBufferList()
-  for bufnum in map(filter(split(buflist, '\n'), 'v:val =~ "'.a:bufname.'"'), 'str2nr(matchstr(v:val, "\\d\\+"))')
-    if bufwinnr(bufnum) != -1
+  let l:buflist = GetBufferList()
+  for l:bufnum in map(filter(split(l:buflist, '\n'), 'v:val =~ "'.a:bufname.'"'), 'str2nr(matchstr(v:val, "\\d\\+"))')
+    if bufwinnr(l:bufnum) != -1
       exec(a:pfx.'close')
       return
     endif
   endfor
-  if a:pfx == 'l' && len(getloclist(0)) == 0
-      echohl ErrorMsg
-      echo "Location List is Empty."
-      return
+  if a:pfx ==# 'l' && len(getloclist(0)) == 0
+    echohl ErrorMsg
+    echo 'Location List is Empty.'
+    return
   endif
-  let winnr = winnr()
+  let l:winnr = winnr()
   exec(a:pfx.'open 3')
-  if winnr() != winnr
+  if winnr() != l:winnr
     wincmd p
   endif
 endfunction
@@ -917,11 +926,11 @@ endfunction
 " functions {{{
 function! <SID>AutoProjectRootCD()
   try
-    if &filetype !=# '' && &filetype != 'help'
+    if &filetype !=# '' && &filetype !=# 'help'
      if !empty('b:projectionist')
-      execute ":Cd"
+      execute ':Cd'
     else
-     execute ":cd " . system("git rev-parse --show-toplevel")
+     execute ':cd ' . system('git rev-parse --show-toplevel')
    endif
     endif
   catch
@@ -997,5 +1006,3 @@ augroup init
 
 augroup END
 " }}}
-"
-" command! -register DefaultWorkspace call DefaultWorkspace()

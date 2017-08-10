@@ -6,6 +6,7 @@ $(foreach src,$(APP_LIST),$(call assert-command-present,$(src)))
 
 XDG_CACHE_HOME ?= $(HOME)/.cache
 XDG_CONFIG_HOME ?= $(HOME)/.config
+XDG_DATA_HOME ?= $(HOME)/.local/share
 
 GIT_USER="$(shell git config --get user.name )"
 GIT_REMOTE_ORIGIN_URl="$(shell git config --get remote.origin.url )"
@@ -56,10 +57,22 @@ stow-tmux:
 stow-neovim:
 	@mkdir -p $(XDG_CACHE_HOME)/nvim
 	@mkdir -p $(XDG_CONFIG_HOME)/nvim
-	$(if $(wildcard  $(HOME).local/share/nvim/site/autoload/plug.vim ),,\
- curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
- https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim )
-	@stow -v -t $(XDG_CONFIG_HOME)/nvim nvim
+	@echo "$(XDG_DATA_HOME)/nvim"
+	@ls -al  "$(XDG_DATA_HOME)/nvim/site"
+	@ls -al  "nvim/site"
+	@[ -L $(XDG_CONFIG_HOME)/nvim/init.vim ] || ln -s -v -t $(XDG_CONFIG_HOME)/nvim "$$(pwd)/nvim/init.vim"
+	@cd nvim; stow -v -t "$(XDG_DATA_HOME)/nvim/site" site
+
+
+
+
+
+# @stow -v -t $(XDG_DATA_HOME)/nvim/site nvim/site
+# @ln -s -v -t $(XDG_CONFIG_HOME)/nvim nvim/init.config
+
+# $(if $(wildcard  $(HOME).local/share/nvim/site/autoload/plug.vim ),,\
+#  curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
+#  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim )
 
 neovimBackspaceFix:
 	infocmp $TERM | sed 's/kbs=^[hH]/kbs=\\177/' > $TERM.ti

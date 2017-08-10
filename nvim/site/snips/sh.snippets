@@ -1,0 +1,14 @@
+# bash shell.snippets
+
+snippet _skel "Shebang" b
+#!/usr/bin/env bash
+$0
+endsnippet
+
+snippet _tap "Test More Bash" b
+#!/usr/bin/env bash
+while read -r line; do
+ echo "$line"
+done <  <(w3m -dump http://localhost:8080/exist/rest/apps/gmack.nz/modules/tap.xq?mod=modules/lib/`!p snip.rv = snip.basename`.xqm
+)$0
+endsnippet

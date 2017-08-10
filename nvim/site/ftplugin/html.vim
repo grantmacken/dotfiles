@@ -1,7 +1,7 @@
 let s:save_cpo = &cpoptions
 set cpoptions&vim
 
-augroup shell
+augroup html
     autocmd BufWrite <buffer> Accio ["tidy"]
 augroup END
 

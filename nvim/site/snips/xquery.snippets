@@ -18,6 +18,7 @@ def complete(t, opts):
     return "(" + '|'.join(opts) + ')'
 
 endglobal
+
 # Usage:
 # SKELETONS for file templates
 # fallback
@@ -32,17 +33,60 @@ xquery version "3.1";
 $0
 endsnippet
 
-snippet _tests "xQuery tests template" b
+snippet _lib "xQuery module template" b
 xquery version "3.1";
 (:~
-:
-@author $1
-@version $2
-@see 
+This module contains helper functions for `!p snip.rv = snip.basename`
+@author Grant MacKenzie
+@version 0.0.1
+@see modules/tests/lib/`!p snip.rv = snip.basename`.xqm
 :)
+
+module namespace `!p snip.rv = snip.basename`="http://markup.nz/#`!p snip.rv = snip.basename`";
+
+(:~
+${3:(: function description :)}
+@see modules/tests/lib/`!p snip.rv = snip.basename`.xqm;t-`!p snip.rv = snip.basename`:$2
+@param $2 ${4:(: parameter description :)}
+@return ${5:(: return description :)}
+:)
+declare
+function `!p snip.rv = snip.basename`:${1:(:function-name:)}($${2:(:arg:)} as xs:string ) as xs:string {
+ let $result := normalize-space( $$2 )
+return ( $result )
+};
 $0
 endsnippet
 
+snippet _alt "xQuery module test template" b
+xquery version "3.1";
+(:~
+Tests for `!p snip.rv = snip.basename` functions
+:)
+
+module namespace t-`!p snip.rv = snip.basename` = "http://markup.nz/#t-`!p snip.rv = snip.basename`";
+import module namespace note = "http://markup.nz/#`!p snip.rv = snip.basename`" at "../../lib/`!p snip.rv = snip.basename`.xqm";
+
+declare namespace test="http://exist-db.org/xquery/xqsuite";
+
+(:~
+@param $arg  string
+:)
+declare
+%test:name(
+'given " hello world " $1 SHOULD return "hello world"'
+)
+%test:args(
+  ' hello world ',
+)
+%test:assertEquals(
+'hello world'
+)
+function t-`!p snip.rv = snip.basename`:$1( $arg1 as xs:string ) as xs:string {
+`!p snip.rv = snip.basename`:${1:(:function-name:)}( $arg1 )
+};
+$0
+endsnippet
 
 # short expressions at line start
 # start with
