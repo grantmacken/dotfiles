@@ -49,7 +49,7 @@ Plug 'tpope/vim-projectionist'
 " git gists and github
 " Plug 'lambdalisue/vim-gista' " not yet compatible with neomake
 " Plug 'lambdalisue/vim-gita', {'on': ['Gita']}
-" Plug 'lambdalisue/vim-gista', {'on': ['Gista']}
+Plug 'lambdalisue/vim-gista', {'on': ['Gista']}
 " Plug 'lambdalisue/lista.nvim'
 Plug 'airblade/vim-gitgutter'
 Plug 'jreybert/vimagit'
@@ -516,19 +516,14 @@ let g:deoplete#autocomplete_delay = 50
 
 let g:deoplete#ignore_sources = {}
 let g:deoplete#ignore_sources._ = ['buffer', 'member', 'tag', 'file']
-
 let g:deoplete#sources = {}
 let g:deoplete#sources._ = [ 'buffer', 'member', 'tag', 'file', 'dictionary', 'syntax', 'around', 'file/include' ]
-
-
 " '_'  value is used for default filetypes
-
 let g:deoplete#sources.xquery = ['ultisnips', 'tag', 'syntax']  " set values for each filetype
 " let g:deoplete#sources.xquery = ['omni']  " set values for each filetype
 " let g:deoplete#sources.html = ['ultisnips', 'buffer', 'tag']  " set values for each filetype
 " let g:deoplete#sources.javascript = [ 'ternjs', 'ultisnips', 'buffer', 'tag']  " set values for each filetype
 " let g:deoplete#sources.vim = ['vim', 'buffer', 'tag']  " set values for each filetype
-
 " Use partial fuzzy matches like YouCompleteMe
 call deoplete#custom#set('_', 'matchers', ['matcher_fuzzy'])
 " "call deoplete#custom#set('_', 'converters', ['converter_remove_paren'])
@@ -860,8 +855,13 @@ set sessionoptions-=help
 " let g:prosession_dir = expand($VARPATH . '/session')
 " }}}
 " Linting with ALE" {{{
+" :h ale
 map ]a <Plug>(ale_next_wrap)
 nmap [a <Plug>(ale_previous_wrap)
+
+let g:ale_lint_delay = 1000
+let g:ale_lua_luacheck_options = '--std ngx_lua'
+" let g:ale_linters = { 'xquery': [ 'xQcompile'] }
 " <F8> sav and run checker
 " ---------------------------------------------------------------------
 " Accio
@@ -923,6 +923,9 @@ endfunction
 " nmap <Leader><Space>p :cprev<CR>      " previous error/warning
 " autocmd! InsertChange,TextChanged *.html update | :Accio [ "tidy", "xmlwf", "xmllint" ]
 " }}}
+"
+let g:gista#client#use_git_config_github_user = 1
+
 " functions {{{
 function! <SID>AutoProjectRootCD()
   try

@@ -1,5 +1,4 @@
 SHELL=/bin/bash
-
 APP_LIST = git curl stow
 assert-command-present = $(if $(shell which $1),,$(error '$1' missing and needed for this build))
 $(foreach src,$(APP_LIST),$(call assert-command-present,$(src)))
@@ -7,6 +6,7 @@ $(foreach src,$(APP_LIST),$(call assert-command-present,$(src)))
 XDG_CACHE_HOME ?= $(HOME)/.cache
 XDG_CONFIG_HOME ?= $(HOME)/.config
 XDG_DATA_HOME ?= $(HOME)/.local/share
+UP_TARG_DIR := $(abspath ../)
 
 GIT_USER="$(shell git config --get user.name )"
 GIT_REMOTE_ORIGIN_URl="$(shell git config --get remote.origin.url )"
@@ -63,6 +63,12 @@ stow-neovim:
 	@[ -L $(XDG_CONFIG_HOME)/nvim/init.vim ] || ln -s -v -t $(XDG_CONFIG_HOME)/nvim "$$(pwd)/nvim/init.vim"
 	@cd nvim; stow -v -t "$(XDG_DATA_HOME)/nvim/site" site
 
+stow-node:
+	@echo '# $(@) #'
+	@ls -al  node_modules/.bin
+	@stow -v -t "$(UP_TARG_DIR)/node_modules" node_modules
+
+
 
 
 
@@ -78,7 +84,7 @@ neovimBackspaceFix:
 	infocmp $TERM | sed 's/kbs=^[hH]/kbs=\\177/' > $TERM.ti
 	tic $TERM.ti
 
-$(HOME).config/seoul256-gnome-terminal: 
+$(HOME).config/seoul256-gnome-terminal:
 	git clone https://github.com/anuragsoni/seoul256-gnome-terminal.git $(HOME)/.config/seoul256-gnome-terminal
 	source $(HOME)/.config/seoul256-gnome-terminal/seoul256-dark.sh
 
