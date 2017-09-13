@@ -21,8 +21,8 @@ my bashrc and bashrc source files ( prompt, alaises etc )
 - nvim: [ init.vim ] my nvim config
        => ~/.config/nvim
 - nvim/site: [ {runtimepath_folders}   ]
-    => ~/.local/share/nivim/site  ( my nvim local {runtimepath} )
-    plugged: vim-plug placed plugins
+   * => ~/.local/share/nivim/site  ( my nvim local {runtimepath} )
+   * plugged: vim-plug placed plugins
             however for some pluggins it is possible to extend a plugin
             .e.g after ale is plugged by vim-plug
             my own {linter} created in
@@ -30,7 +30,7 @@ my bashrc and bashrc source files ( prompt, alaises etc )
              can be stowed into ale
             TODO:
 - bin: [ {EXECUTABLE} ] 
-    => ~/bin (my home bin )
+   - => ~/bin (my home bin )
 - projects: my git projects ~/projects/{GITUSER}
 - projects/bin:  [ bin/{EXECUTABLE} ]
     => ~/projects/{GITUSER}/
