@@ -2,14 +2,24 @@
 name: neovim notes
 -->
 
-Autocompletion 
+Coding Style: 
+Utilise existing formater and linter programs 
+Pipe buffer text rather than the read file
+- Neoformat programs
+- Ale Linter programs
 
- - suggest as you type:      deoplete
+Autocompletion
+  - suggest as you type:      deoplete
       xquery - functions
  - snippets:                 ultisnips
  - lookup documentation:      echodoc
- - ctags
- 
+ - ctags universal tags
+
+Builds  accio with projectionist 
+ - on save run
+ - can compile check => 
+ - optimise build files ( to bulid dir ) => upload 
+ - prove unit tests
 
 
 What I want from my setup

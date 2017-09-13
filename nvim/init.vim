@@ -2,11 +2,11 @@ scriptencoding utf-8
 " XDG Paths {{{
 if exists('$XDG_CONFIG_HOME')
   let $VIMPATH=expand('$XDG_CONFIG_HOME/nvim')
-  let $VARPATH=expand('$XDG_CACHE_HOME/nvim')
+  let $CACHEPATH=expand('$XDG_CACHE_HOME/nvim')
   let $DATAPATH=expand('$XDG_DATA_HOME/nvim/site')
 else
   let $VIMPATH=expand('$HOME/.config/nvim')
-  let $VARPATH=expand('$HOME/.cache/nvim')
+  let $CACHEPATH=expand('$HOME/.cache/nvim')
   let $DATAPATH=expand('$HOME/.local/share/nvim/site')
 endif
 
@@ -14,20 +14,24 @@ endif
 " Global Mappings "{{{
 " https://github.com/zchee/deoplete-jedi/wiki/Setting-up-Python-for-Neovim
 " pyenv activate neovim3
-" pip install neovim
+" pip install neovim jedi pylint mistune psutil setproctitle
+" pip install python-language-server
+" Python based linters
+" pycodestyle pyflakes flake8 vim-vint proselint yamllint
 " https://github.com/mhinz/neovim-remote
 " let g:neoterm_automap_keys = ',tt'
-let g:python_host_prog = '/home/gmack/.pyenv/versions/neovim2/bin/python'
-let g:python3_host_prog = '/home/gmack/.pyenv/versions/neovim3/bin/python'
+let g:python_host_prog = expand('$HOME/.pyenv/versions/neovim2/bin/python')
+let g:python3_host_prog =  expand('$HOME/.pyenv/versions/neovim3/bin/python')
 "
 " Use spacebar instead of '\' as leader. Require before loading plugins.
-" let g:mapleader='\<Space>'
+let g:mapleader      = ' '
+let g:maplocalleader = ','
 " let g:maplocalleader=','
 " " Release keymappings for plug-in.
-" nnoremap <Space>  <Nop>
-" xnoremap <Space>  <Nop>
-" nnoremap ,        <Nop>
-" xnoremap ,        <Nop>
+nnoremap <Space>  <Nop>
+xnoremap <Space>  <Nop>
+nnoremap ,        <Nop>
+xnoremap ,        <Nop>
 " }}}
 " Add In Plugins {{{
 function! DoRemote(arg)
@@ -42,6 +46,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'justinmk/vim-dirvish'
 Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-projectionist'
+Plug 'airblade/vim-rooter'
 " }}}
 " ---------------------------
 " neovim terminal
@@ -49,31 +54,42 @@ Plug 'tpope/vim-projectionist'
 " git gists and github
 " Plug 'lambdalisue/vim-gista' " not yet compatible with neomake
 " Plug 'lambdalisue/vim-gita', {'on': ['Gita']}
-Plug 'lambdalisue/vim-gista', {'on': ['Gista']}
+" Plug 'lambdalisue/vim-gista', {'on': ['Gista']}
 " Plug 'lambdalisue/lista.nvim'
 Plug 'airblade/vim-gitgutter'
-Plug 'jreybert/vimagit'
+" Plug 'jreybert/vimagit'
 " Plugt'lambdalisue/vim-gita'
 "projectionist#query("framework")
 "
 " Code Lint Compile Build Test
 " ----------------------------
 Plug 'w0rp/ale'
-" let g:airline#extensions#ale#enabled = 1
+let g:airline#extensions#ale#enabled = 1
 " navigate between errors
 " nmap <silent> <C-k> <Plug>(ale_previous_wrap)
 " nmap <silent> <C-j> <Plug>(ale_next_wrap)
 " use quicklist instead of locallist
 " let g:ale_set_loclist = 0
 " let g:ale_set_quickfix = 1
-"
+Plug 'sbdchd/neoformat'
+let g:neoformat_try_formatprg = 1
+let g:neoformat_basic_format_align = 1" Enable alignment
+let g:neoformat_basic_format_retab = 1" Enable tab to spaces conversion
+let g:neoformat_basic_format_trim = 1" Enable trimmming of trailing whitespace
+" augroup fmt
+"   autocmd!
+"   autocmd BufWritePre * undojoin | Neoformat
+" augroup END
+
 
 Plug 'pgdouyon/vim-accio' "@see https://github.com/pgdouyon/vim-accio
+
+" Plug 'skywind3000/asyncrun.vim'
+"
 " Used for Async
 " - Check             [ 'format', 'lint' ] ( on buffer text change  )
-" - Compile Builds    [ 'compile' ]        ( on save compile  )
-" - Test              [ 'prove' ]          ( on build run asseertion and functional tests )
-
+" - Compile Builds    [ 'compile' ]        ( on save compile )
+" - Test              [ 'prove' ]          ( on build run assertion and functional tests )
 
 " Feedback
 " - Populating the quickfix list
@@ -83,27 +99,47 @@ Plug 'pgdouyon/vim-accio' "@see https://github.com/pgdouyon/vim-accio
 
 Plug 'kassio/neoterm'
 " Plug 'janko-m/vim-test'
-"
 " Plug 'sbdchd/neoformat'
 "
 " Auto Completions and Snippets.
 " ------------------------------
+" Plug 'prabirshrestha/asyncomplete.vim'
+" Plug 'prabirshrestha/async.vim'
+" Plug 'prabirshrestha/vim-lsp', { 'branch': 'dev' }
+" Plug 'prabirshrestha/asyncomplete-lsp.vim'
+" Plug 'prabirshrestha/asyncomplete-buffer.vim'
+" Plug 'prabirshrestha/asyncomplete-emoji.vim'
+" Plug 'prabirshrestha/asyncomplete-necosyntax.vim'
+" Plug 'prabirshrestha/asyncomplete-necovim.vim'
+" Plug 'prabirshrestha/asyncomplete-necosyntax.vim'
+" Plug 'prabirshrestha/asyncomplete-ultisnips.vim'
+" Plug 'yami-beta/asyncomplete-omni.vim'
+" Plug 'prabirshrestha/asyncomplete-flow.vim'
+" Plug 'prabirshrestha/asyncomplete-tags.vim' " https://github.com/prabirshrestha/asyncomplete-tags.vim
 " Plug 'roxma/nvim-completion-manager' " can't handle multiple invim instances
 " Plug 'roxma/python-support.nvim'
 " let g:python_support_python2_require = 0
 " Plug 'roxma/nvim-cm-tern',  {'do': 'npm install'}
-Plug 'ervandew/supertab'
+" Plug 'autozimu/LanguageClient-neovim', { 'do': function('DoRemote') }
 Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
-Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins' }
+Plug 'ervandew/supertab'
 Plug 'SirVer/ultisnips'     " https://github.com/SirVer/ultisnips
 Plug 'honza/vim-snippets'
-" deoplete sources
+" Plug 'Shougo/denite.nvim', { 'do': function('DoRemote') }
+Plug 'Shougo/echodoc'  " recomended plugin .. to look at function auguments
+" Plug 'autozimu/LanguageClient-neovim', { 'do': function('DoRemote')}
+" deoplete sources generic
+Plug 'Shougo/neco-syntax'       " SYNTAX https://github.com/Shougo/neco-syntax
 Plug 'Shougo/context_filetype.vim'
-Plug 'https://github.com/Shougo/neco-syntax' " https://github.com/Shougo/neco-syntax
-Plug 'Shougo/neoinclude.vim' "deoplete file/include source and extends tag source
-Plug 'fszymanski/deoplete-emoji'
-Plug 'ujihisa/neco-look' "deoplete spelling source ... word completion with 'look' command ref man look
-Plug 'Konfekt/FastFold'      "recomended Shougo plugin
+" Plug 'Shougo/neoinclude.vim'  " FILE deoplete file/include source and extends tag source
+Plug 'fszymanski/deoplete-emoji' " EMOJI
+" Plug 'ujihisa/neco-look'       " SPELL deoplete spelling source ... word completion with 'look' command ref man look
+" deoplete sources filetpes
+Plug 'Shougo/neco-vim'          " VIM autocompletions https://github.com/Shougo/neco-syntax
+Plug 'zchee/deoplete-jedi'      " PYTHON autocompletions https://github.com/Shougo/neco-syntax
+Plug 'mhartington/nvim-typescript', { 'do': function('DoRemote')} " TYPESCRIPT https://github.com/mhartington/nvim-typescript
+Plug 'fszymanski/deoplete-emoji' "EMOJI
+Plug 'Konfekt/FastFold'           "recomended Shougo plugin
 " Plug 'wellle/tmux-complete.vim' " https://github.com/wellle/tmux-complete.vim
 " Plug 'majutsushi/tagbar', {'on': 'TagbarToggle'}
 " Plug 'benekastah/neomake'     " linting
@@ -114,6 +150,7 @@ Plug 'Konfekt/FastFold'      "recomended Shougo plugin
 Plug 'rbgrouleff/bclose.vim' "delete buffer without closing window
 Plug 'szw/vim-maximizer' " zoom vim window
 " Editing Code manipulation
+Plug 'junegunn/vim-peekaboo' " https://github.com/junegunn/vim-peekaboo
 Plug 'unblevable/quick-scope'  " https://github.com/unblevable/quick-scope
 Plug 'junegunn/vim-easy-align' " https://github.com/junegunn/vim-easy-align
 " yanking
@@ -127,7 +164,6 @@ Plug 'ntpeters/vim-better-whitespace'
 "Plug 'cazador481/fakeclip.neovim'
 " tags
 "Plug 'ludovicchabant/vim-gutentags'
-" Plug 'Shougo/echodoc'  " recomended plugin .. to look at function auguments
 " Visual
 " Plug 'ryanoasis/vim-devicons'
 
@@ -151,9 +187,9 @@ Plug 'mhinz/vim-startify'
 Plug 'vitalk/vim-shebang' "https://github.com/vitalk/vim-shebang
 " https://github.com/vitalk/vim-fancy
 " https://github.com/vitalk/vim-simple-todo
-Plug 'othree/yajs.vim', { 'for': 'javascript' }          " JAVASCRPT SYNTAX object/method data comes from Mozilla's WebIDL
-Plug 'HerringtonDarkholme/yats.vim',{'for':'javascript'} " TYPESCRIPT
-Plug 'gavocanov/vim-js-indent'                           " JAVASCRIPT INDENT
+Plug 'othree/yajs.vim', { 'for': 'javascript' }           " JAVASCRPT SYNTAX object/method data comes from Mozilla's WebIDL
+Plug 'HerringtonDarkholme/yats.vim',{'for': 'typescript'} " TYPESCRIPT
+Plug 'gavocanov/vim-js-indent' ,{'for': 'javascript'}     " JAVASCRIPT INDENT
 Plug 'elzr/vim-json', { 'for': 'json' } "                  JSON support
 Plug 'ap/vim-css-color', { 'for': 'css' }       "   CSS set the background of hex color values to the color
 Plug 'hail2u/vim-css3-syntax', { 'for': 'css' } "   CSS3 syntax support
@@ -183,7 +219,7 @@ Plug 'junegunn/seoul256.vim'
 Plug 'trevordmiller/nova-vim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-let g:airline#extensions#ale#enabled = 1
+" let g:airline#extensions#ale#enabled = 1
 call plug#end()
 " syntax enable
 set background=dark
@@ -198,13 +234,9 @@ colorscheme nova
 " BASIC SETTINGS {{{
 " ==================
 
-let g:mapleader      = ' '
-let g:maplocalleader = ' '
-
 augroup vimrc
   autocmd!
 augroup END
-
 
 " Editor UI Appearance {{{
 " MOUSE
@@ -256,15 +288,11 @@ set sidescrolloff=2     " Keep at least 2 lines left/right
 "  (default: ".,w,b,u,t")
 "  current buffer, window buffers, unloaded buffers, tags
 " bu
-set completeopt+=menuone
-set completeopt+=noinsert       " auto select feature like neocomplete
-set completeopt+=noselect
-" set completeopt+=preview
-" set completeopt+=longest
+
 
 " Popup Menu Styling
 " ------------------
-"set previewheight=8     " Completion preview height
+set previewheight=8     " Completion preview height
 set pumheight=20        " Pop-up menu's line height
 "complete options
 " :h complete
@@ -274,12 +302,12 @@ set pumheight=20        " Pop-up menu's line height
 set completeopt+=menuone
 set completeopt+=noinsert       " auto select feature like neocomplete
 set completeopt+=noselect
-" set completeopt+=preview
+" set completeopt=-preview
 " set completeopt+=longest
 
 " Spelling
 " --------
-" let g:spell_add=expand($VARPATH . '/spell/en.utf-8.add')
+" let g:spell_add=expand($CACHEPATH . '/spell/en.utf-8.add')
 " exec "set spellfile=" . g:spell_add
 
 " SEARCH
@@ -310,6 +338,7 @@ set list                " Show hidden characters
 " }}}
 " File and Project Management {{{
 let g:loaded_netrwPlugin = 1
+set hidden
 set noswapfile
 set nobackup
 set undofile
@@ -355,13 +384,15 @@ augroup my_dirvish_events
   autocmd!
   " Same as FZF
   autocmd FileType dirvish
-    \  nnoremap <silent><buffer> t :call dirvish#open('tabedit', 0)<CR>
-    \ |xnoremap <silent><buffer> t :call dirvish#open('tabedit', 0)<CR>
+        \  nnoremap <silent><buffer> t :call dirvish#open('tabedit', 0)<CR>
+        \ |xnoremap <silent><buffer> t :call dirvish#open('tabedit', 0)<CR>
   " Enable :Gstatus and friends.
   " autocmd FileType dirvish call fugitive#detect(@%)
   "|
 
   " Map `gr` to reload the Dirvish buffer.
+  "
+
   autocmd FileType dirvish nnoremap <silent><buffer> gr :<C-U>Dirvish %<CR>
 
   " autocmd FileType dirvish nnoremap <silent> <Tab> <Esc>:call g:SmartTab()<CR>
@@ -369,7 +400,7 @@ augroup my_dirvish_events
   " Map `gh` to hide dot-prefixed files.
   " To "toggle" this, just press `R` to reload.
   autocmd FileType dirvish nnoremap <silent><buffer>
-    \ gh :silent keeppatterns g@\v/\.[^\/]+/?$@d<cr>
+        \ gh :silent keeppatterns g@\v/\.[^\/]+/?$@d<cr>
 augroup END
 " }}}
 " Fuzzy Find Files and things in files with FZF {{{
@@ -383,10 +414,10 @@ let g:fzf_layout = { 'down': '~40%' }
 
 " ctrl-[a-z], alt-[a-z], f[1-4], or any single character
 let g:fzf_action = {
-  \ 'ctrl-p': 'edit',
-  \ 'ctrl-t': 'tabedit',
-  \ 'ctrl-o': 'botright split',
-  \ 'ctrl-a':  'vertical botright split' }
+      \ 'ctrl-p': 'edit',
+      \ 'ctrl-t': 'tabedit',
+      \ 'ctrl-o': 'botright split',
+      \ 'ctrl-a':  'vertical botright split' }
 "nnoremap <silent> <Leader><Leader> :Files<CR>
 nnoremap <silent> <Leader>f  :GitFiles<CR>
 nnoremap <silent> <Leader>b  :Buffers<CR>
@@ -436,6 +467,12 @@ endif
 
 " Auto Completions and Snippets and Templates {{{
 " -----------------------------------------------
+" let g:asyncomplete_log_file = expand('~/asyncomplete.log')
+" let g:lsp_log_file = expand('~/vim-lsp.log')
+" let g:lsp_log_verbose = 1
+" let g:lsp_async_completion = 1
+" autocmd FileType typescript setlocal omnifunc=lsp#complete
+
 "  Autocompletionn
 " deoplete with
 "  - echodoc
@@ -448,17 +485,16 @@ endif
 "===========
 " SUPERTAB     https://github.com/ervandew/supertab.git
 "============
-
-let g:SuperTabDefaultCompletionType = '<c-n>' " make the tabing on completion menu go from top to bottom
+let g:SuperTabDefaultCompletionType = '<c-n>'
+" make the tabing on completion menu go from top to bottom
 let g:SuperTabClosePreviewOnPopupClose = 1    " Close the preview when completion ends
 " let g:SuperTabLongestEnhanced  = 1 " Enhanced longest match support: default 0
 " let g:SuperTabLongestHighlight = 1 " default 0
-" neovim
 
 "=============
 "   ECHODOC
 "==============
-" let g:echodoc_enable_at_startup = 1
+let g:echodoc_enable_at_startup = 1
 " set cmdheight=2 @see above
 " cmdheight
 
@@ -466,16 +502,24 @@ let g:SuperTabClosePreviewOnPopupClose = 1    " Close the preview when completio
 "   DEOPLETE
 "===============
 let g:deoplete#enable_at_startup = 1
-if !exists('g:deoplete#omni#input_patterns')
-  let g:deoplete#omni#input_patterns = {}
-endif
-let g:deoplete#enable_smart_case = 1
-" let g:deoplete#disable_auto_complete = 1
+let g:deoplete#auto_complete_delay = 150  " Default is 50
+" let g:deoplete#auto_refresh_delay = 500  " Default is 500
+" let g:deoplete#enable_refresh_always = 1
+" if working on plugin uncomment next 3 lines
+let g:deoplete#enable_debug = 1
+let g:deoplete#enable_profile = 1
+call deoplete#enable_logging('DEBUG', expand( $CACHEPATH . '/deoplete.log'))
+" if !exists('g:deoplete#omni#input_patterns')
+"   let g:deoplete#omni#input_patterns = {}
+" endif
+" let g:deoplete#enable_smart_case = 1
+let g:deoplete#enable_camel_case = 1
+" " let g:deoplete#disable_auto_complete = 1
 let g:deoplete#auto_completion_start_length = 3
-let g:deoplete#max_menu_width = 120
-let g:deoplete#max_abbr_width = 80
-let g:deoplete#max_menu_width = 120
-let g:deoplete#autocomplete_delay = 50
+let g:deoplete#max_abbr_width = 35
+let g:deoplete#max_menu_width = 20
+let g:deoplete#tag#cache_limit_size = 800000
+let g:deoplete#file#enable_buffer_path = 1
 
 " sources:
 " Note: come with default sources
@@ -492,9 +536,6 @@ let g:deoplete#autocomplete_delay = 50
 " UltiSnips ... https://github.com/SirVer/ultisnips
 " https://github.com/SirVer/ultisnips/blob/master/rplugin/python3/deoplete/sources/ultisnips.py
 " ---------------------------------------------------------------------------------------------------
-" ternjs ... deoplete-ternjs: ternjs source for JavaScript https://github.com/carlitux/deoplete-ternjs
-" https://github.com/carlitux/deoplete-ternjs/blob/master/rplugin/python3/deoplete/sources/ternjs.py
-" ---------------------------------------------------------------------------------------------------
 " syntax ... deoplete source analyzes a syntax file like autoload/syntaxcomplete.vim with more candidates
 "            defaults to 4 keyword letter length
 " https://github.com/Shougo/neco-syntax/blob/master/rplugin/python3/deoplete/sources/syntax.py
@@ -503,31 +544,110 @@ let g:deoplete#autocomplete_delay = 50
 " ---------------------------------------------------------------------------------------------------
 " file/include ... neoinclude
 " ---------------------------------------------------------------------------------------------------
+" file types
+" vim  necovim  https://github.com/Shougo/neco-syntax/blob/master/rplugin/python3/deoplete/sources/syntax.py
+
+" Language Servers
+" typescript javascript  ... mhartington/nvim-typescript
+"
+" ternjs ... deoplete-ternjs: ternjs source for JavaScript https://github.com/carlitux/deoplete-ternjs
+" https://github.com/carlitux/deoplete-ternjs/blob/master/rplugin/python3/deoplete/sources/ternjs.py
+" ---------------------------------------------------------------------------------------------------
+
 " omnifuncs
 " augroup omnifuncs
 "   autocmd!
 "   autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
 "   autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-"   autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-"   autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 "   autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-"   autocmd FileType xquery setlocal omnifunc=xquerycomplete#Complete
 " augroup end
 
+" limit sources
 let g:deoplete#ignore_sources = {}
-let g:deoplete#ignore_sources._ = ['buffer', 'member', 'tag', 'file']
+" let g:deoplete#ignore_sources._ = ['buffer', 'member', 'tag', 'file']
+
 let g:deoplete#sources = {}
-let g:deoplete#sources._ = [ 'buffer', 'member', 'tag', 'file', 'dictionary', 'syntax', 'around', 'file/include' ]
-" '_'  value is used for default filetypes
-let g:deoplete#sources.xquery = ['ultisnips', 'tag', 'syntax']  " set values for each filetype
+" ALL underscore means all sources
+" let g:deoplete#sources._ = [ 'buffer', 'member', 'tag', 'file', 'dictionary', 'syntax', 'around', 'file/include' ]
+" FILETYPES value is used for default filetypes
+" key is filetype and value is the filetypes source names
+" the source name is found in the py file
+" rplugin/python3/deoplete/sources/deoplete_jedi.py
+" let g:deoplete#sources.xquery = ['ultisnips', 'tag', 'syntax']  " set values for each filetype
 " let g:deoplete#sources.xquery = ['omni']  " set values for each filetype
-" let g:deoplete#sources.html = ['ultisnips', 'buffer', 'tag']  " set values for each filetype
+" let g:deoplete#sources.html = ['omni','ultisnips', 'buffer', 'tag']  " set values for each filetype
 " let g:deoplete#sources.javascript = [ 'ternjs', 'ultisnips', 'buffer', 'tag']  " set values for each filetype
-" let g:deoplete#sources.vim = ['vim', 'buffer', 'tag']  " set values for each filetype
-" Use partial fuzzy matches like YouCompleteMe
-call deoplete#custom#set('_', 'matchers', ['matcher_fuzzy'])
-" "call deoplete#custom#set('_', 'converters', ['converter_remove_paren'])
-call deoplete#custom#set('_', 'disabled_syntaxes', ['Comment', 'String'])
+let g:deoplete#sources.vim = ['vim', 'around', 'buffer', 'tag']  " set values for each filetype
+let g:deoplete#sources.python = ['jedi']
+let g:deoplete#sources.xquery = ['xQuery']  " set values for each filetype
+" let g:deoplete#sources.typescript = ['LanguageClient']
+" let g:deoplete#sources#jedi#statement_length = 30
+" let g:deoplete#sources#jedi#show_docstring = 1
+" let g:deoplete#sources#jedi#short_types = 1
+" Omni functions
+let g:deoplete#omni#functions = {}
+let g:deoplete#omni#functions.css = 'csscomplete#CompleteCSS'
+let g:deoplete#omni#functions.html = 'htmlcomplete#CompleteTags'
+let g:deoplete#omni#functions.markdown = 'htmlcomplete#CompleteTags'
+" Omni patterns
+let g:deoplete#omni_patterns = {}
+let g:deoplete#omni_patterns.html = '<[^>]*'
+" Omni input patterns
+let g:deoplete#omni#input_patterns = {}
+let g:deoplete#omni#input_patterns.xml = '<[^>]*'
+let g:deoplete#omni#input_patterns.md = '<[^>]*'
+let g:deoplete#omni#input_patterns.css = '^\s\+\w\+\|\w\+[):;]\?\s\+\w*\|[@!]'
+" CUSTOM SOURCES
+call deoplete#custom#source('_', 'matchers', ['matcher_fuzzy'])
+call deoplete#custom#source('_', 'converters', ['converter_remove_paren'])
+call deoplete#custom#source('_', 'disabled_syntaxes', ['Comment', 'String'])
+call deoplete#custom#source('_', 'min_pattern_length', 2)
+" MARKS
+call deoplete#custom#source('around',   'mark', '↻')
+call deoplete#custom#source('buffer',   'mark', 'ℬ')
+call deoplete#custom#source('jedi',     'mark', '⌁')
+call deoplete#custom#source('omni',     'mark', '⌾')
+call deoplete#custom#source('syntax',   'mark', '♯')
+call deoplete#custom#source('tag',      'mark', '⌦')
+call deoplete#custom#source('vim',      'mark', '⌁')
+call deoplete#custom#source('ultisnips','mark', 'μ')
+" RANK  default rank is 100, higher is better.
+call deoplete#custom#source('around',      'rank', 330)
+call deoplete#custom#source('buffer',      'rank', 320)
+call deoplete#custom#source('dictionary',  'rank', 310)
+call deoplete#custom#source('file',        'rank', 410)
+call deoplete#custom#source('file_include','rank', 420)
+call deoplete#custom#source('jedi',        'rank', 610)
+call deoplete#custom#source('member',      'rank', 500)
+call deoplete#custom#source('omni',        'rank', 550)
+call deoplete#custom#source('syntax',      'rank', 200)
+call deoplete#custom#source('tag',         'rank', 400)
+call deoplete#custom#source('vim',         'rank', 630)
+call deoplete#custom#source('ultisnips',   'rank', 600)
+
+" https://github.com/rafi/vim-config/blob/master/config/plugins/deoplete.vim
+" Matchers and Converters
+
+" typescript
+" g:nvim_typescript#server_path = '../node_modules/.bin/tsserver'
+let g:nvim_typescript#javascript_support = 1
+" let g:nvim_typescript#max_completion_detail = 25 " default
+let g:nvim_typescript#type_info_on_hold = 1
+" g:nvim_typescript#signature_complete = 0 " default this is disabled in favor of echodoc
+" g:nvim_typescript#loc_list_item_truncate_after = 20 " default
+" see more settings
+"======================
+" LanguageClient-neovim
+"======================
+
+" let g:LanguageClient_serverCommands = {
+"     \ 'typescript': ['tsserver', '--stdio'],
+"     \ }
+
+
+" Automatically start language servers.
+" let g:LanguageClient_autoStart = 1
+" let g:LanguageClient_trace = 'verbose'
 
 "===============
 "   UltiSnips
@@ -535,6 +655,7 @@ call deoplete#custom#set('_', 'disabled_syntaxes', ['Comment', 'String'])
 " functions and mappings to make ultisnips and deoplete work together
 "@see https://github.com/simonweil/dotfiles/blob/master/nvimrc
 "@see https://github.com/SirVer/ultisnips/blob/master/autoload/UltiSnips/map_keys.vim#L56
+" https://github.com/simonweil/dotfiles/blob/master/nvimrc#L29-L85
 let g:UltiSnipsExpandTrigger = '<NOP>'
 let g:UltiSnipsJumpForwardTrigger = '<NOP>'
 let g:UltiSnipsJumpBackwardTrigger = '<NOP>'
@@ -584,7 +705,6 @@ function! g:SmartShiftTab()
   endif
 endfunction
 
-
 " COMPLETION MAPPINGS
 " -------------------
 inoremap <return> <C-R>=Ulti_ExpandOrEnter()<CR>
@@ -592,11 +712,9 @@ inoremap <silent> <Tab> <C-R>=g:SmartTab()<CR>
 snoremap <silent> <Tab> <Esc>:call g:SmartTab()<CR>
 inoremap <silent> <s-Tab> <C-R>=g:SmartShiftTab()<CR>
 snoremap <silent> <s-Tab> <Esc>:call g:SmartShiftTab()<CR>
-
 " Creating and Editing Snips
 " --------------------------
-nnoremap <silent> <F2>  :UltiSnipsEdit<CR>
-let g:UltiSnipsSnippetsDir = split(&runtimepath, ',')[0] . '/snips'
+let g:UltiSnipsSnippetsDir = expand('$DATAPATH/snips')
 let g:UltiSnipsSnippetDirectories = [g:UltiSnipsSnippetsDir]
 let g:UltiSnipsEditSplit = 'vertical'
 
@@ -649,41 +767,43 @@ nnoremap <A-j> <C-w>j
 nnoremap <A-k> <C-w>k
 nnoremap <A-l> <C-w>l
 
-tnoremap <expr> <A-r> '<C-\><C-n>"'.nr2char(getchar()).'pi'
+" tnoremap <expr> <A-r> '<C-\><C-n>'.nr2char(getchar()).'pi'
 " https://neovim.io/doc/user/options.html#%27term%27
 " https://neovim.io/doc/user/autocmd.html#TermClose
 " TermChanged, TermClose, TermResponse
-let g:neoterm_size = 5
+
 set switchbuf+=useopen
-function! TermEnter()
-  let l:bufcount = bufnr('$')
-  let l:currbufnr = 1
-  let l:nummatches = 0
-  let l:firstmatchingbufnr = 0
-  while l:currbufnr <= l:bufcount
-    if(bufexists(l:currbufnr))
-      let l:currbufname = bufname(l:currbufnr)
-      if(match(l:currbufname, 'term://') > -1)
-        echo l:currbufnr . ': '. bufname(l:currbufnr)
-        let l:nummatches += 1
-        let l:firstmatchingbufnr = l:currbufnr
-        break
-      endif
-    endif
-    let l:currbufnr = l:currbufnr + 1
-  endwhile
-  if(l:nummatches >= 1)
-    execute ':sbuffer '. l:firstmatchingbufnr
-    startinsert
-  else
-    execute ':Topen'
-  endif
-endfunction
+
+" function! TermEnter()
+"   let l:bufcount = bufnr('$')
+"   let l:currbufnr = 1
+"   let l:nummatches = 0:
+"   let l:firstmatchingbufnr = 0
+"   while l:currbufnr <= l:bufcount
+"     if(bufexists(l:currbufnr))
+"       let l:currbufname = bufname(l:currbufnr)
+"       if(match(l:currbufname, 'term://') > -1)
+"         echo l:currbufnr . ': '. bufname(l:currbufnr)
+"         let l:nummatches += 1
+"         let l:firstmatchingbufnr = l:currbufnr
+"         break
+"       endif
+"     endif
+"     let l:currbufnr = l:currbufnr + 1
+"   endwhile
+"   if(l:nummatches >= 1)
+"     execute ':sbuffer '. l:firstmatchingbufnr
+"     startinsert
+"   else
+"     execute ':Topen'
+"   endif
+" endfunction
 " map esc in term
 tnoremap <Esc> <C-\><C-n>
-nnoremap <silent> <F6> :call TermEnter()<CR>
+
+" nnoremap <silent> <F6> :call TermEnter()<CR>
 " when in terminal go back to previous window
-tnoremap <silent>  <F6> <C-\><C-n><C-w><C-p>
+" tnoremap <silent>  <F6> <C-\><C-n><C-w><C-p>
 
 "========
 " NEOTERM
@@ -697,6 +817,12 @@ tnoremap <silent>  <F6> <C-\><C-n><C-w><C-p>
 " can still send commands to it with :T
 "  :T %  " can sen special commands
 "help cmdline-special
+
+let g:neoterm_size = 5
+let g:neoterm_fixedsize = 1
+let g:neoterm_position = 'horizontal'
+let g:neoterm_keep_term_open = 1
+let g:neoterm_autoscroll = 1
 
 " let g:neoterm_autoinsert = 1
 nnoremap <silent> <F8> :TREPLSendLine<CR>
@@ -723,86 +849,74 @@ let g:maximizer_default_mapping_key = '<F11>'
 " Notes: ctags config
 " map <F10> :TagbarToggle<CR>
 " Note: <leader>'t'  Fuzzy Find
-"let g:gutentags_cache_dir = '$VARPATH/tags'
+"let g:gutentags_cache_dir = '$CACHEPATH/tags'
 " let g:tagbar_type_css = {
-" 			\ 'ctagstype' : 'Css',
-" 			\ 'kinds'     : [
-" 			\ 'c:classes',
-" 			\ 's:selectors',
-" 			\ 'i:identities'
-" 			\ ]
-" 			\ }
+"       \ 'ctagstype' : 'Css',
+"       \ 'kinds'     : [
+"       \ 'c:classes',
+"       \ 's:selectors',
+"       \ 'i:identities'
+"       \ ]
+"       \ }
 
 " let g:tagbar_type_make = {
-" 			\ 'kinds':[
-" 			\ 'm:macros',
-" 			\ 't:targets'
-" 			\ ]
-" 			\}
+"       \ 'kinds':[
+"       \ 'm:macros',
+"       \ 't:targets'
+"       \ ]
+"       \}
 
 " let g:tagbar_type_markdown = {
-" 			\ 'ctagstype' : 'markdown',
-" 			\ 'kinds' : [
-" 			\ 'h:Heading_L1',
-" 			\ 'i:Heading_L2',
-" 			\ 'k:Heading_L3'
-" 			\ ]
-" 			\ }
+"       \ 'ctagstype' : 'markdown',
+"       \ 'kinds' : [
+"       \ 'h:Heading_L1',
+"       \ 'i:Heading_L2',
+"       \ 'k:Heading_L3'
+"       \ ]
+"       \ }
 
 " let g:tagbar_type_xquery = {
-" 			\ 'ctagstype' : 'xquery',
-" 			\ 'kinds'     : [
-" 			\ 'f:function',
-" 			\ 'v:variable',
-" 			\ 'm:module',
-" 			\ ]
-" 			\ }
+"       \ 'ctagstype' : 'xquery',
+"       \ 'kinds'     : [
+"       \ 'f:function',
+"       \ 'v:variable',
+"       \ 'm:module',
+"       \ ]
+"       \ }
 
 " let g:tagbar_type_xsd = {
-" 			\ 'ctagstype' : 'XSD',
-" 			\ 'kinds'     : [
-" 			\ 'e:elements',
-" 			\ 'c:complexTypes',
-" 			\ 's:simpleTypes'
-" 			\ ]
-" 			\ }
+"       \ 'ctagstype' : 'XSD',
+"       \ 'kinds'     : [
+"       \ 'e:elements',
+"       \ 'c:complexTypes',
+"       \ 's:simpleTypes'
+"       \ ]
+"       \ }
 
 " let g:tagbar_type_xslt = {
-" 			\ 'ctagstype' : 'xslt',
-" 			\ 'kinds' : [
-" 			\ 'v:variables',
-" 			\ 't:templates'
-" 			\ ]
-" 			\}
+"       \ 'ctagstype' : 'xslt',
+"       \ 'kinds' : [
+"       \ 'v:variables',
+"       \ 't:templates'
+"       \ ]
+"       \}
 " }}}
-" Comments with vim-commentary {{{
-"
-" commentary maps, since it is loaded lazily
-map  gc  <Plug>Commentary
-nmap gcc <Plug>CommentaryLine
-nmap cgc <Plug>ChangeCommentary
-nmap gcu <Plug>Commentary<Plug>CommentaryLine
-
-"}}}
-" Map File Exploring to Ranger and Dirvish {{{
-
-map <leader>r :call OpenRanger()<CR>
-let g:loaded_netrwPlugin = 1
+" Dirvish {{{
+let g:loaded_netrwPlugin = 12
 " nnoremap <silent> <F9> :ProjectRootExe Dirvish<cr>
 "autocmd User ProjectionistActivate silent! call snippet#InsertSkeleton()
-" nnoremap <leader>d :Dirvish %:p:h<CR>
 
 "}}}
 " Sessions with startify  {{{
 " What not to save in sessions:
 " set sessionoptions-=options  neovim default
-let g:startify_session_dir =  expand($VARPATH . '/session')
+let g:startify_session_dir =  expand($CACHEPATH . '/session')
 let g:startify_session_autoload = 1
 let g:startify_session_persistence = 1
 let g:startify_session_delete_buffers = 1
-    " let g:startify_session_before_save = [
-    "     \ 'echo "Cleaning up before saving.."',
-    "     \ 'silent! NERDTreeTabsClose'
+" let g:startify_session_before_save = [
+"     \ 'echo "Cleaning up before saving.."',
+"     \ 'silent! NERDTreeTabsClose'
 " \ ]
 " let g:startify_session_remove_lines = []
 " let g:startify_session_savevars = []
@@ -852,25 +966,25 @@ set sessionoptions-=help
 " let g:prosession_default_session = 0
 " let g:prosession_per_branch = 0
 " let g:prosession_branch_cmd = 'git rev-parse --abbrev-ref HEAD 2>/dev/null' " for each branch
-" let g:prosession_dir = expand($VARPATH . '/session')
+" let g:prosession_dir = expand($CACHEPATH . '/session')
 " }}}
 " Linting with ALE" {{{
 " :h ale
-map ]a <Plug>(ale_next_wrap)
-nmap [a <Plug>(ale_previous_wrap)
-
-let g:ale_lint_delay = 1000
-let g:ale_lua_luacheck_options = '--std ngx_lua'
+" map ]a <Plug>(ale_next_wrap)
+" nmap [a <Plug>(ale_previous_wrap)
+" let g:ale_lint_delay = 1000
+" let g:ale_lua_luacheck_options = '--std ngx_lua'
 " let g:ale_linters = { 'xquery': [ 'xQcompile'] }
-" <F8> sav and run checker
 " ---------------------------------------------------------------------
 " Accio
 " ----------------------------------------------------------------------
-" autocmd BufWrite <buffer> Accio ["xqm"]
-
 " let g:accio_create_empty_quickfix = 1
 " let g:accio_auto_copen = 0 "automatically open quick list
 " let g:accio_update_interval = 250
+
+
+
+
 
 " Note:  Noah Frederick's  after ... sets text and signs
 " @see gf 'after/plugin/accio.vim'
@@ -882,13 +996,18 @@ let g:ale_lua_luacheck_options = '--std ngx_lua'
 " @see 'nvim/ftplugin/html.vim'
 " @see 'nvim/compiler/tidy.vim'
 " XQUERY
-" @see 'nvim/ftplugin/xquery.vim'
-" @see 'nvim/compiler/xqm.vim'
-" Mapping for quicklist
-nnoremap <silent> <leader>l :call ToggleList("Location List", 'l')<CR>
-nnoremap <silent> <leader>q  :call ToggleList("Quickfix List", 'c')<CR>
-" http://vim.wikia.com/wiki/Toggle_to_open_or_close_the_quickfix_window
+" @gf nvim/site/ftplugin/xquery.vim
+" @gf nvim/site/compiler/xqm.vim
 
+
+
+
+" }}}
+"
+let g:gista#client#use_git_config_github_user = 1
+"}}}
+" Functions {{{
+" http://vim.wikia.com/wiki/Toggle_to_open_or_close_the_quickfix_window
 function! GetBufferList()
   redir =>l:buflist
   silent! ls!
@@ -916,56 +1035,46 @@ function! ToggleList(bufname, pfx)
   endif
 endfunction
 
-" nmap <Leader><Space>o :copen<CR>      " open location window
-" nmap <Leader><Space>c :cclose<CR>     " close location window
-" nmap <Leader><Space>, :ll<CR>         " go to current error/warning
-" nmap <Leader><Space>n :cnext<CR>      " next error/warning
-" nmap <Leader><Space>p :cprev<CR>      " previous error/warning
-" autocmd! InsertChange,TextChanged *.html update | :Accio [ "tidy", "xmlwf", "xmllint" ]
-" }}}
-"
-let g:gista#client#use_git_config_github_user = 1
-
-" functions {{{
-function! <SID>AutoProjectRootCD()
-  try
-    if &filetype !=# '' && &filetype !=# 'help'
-     if !empty('b:projectionist')
-      execute ':Cd'
-    else
-     execute ':cd ' . system('git rev-parse --show-toplevel')
-   endif
-    endif
-  catch
-    " Silently ignore invalid buffers
-  endtry
+function! StylePreviewWindow()
+  if &previewwindow
+    setlocal nowrap
+    setlocal norelativenumber
+    setlocal nonumber
+  endif
 endfunction
 
-" function! OpenRanger()
-" 	" let currentPath = expand("%:p:h")
-" 	" let projectDir = projectroot#guess()
-" 	let tempStr = '/tmp/chosenfile'
-" 	let rangerStr = 'ranger'
-" 	let rangerStr .= ' --choosedir=' . projectroot#guess() . ' '
-" 	let rangerStr .= ' --choosefiles=' .  tempStr . ' '
-" 	let rangerStr .= expand("%:p:h")
-" 	" let rangerStr .= expand("%:p:h")
-" 	let rangerCallback = { 'name': 'ranger' }
-" 	function! rangerCallback.on_exit(id, code)
-" 		Bclose!
-" 		try
-" 			if filereadable('/tmp/chosenfile')
-" 				exec system('sed -ie "s/ /\\\ /g" /tmp/chosenfile')
-" 				exec 'argadd ' . system('cat /tmp/chosenfile | tr "\\n" " "')
-" 				exec 'edit ' . system('head -n1 /tmp/chosenfile')
-" 				call system('rm /tmp/chosenfile')
-" 			endif
-" 		endtry
-" 	endfunction
-" 	enew
-" 	call termopen(rangerStr, rangerCallback)
-" 	startinsert
+" function! AutoProjectRootCD()
+"   try
+"      execute ':tcd ' . system('git rev-parse --show-toplevel')
+"   catch
+"     " Silently ignore invalid buffers
+"   endtry
 " endfunction
+
+" function! CdTop()
+"   try
+"      execute ':lcd ' . system('git rev-parse --show-toplevel')
+"   catch
+"     " Silently ignore invalid buffers
+"   endtry
+" endfunction
+
+function! AccioDo()
+  if !empty(b:projectionist)
+    " let l:pRoot =  projectionist#path()
+    " echo 'project: ' . l:pRoot
+    " echomsg 'Working On: ' . expand('%')
+    for [ l:root, l:value] in projectionist#query('prove')
+      " execute ':Tclose'
+      " execute ':T1 clear'
+      " execute  expand(':T1 echo "Project Root: ' . l:root . '"')
+      " execute  expand(':T1 echo "Prove File: ' . l:value . '"')
+      execute  ':write %'
+      execute  ':Accio ["xQprove"]'
+      break
+    endfor
+  endif
+endfunction
 
 " function! <SID>ProjectActivate()
 "   try
@@ -982,10 +1091,44 @@ endfunction
 "     " Silently ignore invalid buffers
 "   endtry
 " endfunction
-
-"
 " }}}
-" {{{ initialise
+" Mappings and Abbreviations {{{
+"
+
+
+" LEADER MAPPINGS - my leader is the space bar
+nnoremap <silent> <leader>d :Dirvish %:p:h<CR>
+nnoremap <silent> <leader>tb :tabnew<space>
+
+"typing :make is much too long anyway
+nnoremap <leader>m :make<CR>
+" Toggle quicklist locallist
+nnoremap <silent> <leader>l :call ToggleList("Location List", 'l')<CR>
+nnoremap <silent> <leader>q :call ToggleList("Quickfix List", 'c')<CR>
+
+nnoremap <silent> <leader>w :StripWhitespace<CR>
+
+nnoremap <silent> <F2>  :UltiSnipsEdit<CR>
+nnoremap  <F5> :call AccioDo()<CR>
+
+" nmap <Leader><Space>o :copen<CR>      " open location window
+" nmap <Leader><Space>c :cclose<CR>     " close location window
+" nmap <Leader><Space>, :ll<CR>         " go to current error/warning
+" nmap <Leader><Spzace>n :cnext<CR>      " next error/warning
+" nmap <Leader><Space>p :cprev<CR>      " previous error/warning
+" autocmd! InsertChange,TextChanged *.html update | :Accio [ "tidy", "xmlwf", "xmllint" ]
+
+" <F8> sav and run checker
+"  autocmd BufWrite <buffer> Accio ["xqm"]
+
+" commentary maps, since it is loaded lazily
+map  gc  <Plug>Commentary
+nmap gcc <Plug>CommentaryLine
+nmap cgc <Plug>ChangeCommentary
+nmap gcu <Plug>Commentary<Plug>CommentaryLine
+
+"}}}
+" {{{ Initialise
 augroup init
   autocmd!
   autocmd BufWritePost $MYVIMRC nested source $MYVIMR
@@ -993,19 +1136,69 @@ augroup init
   " NOTE: filetype
   " detection -- '/usr/share/nvim/runtime/filetype.vim'
   " make recognizes  mk extension
-" xquery recognizes xql xqm xq
+  " xquery recognizes xql xqm xq
   " autocmd TabNewEntered * call OnTabEnter(expand("<amatch>"))
 
   autocmd BufNewFile,BufRead *.conf set filetype=nginx "add nginx filetype for any conf extension
   " autocmd BufNewFile,BufRead .env.* setfiletype sh
   autocmd BufNewFile,BufRead *.t set filetype=tap  "  using test more bash instead of perl
   autocmd BufNewFile,BufRead *.snippets set filetype=snippets "add new snippets filetpe
-  autocmd BufEnter * call <SID>AutoProjectRootCD()
+  " autocmd TabNewEntered * call AutoProjectRootCD()
+  autocmd BufWinEnter * call StylePreviewWindow()
   " when entering a buffer look for project root and change dir"
   " our shell commands 'make' etc run from project root
   "@see https://subvisual.co/blog/posts/135-super-powered-vim-part-iii-skeletons/
-   " autocmd User ProjectionistActivate silent! call <SID>ProjectActivate()
-   " autocmd BufNewFile * silent! call snippet#insert_skeleton()
+  " autocmd User ProjectionistActivate silent! call <SID>ProjectActivate()
+  " autocmd BufNewFile * silent! call snippet#insert_skeleton()
 
-augroup END
-" }}}
+
+  " " SYNTAX
+  " autocmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#necosyntax#get_source_options({
+  "       \ 'name': 'necosyntax',
+  "       \ 'whitelist': ['*'],
+  "       \ 'completor': function('asyncomplete#sources#necosyntax#completor'),
+  "       \ }))
+
+  " " BUFFER
+  " autocmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
+  "       \ 'name': 'buffer',
+  "       \ 'whitelist': ['*'],
+  "       \ 'blacklist': ['go'],
+  "       \ 'completor': function('asyncomplete#sources#buffer#completor'),
+  "       \ }))
+
+  " let g:UltiSnipsExpandTrigger="<c-e>"
+  " "  SNIPS ultisnips autocomplete
+  " autocmd User asyncomplete_setup call  asyncomplete#register_source(asyncomplete#sources#ultisnips#get_source_options({
+  "       \ 'name': 'ultisnips',
+  "       \ 'whitelist': ['*'],
+  "       \ 'completor': function('asyncomplete#sources#ultisnips#completor'),
+  "       \ }))
+
+  " " VIM autocomplete
+  " autocmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#necovim#get_source_options({
+  "       \ 'name': 'necovim',
+  "       \ 'whitelist': ['vim'],
+  "       \ 'completor': function('asyncomplete#sources#necovim#completor'),
+  "       \ }))
+
+  " if executable('pyls')
+  "   " pip install python-language-server
+  "   autocmd User lsp_setup call lsp#register_server({
+  "         \ 'name': 'pyls',
+  "         \ 'cmd': {server_info->['pyls']},
+  "         \ 'whitelist': ['python'],
+  "         \ })
+  " endif
+
+  " augroup END
+  " " if executable('typescript-language-server')
+  " "     au User lsp_setup call lsp#register_server({
+  " "         \ 'name': 'typescript-language-server',
+  " "         \ 'cmd': {server_info->[&shell, &shellcmdflag, 'typescript-language-server', '--stdio']},
+  " "         \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'tsconfig.json'))},
+  " "         \ 'whitelist': ['typescript'],
+  " "         \ })
+  " " endif
+
+  " }}}

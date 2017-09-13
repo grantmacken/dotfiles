@@ -1,0 +1,26 @@
+{
+  "name": "gmack",
+  "version": "v0.1.0",
+  "description": "my node modules",
+  "private": "true",
+  "devDependencies": {
+    "autoprefixer": "latest",
+    "cssfmt": "latest",
+    "cssnano": "latest",
+    "flow-bin": "latest",
+    "flow-language-server": "latest",
+    "grunt": "latest",
+    "lodash": "^4.17.4",
+    "matchdep": "latest",
+    "postcss": "latest",
+    "postcss-cli-simple": "latest",
+    "postcss-cssnext": "latest",
+    "postcss-quantity-queries": "latest",
+    "prettier": "latest",
+    "stylelint": "latest",
+    "tape": "latest",
+    "time-grunt": "^1.4.0",
+    "typescript": "^2.6.0-dev.20170910",
+    "typescript-language-server": "latest"
+  }
+}

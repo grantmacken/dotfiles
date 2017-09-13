@@ -1,6 +1,12 @@
 let s:save_cpo = &cpoptions
 set cpoptions&vim
 
+augroup xquery 
+  autocmd BufWrite <buffer> Accio ["xQcompile"]
+  autocmd InsertEnter * call SetKW()
+  autocmd InsertLeave * call UnSetKW()
+augroup END
+
 " NOTES:
 
 "comment blocks always start with a (: and end with a :)
@@ -56,12 +62,7 @@ endfunction
 "	autocmd BufWrite <buffer> Accio ["xqCompile", "xqProve"]
 " autocmd BufWrite <buffer> Accio ["xqm"]
 
-augroup xquery 
-  autocmd BufWrite <buffer> Accio ["xQcompile"]
-  " autocmd CursorHoldI,CursorHold,FocusLost,FocusGained * call lightline#update()
-  autocmd InsertEnter * call SetKW()
-  autocmd InsertLeave * call UnSetKW()
-augroup END
+
 
 
 let &cpoptions = s:save_cpo

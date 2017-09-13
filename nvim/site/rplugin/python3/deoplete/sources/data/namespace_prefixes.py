@@ -1,0 +1,1 @@
+NAMESPACE_PREFIXES = {':hello:': '\U0001f44d'}

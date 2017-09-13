@@ -1,0 +1,16 @@
+# Systemd # Service (/etc/systemd/system/eopkg-upgrade.service) 
+[Unit] Description=eopkg automatic upgrade
+
+[Service] 
+ExecStart=/usr/bin/eopkg upgrade -y
+
+# Timer (/etc/systemd/system/eopkg-upgrade.timer)
+[Unit] Description=Runs eopkg-upgrade service every hour
+
+[Timer] 
+# Time to wait after booting before we run first time
+OnBootSec=1min # Time between running each consecutive time
+OnUnitActiveSec=1h 
+Unit=eopkg-upgrade.service
+
+[Install] WantedBy=multi-user.target

@@ -52,10 +52,15 @@ fi
 JWT_AUTH_TOKEN=$(<"${PROJECTS}/.site-access-token")
 export JWT_AUTH_TOKEN=$JWT_AUTH_TOKEN
 export NVIM_LISTEN_ADDRESS=/tmp/nvimsocket
-export VISUAL="nvr -cc split --remote-wait +'set bufhidden=wipe'"
-alias vim='nvim'
-alias vi='nvim'
-alias v='nvim'
+
+# create a nvim instance on startup
+if [ ! -e /tmp/nvimsocket ]; then
+  nvim
+fi
+
+export VISUAL=nvim
+export EDITOR=$VISUAL
+alias v="nvr -cc split --remote-wait +'set bufhidden=wipe'"
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert

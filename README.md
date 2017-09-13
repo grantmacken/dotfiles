@@ -11,13 +11,39 @@ directory. In my projects directory have various folders named after the ```GIT 
 
  So my dotfile repo is cloned into a folder under my name in the projects dir
 
-   ``` ~/projects/$(git config --get user.name)/dotfiles ```
+   `~/projects/$(git config --get user.name)/dotfiles `
 
 in the dotfiles project I have some folders
 
-- bash : my bashrc and bashrc source files ( prompt, alaises etc )
-- nvim : my nvim config
-- bin  : my bash helper scripts
+- bash: my bashrc and bashrc source files ( prompt, alaises etc )
+- nvim: [ init.vim ] my nvim config
+       => ~/.config/nvim
+- nvim/site: [ {runtimepath_folders}   ]
+    => ~/.local/share/nivim/site  ( my nvim local {runtimepath} )
+    plugged: vim-plug placed plugins
+            however for some pluggins it is possible to extend a plugin
+            .e.g after ale is plugged by vim-plug
+            my own {linter} created in
+            `plugged/ale/ale_linters/{linter}`
+             can be stowed into ale
+            TODO:
+- bin: [ {EXECUTABLE} ] 
+    => ~/bin (my home bin )
+- projects: my git projects ~/projects/{GITUSER}
+- projects/bin:  [ bin/{EXECUTABLE} ]
+    => ~/projects/{GITUSER}/
+- projects/node: [ package.json , node-modules/.bin/{EXECUTABLE} ]
+    => ~/projects/{GITUSER}/
+    note: both  ~/projects/{GITUSER}/bin and ~/projects/{GITUSER}/node_modules/.bin
+    are on the shells $PATH, as set in bashrc
+    note: npm install
+ - projects/properties: [ project.properties , common.properties ]
+    => ~/projects/{GITUSER}/
+    common.properties: can-be-sourced key/value constant properties usefull for any project
+    project.properties: can-be-sourced bash expanded key/value project specific properties
+ - projects/make: [ Makefile, .tasks/ ]
+    for each {web_project} as defined in common.properties
+    => ~/projects/{GITUSER}/{web_project}/
 
 and a Makefile in the root of the dir.
 
@@ -27,7 +53,7 @@ dir.
 ```
     stow-all:
         @stow -v -t ~ bash
-        @stow -v -t ~/.config/nvim nvim
+        @$(MAKE) stow-neovim
         @stow -v -t ~/bin bin
         @stow -v -t ~ tmux
 ```
@@ -57,12 +83,13 @@ make neovimBackspaceFix
 - use plugin manager vim-plug
 - set up local pyEnv for neovim deoplete
 - stow nvim config
-
+structure
+ + nvim
+    [ init.vim ]   => XDG config ~/.config/nvim
+   - site contents => XDG data  ~/.local/share/nivim/site
+   - site/autoload ( plug.vim ) + [ autoloaded user defined vim files ]
 
 notes:
-set each tab to have its own working directory (cwd)
-
-
 https://dmerej.info/blog/post/vim-cwd-and-neovim/
 
 

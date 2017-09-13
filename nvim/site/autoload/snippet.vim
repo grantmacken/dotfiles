@@ -2,27 +2,27 @@
 " Maintainer:   Noah Frederick
 
 function! snippet#title(basename)
-  if exists("g:template_title")
+  if exists('g:template_title')
     " Setting g:template_title lets us override the title (once)
-    let title = g:template_title
+    let l:title = g:template_title
     unlet g:template_title
-    return title
+    return l:title
   endif
-  if exists("b:template_title")
+  if exists('b:template_title')
     " Setting b:template_title also lets us override the title
     return b:template_title
   endif
   " Otherwise derive from file's basename
-  let title = substitute(a:basename, '\C\(\l\)\(\u\|\d\)', '\1_\l\2', 'g')
-  let title = substitute(title, '^.', '\u&', 'g')
-  let title = substitute(title, '_\(.\)', ' \u\1', 'g')
-  return title
+  let l:title = substitute(a:basename, '\C\(\l\)\(\u\|\d\)', '\1_\l\2', 'g')
+  let l:title = substitute(l:title, '^.', '\u&', 'g')
+  let l:title = substitute(l:title, '_\(.\)', ' \u\1', 'g')
+  return l:title
 endfunction
 
 function! snippet#expand_snippet_or_complete_maybe()
   call UltiSnips#ExpandSnippetOrJump()
 
-  if !exists("g:ulti_expand_or_jump_res") || g:ulti_expand_or_jump_res == 0
+  if !exists('g:ulti_expand_or_jump_res') || g:ulti_expand_or_jump_res == 0
     if pumvisible()
       return "\<C-n>"
     else
@@ -30,11 +30,11 @@ function! snippet#expand_snippet_or_complete_maybe()
     endif
   endif
 
-  return ""
+  return ''
 endfunction
 
 function! s:try_insert(skel)
-  execute "normal! i_" . a:skel . "\<C-r>=UltiSnips#ExpandSnippet()\<CR>"
+  execute 'normal! i_' . a:skel . '\<C-r>=UltiSnips#ExpandSnippet()\<CR>'
 
   if g:ulti_expand_res == 0
     silent! undo
@@ -51,22 +51,22 @@ function! snippet#insert_skeleton() abort
   endif
 
   " Abort on non-empty buffer or extant file
-  if !exists('g:did_plugin_ultisnips') || !(line('$') == 1 && getline('$') == '') || filereadable(expand('%:p'))
+  if !exists('g:did_plugin_ultisnips') || !(line('$') ==# 1 && getline('$') ==# '') || filereadable(expand('%:p'))
     return
   endif
 
   if !empty(b:projectionist)
     " Loop through projections with 'skeleton' key and try each one until the
     " snippet expands
-    for [root, value] in projectionist#query('skeleton')
-      if s:try_insert(value)
+    for [l:root, l:value] in projectionist#query('skeleton')
+      if s:try_insert(l:value)
         return
       endif
     endfor
   endif
 
   " Try generic _skel template as last resort
-  call s:try_insert("skel")
+  call s:try_insert('skel')
 endfunction
 
 " vim:set et sw=2:

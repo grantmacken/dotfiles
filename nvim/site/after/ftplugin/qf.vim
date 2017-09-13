@@ -9,7 +9,7 @@ setlocal nowrap
 " relative line numbers don't make much sense either
 " but absolute numbers do
 setlocal norelativenumber
-setlocal number
+setlocal nonumber
 
 " we don't want quickfix buffers to pop up when doing :bn or :bp
 set nobuflisted
