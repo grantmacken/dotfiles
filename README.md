@@ -1,9 +1,20 @@
-# dotfilesi
+# dotfiles
 Work In Progress [dotfiles](https://github.com/webpro/awesome-dotfiless) hacked by Grant Mackenzie
 
-Rationale: My current working desktop environment, that can be downloaded to set up a new setup. 
+## Rationale
+ - Toolbox kept under git control ( my main *working* desktop development environment )
+ - Repo can be downloaded and incorporated into a new os setup
 
-After a brief search on how best to organize my dofiles under git control, I set
+## How To
+
+Project has a single `Makefile`
+- `make help` will outline other make targets
+-  Make targets mostly uses *Stow* to create symlinks from this repo to where ever they are required.
+
+
+## How I have organizes this stuff
+
+After a brief search on how best to organize my dotfiles under git control, I set
 upon using [stow](http://mywiki.wooledge.org/DotFiles) ]
 
 The dotfiles is a git controlled repo on [github](https://github.com/grantmacken/dotfiles) and cloned into my projects
@@ -15,26 +26,23 @@ directory. In my projects directory have various folders named after the ```GIT 
 
 in the dotfiles project I have some folders
 
-## bash ##
-my bashrc and bashrc source files ( prompt, alaises etc )
-
 ```
-- bash [ bashrc , [.config/{configs}.sh ] ]
-- nvim: [ init.vim ] my nvim config
-       => ~/.config/nvim
-- nvim/site: [ {runtimepath_folders}   ]
-    => ~/.local/share/nivim/site  ( my nvim local {runtimepath} )
-    plugged: vim-plug placed plugins
-            however for some pluggins it is possible to extend a plugin
-            .e.g after ale is plugged by vim-plug
-            my own {linter} created in
-            `plugged/ale/ale_linters/{linter}`
-             can be stowed into ale
-            TODO:
-- bin: [ {EXECUTABLE} ] 
+- bash [ bashrc , [.config/bash/{configs}.sh ] ] ( prompt, alaises etc )
+    => ~/
+- bin: [ {EXECUTABLE} ]
     => ~/bin (my home bin )
+- nvim: [ init.vim ] my nvim config
+    => ~/.config/nvim/
+- nvim/site: [ {runtimepath_folders} ]( my nvim local {runtimepath} )
+    => ~/.local/share/nivim/site/
+    plugged: vim-plug placed plugins
+    however for some pluggins it is possible to extend a plugin
+    .e.g after ale is plugged by vim-plug
+    my own {linter} created in
+    `plugged/ale/ale_linters/{linter}`
+    can be stowed into ale
 - projects: my git projects ~/projects/{GITUSER}
-- projects/bin:  [ bin/{EXECUTABLE} ]
+- projects/bin: [ bin/{EXECUTABLE} ]
     => ~/projects/{GITUSER}/
 - projects/node: [ package.json , node-modules/.bin/{EXECUTABLE} ]
     => ~/projects/{GITUSER}/
@@ -50,25 +58,15 @@ my bashrc and bashrc source files ( prompt, alaises etc )
     => ~/projects/{GITUSER}/{web_project}/
 ```
 
-
 and a Makefile in the root of the dir.
-
-`make` calls stow to symlink the git controlled dotfiles into my home
-dir.
-
-```
-    stow-all:
-        @stow -v -t ~ bash
-        @$(MAKE) stow-neovim
-        @stow -v -t ~/bin bin
-        @stow -v -t ~ tmux
-```
 
 #WARNING
 
-If you are going stow bash, 
+This is my working environment, and *NOT* a skeleton setup.
+
+If you are going stow bash,
 you need to backup and remove your .bashrc
-then modify the .bashrc in the in the bash dir to suit your requirements. 
+then modify the .bashrc in the in the bash dir to suit your requirements.
 
 
 ##Some Set Up Tasks
@@ -83,54 +81,3 @@ make caps2sec
 make neovimBackspaceFix
 ```
 
-# NEOVIM 
-
-- use XDG dirs
-- use plugin manager vim-plug
-- set up local pyEnv for neovim deoplete
-- stow nvim config
-structure
- + nvim
-    [ init.vim ]   => XDG config ~/.config/nvim
-   - site contents => XDG data  ~/.local/share/nivim/site
-   - site/autoload ( plug.vim ) + [ autoloaded user defined vim files ]
-
-notes:
-https://dmerej.info/blog/post/vim-cwd-and-neovim/
-
-
-```
-make pyEnv
-make stow-neovim
-```
-
-Neovim Configuration Hilights
- TODO!
-
-Terminal
-
-- nice colors: seoul256-gnome-terminal
-- a tidy bashrc with config scripts in XDG dir configuring prompt exports etc
-   - an minimal prompt
-   - $HOME script enviroments
-   - python: pyEnv
-   - perl TODO!
-
-TODO! WIP:  rm tmux 
-Tmux
- - Sessions
- - Plugins
- 
-
- Bin
-  -- Solus App Install List
-
-
-
-```
-eopkg help
-sudo  eopkg ur
-sudo  eopkg up
-make solus-packages
-  ```
-  
