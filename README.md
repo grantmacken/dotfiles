@@ -61,7 +61,7 @@ in the dotfiles project I have some folders
 
 and a Makefile in the root of the dir.
 
-#WARNING
+## WARNING
 
 This is my working environment, and *NOT* a skeleton setup.
 
@@ -70,7 +70,7 @@ you need to backup and remove your .bashrc
 then modify the .bashrc in the in the bash dir to suit your requirements.
 
 
-##Some Set Up Tasks
+## Misc Set Up Tasks
 
 Keyboard: set capslock to escape
           neovim backspace fix
