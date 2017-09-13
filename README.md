@@ -4,6 +4,8 @@ Work In Progress [dotfiles](https://github.com/webpro/awesome-dotfiless) hacked 
 ## Rationale
  - Toolbox kept under git control ( my main *working* desktop development environment )
  - Repo can be downloaded and incorporated into a new os setup
+ - Used to organize main dotfiles [bashrc, nvim, etc]
+   and other project tools used in my projects.
 
 ## How To
 
@@ -11,16 +13,15 @@ Project has a single `Makefile`
 - `make help` will outline other make targets
 -  Make targets mostly uses *Stow* to create symlinks from this repo to where ever they are required.
 
-
 ## How I have organized this stuff
 
 After a brief search on how best to organize my dotfiles under git control, I set
 upon using [stow](http://mywiki.wooledge.org/DotFiles) ]
 
-The dotfiles is a git controlled repo on [github](https://github.com/grantmacken/dotfiles) and cloned into my projects
+This [github repo](https://github.com/grantmacken/dotfiles) is cloned into my projects
 directory. In my projects directory have various folders named after the ```GIT REPO OWNER LOGIN`` names.
 
- So my dotfile repo is cloned into a folder under my name in the projects dir
+So my dotfile repo is cloned into a folder under my name in the projects dir
 
    `~/projects/$(git config --get user.name)/dotfiles `
 
