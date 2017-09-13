@@ -15,7 +15,9 @@ directory. In my projects directory have various folders named after the ```GIT 
 
 in the dotfiles project I have some folders
 
-- bash: my bashrc and bashrc source files ( prompt, alaises etc )
+## bash ##
+my bashrc and bashrc source files ( prompt, alaises etc )
+
 - nvim: [ init.vim ] my nvim config
        => ~/.config/nvim
 - nvim/site: [ {runtimepath_folders}   ]
