@@ -12,7 +12,7 @@ Project has a single `Makefile`
 -  Make targets mostly uses *Stow* to create symlinks from this repo to where ever they are required.
 
 
-## How I have organizes this stuff
+## How I have organized this stuff
 
 After a brief search on how best to organize my dotfiles under git control, I set
 upon using [stow](http://mywiki.wooledge.org/DotFiles) ]
