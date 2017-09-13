@@ -18,11 +18,12 @@ in the dotfiles project I have some folders
 ## bash ##
 my bashrc and bashrc source files ( prompt, alaises etc )
 
+```
+- bash [ bashrc , [.config/{configs}.sh ] ]
 - nvim: [ init.vim ] my nvim config
-   * => ~/.config/nvim
+       => ~/.config/nvim
 - nvim/site: [ {runtimepath_folders}   ]
-    * => ~/.local/share/nivim/site  ( my nvim local {runtimepath} )
-
+    => ~/.local/share/nivim/site  ( my nvim local {runtimepath} )
     plugged: vim-plug placed plugins
             however for some pluggins it is possible to extend a plugin
             .e.g after ale is plugged by vim-plug
@@ -30,10 +31,8 @@ my bashrc and bashrc source files ( prompt, alaises etc )
             `plugged/ale/ale_linters/{linter}`
              can be stowed into ale
             TODO:
-
 - bin: [ {EXECUTABLE} ] 
-
-   - => ~/bin (my home bin )
+    => ~/bin (my home bin )
 - projects: my git projects ~/projects/{GITUSER}
 - projects/bin:  [ bin/{EXECUTABLE} ]
     => ~/projects/{GITUSER}/
@@ -49,6 +48,8 @@ my bashrc and bashrc source files ( prompt, alaises etc )
  - projects/make: [ Makefile, .tasks/ ]
     for each {web_project} as defined in common.properties
     => ~/projects/{GITUSER}/{web_project}/
+```
+
 
 and a Makefile in the root of the dir.
 
