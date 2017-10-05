@@ -71,21 +71,9 @@ chkInstalled=$(
         echo "$(yep) $(eopkg info ${appName} | grep  -oP '^Package(.+)$' )"
         eopkg install -y  ${appName}
       fi
-      #app-get --assume-yes install ${appName}
     else
       echo "$(yep) $(eopkg info -s ${appName} | grep -oP  '\[inst\].+$' )"
       echo  "$(check) $(eopkg check  ${appName})"
-      # ok=$(
-      #     echo  ${chk} |
-      #     grep -oP 'install ok \Kinstalled'  |
-      #     head -1
-      #     )
-      # if [ "${ok}" = "installed" ]; then
-      #     echo "OK! Looks like ${appName} ${ok} OK"
-      # else
-      #     echo "upgrade ${appName}"
-      #     app-get --assume-yes --only-upgrade install ${appName}
-      # fi
     fi
 }
 

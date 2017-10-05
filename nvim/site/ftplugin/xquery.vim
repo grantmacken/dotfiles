@@ -1,10 +1,10 @@
 let s:save_cpo = &cpoptions
 set cpoptions&vim
 
-augroup xquery 
+augroup xquery
   autocmd BufWrite <buffer> Accio ["xQcompile"]
-  autocmd InsertEnter * call SetKW()
-  autocmd InsertLeave * call UnSetKW()
+  " autocmd InsertEnter * call SetKW()
+  " autocmd InsertLeave * call UnSetKW()
 augroup END
 
 " NOTES:
@@ -23,7 +23,7 @@ setlocal complete+=s
 " pnd opening arenthesis as part of a keyword
 " -- so we can complete xquery modules and functions
 
-setlocal iskeyword +=58
+" setlocal iskeyword +=58
 setlocal iskeyword +=-
 " to check
 " :verbose set iskeyword? 

@@ -81,6 +81,11 @@ home-bash:
 	$(if $(wildcard  $(XDG_CONFIG_HOME)/bash ),,mkdir -p $(XDG_CONFIG_HOME)/bash)
 	@stow -v -t ~ bash
 
+home-configs:
+	@echo 'TASK: use stow to create symlinks in home/.config dir'
+	@stow -v -t ~/.config configs
+
+
 home-bin-clean:
 	@echo 'TASK: use stow to remove symlinks in home bin dir '
 	@stow -D -v -t ~/bin bin
@@ -89,11 +94,22 @@ home-bash-clean:
 	@echo 'TASK : use stow to remove bash symlinks in home dir'
 	@stow -D -v -t ~ bash
 
+home-configs-clean:
+	@echo 'TASK: use stow to remove symlinks in home/.config dir'
+	@stow -D -v -t ~/.config configs
+
 home:
-	@$(MAKE) home-bash home-bin
+	@$(MAKE) home-bash home-bin home-configs
 
 home-clean:
-	@$(MAKE) home-bash-clean home-bin-clean
+	@$(MAKE) home-bash-clean home-bin-clean home-configs-clean
+
+
+luarocks:
+	@echo '# $(@) #'
+	$(if $(shell luarocks show lua-cjson2 | grep -oP '^lua-cjson2'), luarocks show lua-cjson2 ,$(shell luarocks install --local lua-cjson2) )
+	$(if $(shell luarocks show mpack | grep -oP '^mpack'), luarocks show mpack ,luarocks install --local mpack)
+
 
 projects-node:
 	@echo '# $(@) #'

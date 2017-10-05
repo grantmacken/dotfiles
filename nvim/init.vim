@@ -25,18 +25,17 @@ let g:python3_host_prog =  expand('$HOME/.pyenv/versions/neovim3/bin/python')
 "
 " Use spacebar instead of '\' as leader. Require before loading plugins.
 let g:mapleader      = ' '
-let g:maplocalleader = ','
+let g:maplocalleader = ' '
 " let g:maplocalleader=','
 " " Release keymappings for plug-in.
 nnoremap <Space>  <Nop>
 xnoremap <Space>  <Nop>
-nnoremap ,        <Nop>
-xnoremap ,        <Nop>
 " }}}
 " Add In Plugins {{{
 function! DoRemote(arg)
   UpdateRemotePlugins
 endfunction
+
 
 call plug#begin( expand( $DATAPATH . '/plugged'))
 " File_And_Project_Management {{{
@@ -47,6 +46,7 @@ Plug 'justinmk/vim-dirvish'
 Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-projectionist'
 Plug 'airblade/vim-rooter'
+Plug 'tweekmonster/nvim-api-viewer'
 " }}}
 " ---------------------------
 " neovim terminal
@@ -75,7 +75,7 @@ Plug 'sbdchd/neoformat'
 let g:neoformat_try_formatprg = 1
 let g:neoformat_basic_format_align = 1" Enable alignment
 let g:neoformat_basic_format_retab = 1" Enable tab to spaces conversion
-let g:neoformat_basic_format_trim = 1" Enable trimmming of trailing whitespace
+let g:neoformat_basic_format_trim = 1"  Enable trimmming of trailing whitespace
 " augroup fmt
 "   autocmd!
 "   autocmd BufWritePre * undojoin | Neoformat
@@ -103,42 +103,43 @@ Plug 'kassio/neoterm'
 "
 " Auto Completions and Snippets.
 " ------------------------------
-" Plug 'prabirshrestha/asyncomplete.vim'
-" Plug 'prabirshrestha/async.vim'
+" Plug 'ervandew/supertab'
+" Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
+Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/async.vim'
 " Plug 'prabirshrestha/vim-lsp', { 'branch': 'dev' }
 " Plug 'prabirshrestha/asyncomplete-lsp.vim'
-" Plug 'prabirshrestha/asyncomplete-buffer.vim'
+Plug 'prabirshrestha/asyncomplete-buffer.vim' " BUFFER
+Plug 'Shougo/neco-vim'                        " VIM autocompletions https://github.com/Shougo/neco-syntax
+" Plug 'prabirshrestha/asyncomplete-necovim.vim'
 " Plug 'prabirshrestha/asyncomplete-emoji.vim'
 " Plug 'prabirshrestha/asyncomplete-necosyntax.vim'
-" Plug 'prabirshrestha/asyncomplete-necovim.vim'
 " Plug 'prabirshrestha/asyncomplete-necosyntax.vim'
 " Plug 'prabirshrestha/asyncomplete-ultisnips.vim'
 " Plug 'yami-beta/asyncomplete-omni.vim'
 " Plug 'prabirshrestha/asyncomplete-flow.vim'
 " Plug 'prabirshrestha/asyncomplete-tags.vim' " https://github.com/prabirshrestha/asyncomplete-tags.vim
-" Plug 'roxma/nvim-completion-manager' " can't handle multiple invim instances
+" Plug 'roxma/nvim-completion-manager'        " can't handle multiple invim instances
 " Plug 'roxma/python-support.nvim'
 " let g:python_support_python2_require = 0
 " Plug 'roxma/nvim-cm-tern',  {'do': 'npm install'}
 " Plug 'autozimu/LanguageClient-neovim', { 'do': function('DoRemote') }
-Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
-Plug 'ervandew/supertab'
-Plug 'SirVer/ultisnips'     " https://github.com/SirVer/ultisnips
-Plug 'honza/vim-snippets'
+" Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
+" Plug 'SirVer/ultisnips'     " https://github.com/SirVer/ultisnips
+" Plug 'honza/vim-snippets'
 " Plug 'Shougo/denite.nvim', { 'do': function('DoRemote') }
 Plug 'Shougo/echodoc'  " recomended plugin .. to look at function auguments
 " Plug 'autozimu/LanguageClient-neovim', { 'do': function('DoRemote')}
 " deoplete sources generic
 Plug 'Shougo/neco-syntax'       " SYNTAX https://github.com/Shougo/neco-syntax
-Plug 'Shougo/context_filetype.vim'
+" Plug 'Shougo/context_filetype.vim'
 " Plug 'Shougo/neoinclude.vim'  " FILE deoplete file/include source and extends tag source
-Plug 'fszymanski/deoplete-emoji' " EMOJI
+" Plug 'fszymanski/deoplete-emoji' " EMOJI
 " Plug 'ujihisa/neco-look'       " SPELL deoplete spelling source ... word completion with 'look' command ref man look
 " deoplete sources filetpes
-Plug 'Shougo/neco-vim'          " VIM autocompletions https://github.com/Shougo/neco-syntax
-Plug 'zchee/deoplete-jedi'      " PYTHON autocompletions https://github.com/Shougo/neco-syntax
-Plug 'mhartington/nvim-typescript', { 'do': function('DoRemote')} " TYPESCRIPT https://github.com/mhartington/nvim-typescript
-Plug 'fszymanski/deoplete-emoji' "EMOJI
+" Plug 'zchee/deoplete-jedi'      " PYTHON autocompletions https://github.com/Shougo/neco-syntax
+" Plug 'mhartington/nvim-typescript', { 'do': function('DoRemote')} " TYPESCRIPT https://github.com/mhartington/nvim-typescript
+" Plug 'fszymanski/deoplete-emoji' "EMOJI
 Plug 'Konfekt/FastFold'           "recomended Shougo plugin
 " Plug 'wellle/tmux-complete.vim' " https://github.com/wellle/tmux-complete.vim
 " Plug 'majutsushi/tagbar', {'on': 'TagbarToggle'}
@@ -147,18 +148,35 @@ Plug 'Konfekt/FastFold'           "recomended Shougo plugin
 " Plug 'Chiel92/vim-autoformat' " formating TODO: https://github.com/Chiel92/vim-autoformat
 " Plug 'simnalamburt/vim-mundo'   " history
 " Plug 'christoomey/vim-tmux-runner'
-Plug 'rbgrouleff/bclose.vim' "delete buffer without closing window
-Plug 'szw/vim-maximizer' " zoom vim window
+Plug 'rbgrouleff/bclose.vim' " delete buffer without closing window
+Plug 'szw/vim-maximizer'     " zoom vim window
 " Editing Code manipulation
-Plug 'junegunn/vim-peekaboo' " https://github.com/junegunn/vim-peekaboo
-Plug 'unblevable/quick-scope'  " https://github.com/unblevable/quick-scope
+" Plug 'junegunn/rainbow_parentheses.vim' " https://github.com/junegunn/rainbow_parentheses.vim
+" let g:rainbow#max_level = 16
+" let g:rainbow#pairs = [['(', ')'], ['[', ']'], [ '{' , '}' ], [ ':', ':' ] ]
+" Activation based on file type
+" augroup rainbow_lisp
+"   autocmd!
+"   autocmd FileType xquery RainbowParentheses
+" augroup END
+" " List of colors that you do not want. ANSI code or #RRGGBB
+" let g:rainbow#blacklist = [233, 234]
+
+Plug 'junegunn/vim-peekaboo'   " https://github.com/junegunn/vim-peekaboo
+Plug 'bradford-smith94/quick-scope'  " https://github.com/bradford-smith94/quick-scope
+let g:qs_enable=1
+let g:qs_max_chars=80
+" Trigger a highlight in the appropriate direction when pressing these keys:
+" let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
+" let g:qs_first_occurrence_highlight_color = 155
+" let g:qs_second_occurrence_highlight_color = 81
 Plug 'junegunn/vim-easy-align' " https://github.com/junegunn/vim-easy-align
 " yanking
 Plug 'machakann/vim-highlightedyank' " highligh yank text
-Plug 'bfredl/nvim-miniyank'          " https://github.com/bfredl/nvim-miniyank
+" Plug 'bfredl/nvim-miniyank'       " https://github.com/bfredl/nvim-miniyank
 " Plug 'cohama/lexima.vim'
 " Plug 'Raimondi/delimitMate' " https://github.com/Raimondi/delimitMate
-Plug 'tpope/vim-commentary'  , { 'on': ['<Plug>Commentary', '<Plug>CommentaryLine', '<Plug>ChangeCommentary'] }
+Plug 'tpope/vim-commentary'  , { 'on': ['<Plug>Commentary', '<Plug>CommentaryLine'] }
 " Plug 'nathanaelkane/vim-indent-guides'
 Plug 'ntpeters/vim-better-whitespace'
 "Plug 'cazador481/fakeclip.neovim'
@@ -216,18 +234,20 @@ call plug#end()
 "}}}
 "Themes and Colorscheme {{{
 Plug 'junegunn/seoul256.vim'
+Plug 'NLKNguyen/papercolor-theme'
 Plug 'trevordmiller/nova-vim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 " let g:airline#extensions#ale#enabled = 1
 call plug#end()
 " syntax enable
-set background=dark
-" let g:seoul256_background = 236
-" colorscheme seoul256
 set termguicolors
-colorscheme nova
-" execute ':highlight Pmenu ctermbg=DarkGrey'
+set background=dark
+let g:airline_theme='zenburn'
+colorscheme seoul256
+" colorscheme PaperColor
+" colorscheme nova
+execute ':highlight Pmenu ctermbg=DarkGrey'
 " highlight Pmenu ctermbg=DarkGrey
 " highlight TermCursor ctermfg=red guifg=red
 " }}}
@@ -266,9 +286,7 @@ set cmdheight=2         " Height of the command line
 set cmdwinheight=5      " Command-line lines
 set inccommand=nosplit  " Neovim highlight
 set gdefault            " Force Vim to always do global substitutions.
-set shortmess+=c
-" set shortmess=aoOTI     " Shorten messages and don't show intro
-" set shortmess+=c        " https://github.com/roxma/nvim-completion-manager
+
 " set noshowcmd           " Don't show command in status line
 
 " Top  tabline
@@ -290,20 +308,7 @@ set sidescrolloff=2     " Keep at least 2 lines left/right
 " bu
 
 
-" Popup Menu Styling
-" ------------------
-set previewheight=8     " Completion preview height
-set pumheight=20        " Pop-up menu's line height
-"complete options
-" :h complete
-"  (default: ".,w,b,u,t")
-"  current buffer, window buffers, unloaded buffers, tags
-" bu
-set completeopt+=menuone
-set completeopt+=noinsert       " auto select feature like neocomplete
-set completeopt+=noselect
-" set completeopt=-preview
-" set completeopt+=longest
+
 
 " Spelling
 " --------
@@ -365,10 +370,7 @@ set sessionoptions-=help
 " - fzf
 " }}}
 " }}}
-" PLUGIN SETTINGS {{{
-" - dirvish
-" - fzf
-"===========
+" PLUGIN SETTINGS
 " DIRVISH {{{
 "============ {{{
 "@see https://github.com/justinmk/vim-dirvish
@@ -451,8 +453,7 @@ else
 endif
 " }}}
 " }}}
-" PLUGGED
-" nvim-miniyank
+" nvim-miniyank {{{
 " https://github.com/bfredl/nvim-miniyank
 " map p <Plug>(miniyank-autoput)
 " map P <Plug>(miniyank-autoPut)
@@ -464,268 +465,139 @@ endif
 " map <Leader>c <Plug>(miniyank-tochar)
 " map <Leader>l <Plug>(miniyank-toline)
 " map <Leader>b <Plug>(miniyank-toblock)
-
-" Auto Completions and Snippets and Templates {{{
-" -----------------------------------------------
-" let g:asyncomplete_log_file = expand('~/asyncomplete.log')
-" let g:lsp_log_file = expand('~/vim-lsp.log')
-" let g:lsp_log_verbose = 1
-" let g:lsp_async_completion = 1
-" autocmd FileType typescript setlocal omnifunc=lsp#complete
-
-"  Autocompletionn
-" deoplete with
-"  - echodoc
-"  - vim-projectionist
-"  - ultisnips
-"@ see https://noahfrederick.com/log/vim-templates-with-ultisnips-and-projectionist
-"@ https://www.youtube.com/watch?v=QsLTYEVJ6JU
-"http://www.dirv.me/generating-src-spec-vim/index.html
-
-"===========
-" SUPERTAB     https://github.com/ervandew/supertab.git
-"============
-let g:SuperTabDefaultCompletionType = '<c-n>'
-" make the tabing on completion menu go from top to bottom
-let g:SuperTabClosePreviewOnPopupClose = 1    " Close the preview when completion ends
-" let g:SuperTabLongestEnhanced  = 1 " Enhanced longest match support: default 0
-" let g:SuperTabLongestHighlight = 1 " default 0
-
-"=============
-"   ECHODOC
-"==============
-let g:echodoc_enable_at_startup = 1
-" set cmdheight=2 @see above
-" cmdheight
-
-"==============
-"   DEOPLETE
-"===============
-let g:deoplete#enable_at_startup = 1
-let g:deoplete#auto_complete_delay = 150  " Default is 50
-" let g:deoplete#auto_refresh_delay = 500  " Default is 500
-" let g:deoplete#enable_refresh_always = 1
-" if working on plugin uncomment next 3 lines
-let g:deoplete#enable_debug = 1
-let g:deoplete#enable_profile = 1
-call deoplete#enable_logging('DEBUG', expand( $CACHEPATH . '/deoplete.log'))
-" if !exists('g:deoplete#omni#input_patterns')
-"   let g:deoplete#omni#input_patterns = {}
-" endif
-" let g:deoplete#enable_smart_case = 1
-let g:deoplete#enable_camel_case = 1
-" " let g:deoplete#disable_auto_complete = 1
-let g:deoplete#auto_completion_start_length = 3
-let g:deoplete#max_abbr_width = 35
-let g:deoplete#max_menu_width = 20
-let g:deoplete#tag#cache_limit_size = 800000
-let g:deoplete#file#enable_buffer_path = 1
-
-" sources:
-" Note: come with default sources
-" buffer      It collects keywords from current buffer and the buffers which have same 'filetype'.
-" member:     It collects members from current buffer.
-" tag:        It collects keywords from ctags files
-" file:       This source collects keywords from local files.
-" omni:       This source collects keywords from 'omnifunc'. Note: It is not asynchronous.
-" dictionary: This source collects keywords from 'dictionary'.
-" around:     This source collects candidates around the cursor external sources
-"
-" Help deoplete-external-sources
-" ---------------------------------------------------------------------------------------------------
-" UltiSnips ... https://github.com/SirVer/ultisnips
-" https://github.com/SirVer/ultisnips/blob/master/rplugin/python3/deoplete/sources/ultisnips.py
-" ---------------------------------------------------------------------------------------------------
-" syntax ... deoplete source analyzes a syntax file like autoload/syntaxcomplete.vim with more candidates
-"            defaults to 4 keyword letter length
-" https://github.com/Shougo/neco-syntax/blob/master/rplugin/python3/deoplete/sources/syntax.py
-" ---------------------------------------------------------------------------------------------------
-" look         ... neco-look  ref man look
-" ---------------------------------------------------------------------------------------------------
-" file/include ... neoinclude
-" ---------------------------------------------------------------------------------------------------
-" file types
-" vim  necovim  https://github.com/Shougo/neco-syntax/blob/master/rplugin/python3/deoplete/sources/syntax.py
-
-" Language Servers
-" typescript javascript  ... mhartington/nvim-typescript
-"
-" ternjs ... deoplete-ternjs: ternjs source for JavaScript https://github.com/carlitux/deoplete-ternjs
-" https://github.com/carlitux/deoplete-ternjs/blob/master/rplugin/python3/deoplete/sources/ternjs.py
-" ---------------------------------------------------------------------------------------------------
-
-" omnifuncs
-" augroup omnifuncs
-"   autocmd!
-"   autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-"   autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-"   autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-" augroup end
-
-" limit sources
-let g:deoplete#ignore_sources = {}
-" let g:deoplete#ignore_sources._ = ['buffer', 'member', 'tag', 'file']
-
-let g:deoplete#sources = {}
-" ALL underscore means all sources
-" let g:deoplete#sources._ = [ 'buffer', 'member', 'tag', 'file', 'dictionary', 'syntax', 'around', 'file/include' ]
-" FILETYPES value is used for default filetypes
-" key is filetype and value is the filetypes source names
-" the source name is found in the py file
-" rplugin/python3/deoplete/sources/deoplete_jedi.py
-" let g:deoplete#sources.xquery = ['ultisnips', 'tag', 'syntax']  " set values for each filetype
-" let g:deoplete#sources.xquery = ['omni']  " set values for each filetype
-" let g:deoplete#sources.html = ['omni','ultisnips', 'buffer', 'tag']  " set values for each filetype
-" let g:deoplete#sources.javascript = [ 'ternjs', 'ultisnips', 'buffer', 'tag']  " set values for each filetype
-let g:deoplete#sources.vim = ['vim', 'around', 'buffer', 'tag']  " set values for each filetype
-let g:deoplete#sources.python = ['jedi']
-let g:deoplete#sources.xquery = ['xQuery']  " set values for each filetype
-" let g:deoplete#sources.typescript = ['LanguageClient']
-" let g:deoplete#sources#jedi#statement_length = 30
-" let g:deoplete#sources#jedi#show_docstring = 1
-" let g:deoplete#sources#jedi#short_types = 1
-" Omni functions
-let g:deoplete#omni#functions = {}
-let g:deoplete#omni#functions.css = 'csscomplete#CompleteCSS'
-let g:deoplete#omni#functions.html = 'htmlcomplete#CompleteTags'
-let g:deoplete#omni#functions.markdown = 'htmlcomplete#CompleteTags'
-" Omni patterns
-let g:deoplete#omni_patterns = {}
-let g:deoplete#omni_patterns.html = '<[^>]*'
-" Omni input patterns
-let g:deoplete#omni#input_patterns = {}
-let g:deoplete#omni#input_patterns.xml = '<[^>]*'
-let g:deoplete#omni#input_patterns.md = '<[^>]*'
-let g:deoplete#omni#input_patterns.css = '^\s\+\w\+\|\w\+[):;]\?\s\+\w*\|[@!]'
-" CUSTOM SOURCES
-call deoplete#custom#source('_', 'matchers', ['matcher_fuzzy'])
-call deoplete#custom#source('_', 'converters', ['converter_remove_paren'])
-call deoplete#custom#source('_', 'disabled_syntaxes', ['Comment', 'String'])
-call deoplete#custom#source('_', 'min_pattern_length', 2)
-" MARKS
-call deoplete#custom#source('around',   'mark', '↻')
-call deoplete#custom#source('buffer',   'mark', 'ℬ')
-call deoplete#custom#source('jedi',     'mark', '⌁')
-call deoplete#custom#source('omni',     'mark', '⌾')
-call deoplete#custom#source('syntax',   'mark', '♯')
-call deoplete#custom#source('tag',      'mark', '⌦')
-call deoplete#custom#source('vim',      'mark', '⌁')
-call deoplete#custom#source('ultisnips','mark', 'μ')
-" RANK  default rank is 100, higher is better.
-call deoplete#custom#source('around',      'rank', 330)
-call deoplete#custom#source('buffer',      'rank', 320)
-call deoplete#custom#source('dictionary',  'rank', 310)
-call deoplete#custom#source('file',        'rank', 410)
-call deoplete#custom#source('file_include','rank', 420)
-call deoplete#custom#source('jedi',        'rank', 610)
-call deoplete#custom#source('member',      'rank', 500)
-call deoplete#custom#source('omni',        'rank', 550)
-call deoplete#custom#source('syntax',      'rank', 200)
-call deoplete#custom#source('tag',         'rank', 400)
-call deoplete#custom#source('vim',         'rank', 630)
-call deoplete#custom#source('ultisnips',   'rank', 600)
-
-" https://github.com/rafi/vim-config/blob/master/config/plugins/deoplete.vim
-" Matchers and Converters
-
-" typescript
-" g:nvim_typescript#server_path = '../node_modules/.bin/tsserver'
-let g:nvim_typescript#javascript_support = 1
-" let g:nvim_typescript#max_completion_detail = 25 " default
-let g:nvim_typescript#type_info_on_hold = 1
-" g:nvim_typescript#signature_complete = 0 " default this is disabled in favor of echodoc
-" g:nvim_typescript#loc_list_item_truncate_after = 20 " default
-" see more settings
-"======================
-" LanguageClient-neovim
-"======================
-
-" let g:LanguageClient_serverCommands = {
-"     \ 'typescript': ['tsserver', '--stdio'],
-"     \ }
-
-
-" Automatically start language servers.
-" let g:LanguageClient_autoStart = 1
-" let g:LanguageClient_trace = 'verbose'
-
-"===============
-"   UltiSnips
-"===============
-" functions and mappings to make ultisnips and deoplete work together
-"@see https://github.com/simonweil/dotfiles/blob/master/nvimrc
-"@see https://github.com/SirVer/ultisnips/blob/master/autoload/UltiSnips/map_keys.vim#L56
-" https://github.com/simonweil/dotfiles/blob/master/nvimrc#L29-L85
-let g:UltiSnipsExpandTrigger = '<NOP>'
-let g:UltiSnipsJumpForwardTrigger = '<NOP>'
-let g:UltiSnipsJumpBackwardTrigger = '<NOP>'
-let g:SuperTabMappingForward = '<NOP>'
-let g:SuperTabMappingBackward = '<NOP>'
-let g:UltiSnipsMappingsToIgnore = [ 'SmartTab', 'SmartShiftTab' ] " Don't unmap my mappings
-let g:ulti_expand_res = 0    " Make <CR> smart
-
-function! Ulti_ExpandOrEnter()
-  " First try to expand a snippet
-  call UltiSnips#ExpandSnippet()
-  if g:ulti_expand_res
-    " if successful, just return
-    return ''
-  elseif pumvisible()
-    " if in completion menu - just close it and leave the cursor at the
-    " end of the completion
-    return deoplete#mappings#close_popup()
-  else
-    " otherwise, just do an "enter"
-    return "\<return>"
-  endif
-endfunction
-
-" Enable tabbing and shift-tabbing through list of results
-function! g:SmartTab()
-  if pumvisible()
-    return SuperTab('n')
-  else
-    call UltiSnips#JumpForwards()
-    if g:ulti_jump_forwards_res == 0
-      return SuperTab('n')
-    endif
-    return ''
-  endif
-endfunction
-
-function! g:SmartShiftTab()
-  if pumvisible()
-    return SuperTab('p')
-  else
-    call UltiSnips#JumpBackwards()
-    if g:ulti_jump_backwards_res == 0
-      return SuperTab('p')
-    endif
-    return ''
-  endif
-endfunction
-
-" COMPLETION MAPPINGS
-" -------------------
-inoremap <return> <C-R>=Ulti_ExpandOrEnter()<CR>
-inoremap <silent> <Tab> <C-R>=g:SmartTab()<CR>
-snoremap <silent> <Tab> <Esc>:call g:SmartTab()<CR>
-inoremap <silent> <s-Tab> <C-R>=g:SmartShiftTab()<CR>
-snoremap <silent> <s-Tab> <Esc>:call g:SmartShiftTab()<CR>
-" Creating and Editing Snips
-" --------------------------
-let g:UltiSnipsSnippetsDir = expand('$DATAPATH/snips')
-let g:UltiSnipsSnippetDirectories = [g:UltiSnipsSnippetsDir]
-let g:UltiSnipsEditSplit = 'vertical'
-
-" let g:SuperTabCrMapping = 1 " (default value: 0)
 " }}}
-" Windows and Buffers
-" <F12> open|close terminal
-" <F11> Maximize window with vim-maximizer
-" <F10> open|closetags window with tagbar
+" Auto Completions and Snippets and Templates {{{
+" Popup Menu Styling
+" set shortmess+=c
+" set shortmess=aoOTI     " Shorten messages and don't show intro
+set shortmess+=c        " https://github.com/roxma/nvim-completion-manager
+" ------------------
+set pumheight=20        " Pop-up menu's line height
+set previewheight=2     " Completion preview height
 
-" {{{ terminal buffer
+"complete options
+" :h complet
+"  (default: ".,w,b,u,t")
+"  current buffer, window buffers, unloaded buffers, tags
+" below are async defualt
+set completeopt-=longest
+set completeopt+=menuone
+set completeopt-=menu
+set completeopt+=noinsert       " auto select feature like neocomplete
+" set completeopt+=noselect
+set completeopt-=preview
+" set completeopt+=longest
+" set completeopt+=preview
+" startPut
+"
+let g:asyncomplete_log_file = expand('$CACHEPATH/asyncomplete.log')
+let g:asyncomplete_autcompletion_delay = 100 " default
+let g:asyncomplete_auto_popup = 1            " default
+let g:asyncomplete_enable_default_mappings = 0
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<cr>"
+imap <F2> <Plug>(asyncomplete_force_refresh)
+
+" let g:asyncomplete_enable_for_all = 1
+
+" function! s:check_back_space() abort
+"     let l:col = col('.') - 1
+"     return !l:col || getline('.')[l:col - 1]  =~# '\s'
+" endfunction
+
+" inoremap <silent><expr> <TAB>
+"   \ pumvisible() ? "\<C-n>" :
+"   \ <SID>check_back_space() ? "\<TAB>" :
+"   \ asyncomplete#force_refresh()
+
+" inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+" inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+" inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<CR>"
+"imap <c-space> <Plug>(asyncomplete_force_refresh)
+
+
+function! AsyncompleteSetup()
+
+  call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
+        \ 'name': 'buffer',
+        \ 'whitelist': ['*'],
+        \ 'blacklist': ['go', 'xquery'],
+        \ 'priority': 1,
+        \ 'completor': function('asyncomplete#sources#buffer#completor'),
+        \ }))
+
+  "xQuery refresh pattern 'keyword' or 'QNAME'
+  call asyncomplete#register_source(asyncomplete#sources#xQuery#get_source_options({
+        \ 'name': 'xQuery',
+        \ 'whitelist': ['xquery'],
+        \ 'priority': 2,
+        \ 'refresh_pattern': '\(\s\k\+$\|:$\)',
+        \ 'completor': function('asyncomplete#sources#xQuery#completor'),
+        \ }))
+  "
+  " VIM
+  call asyncomplete#register_source(asyncomplete#sources#necovim#get_source_options({
+        \ 'name': 'necovim',
+        \ 'whitelist': ['vim'],
+        \ 'priority': 2,
+        \ 'completor': function('asyncomplete#sources#necovim#completor'),
+        \ }))
+
+endfunction
+
+  " " SYNTAX
+  " autocmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#necosyntax#get_source_options({
+  "       \ 'name': 'necosyntax',
+  "       \ 'whitelist': ['*'],
+  "       \ 'completor': function('asyncomplete#sources#necosyntax#completor'),
+  "       \ }))
+
+  " " BUFFER
+  " autocmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
+  "       \ 'name': 'buffer',
+  "       \ 'whitelist': ['*'],
+  "       \ 'blacklist': ['go'],
+  "       \ 'completor': function('asyncomplete#sources#buffer#completor'),
+  "       \ }))
+
+  " let g:UltiSnipsExpandTrigger="<c-e>"
+  " "  SNIPS ultisnips autocomplete
+  " autocmd User asyncomplete_setup call  asyncomplete#register_source(asyncomplete#sources#ultisnips#get_source_options({
+  "       \ 'name': 'ultisnips',
+  "       \ 'whitelist': ['*'],
+  "       \ 'completor': function('asyncomplete#sources#ultisnips#completor'),
+  "       \ }))
+
+  " " VIM autocomplete
+  " autocmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#necovim#get_source_options({
+  "       \ 'name': 'necovim',
+  "       \ 'whitelist': ['vim'],
+  "       \ 'completor': function('asyncomplete#sources#necovim#completor'),
+  "       \ }))
+
+  " if executable('pyls')
+  "   " pip install python-language-server
+  "   autocmd User lsp_setup call lsp#register_server({
+  "         \ 'name': 'pyls',
+  "         \ 'cmd': {server_info->['pyls']},
+  "         \ 'whitelist': ['python'],
+  "         \ })
+  " endif
+
+  " augroup END
+  " " if executable('typescript-language-server')
+  " "     au User lsp_setup call lsp#register_server({
+  " "         \ 'name': 'typescript-language-server',
+  " "         \ 'cmd': {server_info->[&shell, &shellcmdflag, 'typescript-language-server', '--stdio']},
+  " "         \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'tsconfig.json'))},
+  " "         \ 'whitelist': ['typescript'],
+  " "         \ })
+  " " endif
+
+" }}}
+
+" {{{ Terminal Buffer with neoterm
 "  nvimux is just a series of keybindings to allow neovim to work similarly to TMUX.
 "  let g:nvimux_prefix='<C-b>'
 "  let g:nvimux_quickterm_scope = 'g'
@@ -762,7 +634,7 @@ tnoremap <A-h> <C-\><C-n><C-w>h
 tnoremap <A-j> <C-\><C-n><C-w>j
 tnoremap <A-k> <C-\><C-n><C-w>k
 tnoremap <A-l> <C-\><C-n><C-w>l
-nnoremap <A-h> ii<C-w>h
+nnoremap <A-h> <C-w>h
 nnoremap <A-j> <C-w>j
 nnoremap <A-k> <C-w>k
 nnoremap <A-l> <C-w>l
@@ -818,34 +690,43 @@ tnoremap <Esc> <C-\><C-n>
 "  :T %  " can sen special commands
 "help cmdline-special
 
-let g:neoterm_size = 5
-let g:neoterm_fixedsize = 1
+let g:neoterm_size = 4
+let g:neoterm_fixedsize = 0
 let g:neoterm_position = 'horizontal'
 let g:neoterm_keep_term_open = 1
 let g:neoterm_autoscroll = 1
 
 " let g:neoterm_autoinsert = 1
+
+" define a mapping
+nnoremap <silent> <leader>t :Tmap
+let g:neoterm_automap_keys = '<F5>'
+" open a new terminal if none is already running, or reuse an existing terminal
+command! -nargs=+ TT Topen | T
+nnoremap <silent> <F4> :TT
+nnoremap <silent> <F6> :Ttoggle<CR>
+
 nnoremap <silent> <F8> :TREPLSendLine<CR>
 vnoremap <silent> <F8> :TREPLSendSelection<CR>
 noremap  <silent> <F7> :TREPLSendFile<CR>
 
-" nnoremap  <silent> <F6> :Topen<CR>
-"
-" set <S-F3>=^[O1;2R
-"  nnoremap <S-F3> :Tclose<CR>
-" nnoremap <silent> <F12> :Ttoggle<CR>
-" tnoremap <silent> <F12> <C-\><C-n><C-w><C-p>
+function! BufferInsertLeaveDo()
+    echo 'Working On: ' . expand('%')
+    update
+    execute  ':Topen | T clear && xQwrapper '  . expand('%')
+endfunction
 
-command! -nargs=+ Tmake :T make <args>
-command! -nargs=+ Tlog :T tail -f <args>
-" pip3 install --user neovim-remote
+augroup myRepl
+   autocmd!
+  autocmd BufWritePost,BufEnter,InsertLeave *.xq call BufferInsertLeaveDo()
+augroup END
 
 " }}}
 " maximizer {{{
 let g:maximizer_set_default_mapping = 1
 let g:maximizer_default_mapping_key = '<F11>'
 " }}}
-" Tags created by universal-ctags and views created with tagbar {{{
+" Tags creazated by universal-ctags and views created with tagbar {{{
 " Notes: ctags config
 " map <F10> :TagbarToggle<CR>
 " Note: <leader>'t'  Fuzzy Find
@@ -907,7 +788,7 @@ let g:loaded_netrwPlugin = 12
 "autocmd User ProjectionistActivate silent! call snippet#InsertSkeleton()
 
 "}}}
-" Sessions with startify  {{{
+" Sessions Management with startify  {{{
 " What not to save in sessions:
 " set sessionoptions-=options  neovim default
 let g:startify_session_dir =  expand($CACHEPATH . '/session')
@@ -974,17 +855,13 @@ set sessionoptions-=help
 " nmap [a <Plug>(ale_previous_wrap)
 " let g:ale_lint_delay = 1000
 " let g:ale_lua_luacheck_options = '--std ngx_lua'
-" let g:ale_linters = { 'xquery': [ 'xQcompile'] }
-" ---------------------------------------------------------------------
-" Accio
+" let g:ale_linters = { 'xquery': [ 'xQcompile']
+" }}}
+" Compile Build Test with Accio {{{
 " ----------------------------------------------------------------------
 " let g:accio_create_empty_quickfix = 1
 " let g:accio_auto_copen = 0 "automatically open quick list
 " let g:accio_update_interval = 250
-
-
-
-
 
 " Note:  Noah Frederick's  after ... sets text and signs
 " @see gf 'after/plugin/accio.vim'
@@ -999,11 +876,8 @@ set sessionoptions-=help
 " @gf nvim/site/ftplugin/xquery.vim
 " @gf nvim/site/compiler/xqm.vim
 
-
-
-
 " }}}
-"
+" Misc {{{
 let g:gista#client#use_git_config_github_user = 1
 "}}}
 " Functions {{{
@@ -1058,6 +932,8 @@ endfunction
 "     " Silently ignore invalid buffers
 "   endtry
 " endfunction
+"
+
 
 function! AccioDo()
   if !empty(b:projectionist)
@@ -1093,23 +969,19 @@ endfunction
 " endfunction
 " }}}
 " Mappings and Abbreviations {{{
-"
-
 
 " LEADER MAPPINGS - my leader is the space bar
 nnoremap <silent> <leader>d :Dirvish %:p:h<CR>
 nnoremap <silent> <leader>tb :tabnew<space>
 
 "typing :make is much too long anyway
-nnoremap <leader>m :make<CR>
+nnoremap <leader>m :TT make<CR>
 " Toggle quicklist locallist
 nnoremap <silent> <leader>l :call ToggleList("Location List", 'l')<CR>
 nnoremap <silent> <leader>q :call ToggleList("Quickfix List", 'c')<CR>
-
 nnoremap <silent> <leader>w :StripWhitespace<CR>
-
-nnoremap <silent> <F2>  :UltiSnipsEdit<CR>
-nnoremap  <F5> :call AccioDo()<CR>
+" nnoremap <silent> <leader>u :UltiSnipsEdit<CR>
+" nnoremap  <F3> :call AccioDo()<CR>
 
 " nmap <Leader><Space>o :copen<CR>      " open location window
 " nmap <Leader><Space>c :cclose<CR>     " close location window
@@ -1121,11 +993,9 @@ nnoremap  <F5> :call AccioDo()<CR>
 " <F8> sav and run checker
 "  autocmd BufWrite <buffer> Accio ["xqm"]
 
-" commentary maps, since it is loaded lazily
+" vim-commentary maps, since it is loaded lazily
 map  gc  <Plug>Commentary
 nmap gcc <Plug>CommentaryLine
-nmap cgc <Plug>ChangeCommentary
-nmap gcu <Plug>Commentary<Plug>CommentaryLine
 
 "}}}
 " {{{ Initialise
@@ -1145,60 +1015,13 @@ augroup init
   autocmd BufNewFile,BufRead *.snippets set filetype=snippets "add new snippets filetpe
   " autocmd TabNewEntered * call AutoProjectRootCD()
   autocmd BufWinEnter * call StylePreviewWindow()
+  autocmd User asyncomplete_setup call AsyncompleteSetup()
   " when entering a buffer look for project root and change dir"
   " our shell commands 'make' etc run from project root
   "@see https://subvisual.co/blog/posts/135-super-powered-vim-part-iii-skeletons/
   " autocmd User ProjectionistActivate silent! call <SID>ProjectActivate()
   " autocmd BufNewFile * silent! call snippet#insert_skeleton()
+augroup END
 
-
-  " " SYNTAX
-  " autocmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#necosyntax#get_source_options({
-  "       \ 'name': 'necosyntax',
-  "       \ 'whitelist': ['*'],
-  "       \ 'completor': function('asyncomplete#sources#necosyntax#completor'),
-  "       \ }))
-
-  " " BUFFER
-  " autocmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
-  "       \ 'name': 'buffer',
-  "       \ 'whitelist': ['*'],
-  "       \ 'blacklist': ['go'],
-  "       \ 'completor': function('asyncomplete#sources#buffer#completor'),
-  "       \ }))
-
-  " let g:UltiSnipsExpandTrigger="<c-e>"
-  " "  SNIPS ultisnips autocomplete
-  " autocmd User asyncomplete_setup call  asyncomplete#register_source(asyncomplete#sources#ultisnips#get_source_options({
-  "       \ 'name': 'ultisnips',
-  "       \ 'whitelist': ['*'],
-  "       \ 'completor': function('asyncomplete#sources#ultisnips#completor'),
-  "       \ }))
-
-  " " VIM autocomplete
-  " autocmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#necovim#get_source_options({
-  "       \ 'name': 'necovim',
-  "       \ 'whitelist': ['vim'],
-  "       \ 'completor': function('asyncomplete#sources#necovim#completor'),
-  "       \ }))
-
-  " if executable('pyls')
-  "   " pip install python-language-server
-  "   autocmd User lsp_setup call lsp#register_server({
-  "         \ 'name': 'pyls',
-  "         \ 'cmd': {server_info->['pyls']},
-  "         \ 'whitelist': ['python'],
-  "         \ })
-  " endif
-
-  " augroup END
-  " " if executable('typescript-language-server')
-  " "     au User lsp_setup call lsp#register_server({
-  " "         \ 'name': 'typescript-language-server',
-  " "         \ 'cmd': {server_info->[&shell, &shellcmdflag, 'typescript-language-server', '--stdio']},
-  " "         \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'tsconfig.json'))},
-  " "         \ 'whitelist': ['typescript'],
-  " "         \ })
-  " " endif
 
   " }}}
