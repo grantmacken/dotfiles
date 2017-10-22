@@ -1,0 +1,50 @@
+#!/bin/bash +x
+####################
+# xPath
+####################
+# http://www.saxonica.com/html/documentation/using-xquery/commandline.html
+if [ $# -ne 3 ]; then
+  echo "$0: usage: requires 3 param [ xPathString filePath method ] "
+  exit 1
+fi
+
+if [ ! -v SAXON_HOME ]; then
+  echo "$0: usage: environment var SAXON_HOME not set ]"
+  exit 1
+fi
+
+ABSPATH=$(readlink -f "$2")
+xPath=$1
+SAXONJAR="${SAXON_HOME}/$( ls ${SAXON_HOME}  | grep -oP '^Saxon(.+)\.jar$' )"
+XQUERYCLASS='net.sf.saxon.Query' 
+OPTIONS=
+METHOD=$3
+VERSION='3.0'
+QUERYPREFIX='declare default element namespace "http://www.w3.org/1999/xhtml";'
+QUERY="$1"
+# echo "$SAXONJAR"
+# echo "${xPath}"
+
+#  \!method=$METHOD \
+# -qs:querystring
+# Allows the query to be specified inline (if it contains spaces, you will need qu
+# otes around the expression to keep the command line processor happy). The base U
+# RI of the query is taken from the current working directory. So, for example, ja
+# va net.sf.saxon.Query -qs:doc('a.xml')//p[1] selects elements within the file a.
+# xml in the current directory.
+
+# -s:filename-or-URI
+# Take input from the specified file. If the -u option is specified, or if the 
+# name begins with "file:" or "http:", then the name is assumed to be a URI rather
+#  than a filename. This file must contain an XML document. The document node of t
+# he document is made available to the query as the context item. The source docum
+# ent can be specified as "-" to take the source from standard input.
+# cd ${SAXON_HOME}
+# ls .
+
+java -cp "${SAXONJAR}" \
+  "${XQUERYCLASS}" \
+  \!method=$METHOD \
+  -qversion:$VERSION \
+  -qs:"${QUERYPREFIX}${QUERY}" \
+  -s:"$ABSPATH"

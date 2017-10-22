@@ -42,6 +42,7 @@ call plug#begin( expand( $DATAPATH . '/plugged'))
 " ---------------------------
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
+Plug 'tweekmonster/fzf-filemru'
 Plug 'justinmk/vim-dirvish'
 Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-projectionist'
@@ -413,19 +414,110 @@ augroup END
 " - window (nvim only)
 "let $FZF_DEFAULT_OPTS .= ' --inline-info'
 let g:fzf_layout = { 'down': '~40%' }
+" In Neovim, you can set up fzf window using a Vim command
+" let g:fzf_layout = { 'window': 'enew' }
+" let g:fzf_layout = { 'window': '-tabnew' }
+" let g:fzf_layout = { 'window': '140split enew' }
+" Extend FZF env vars
+let $FZF_DEFAULT_OPTS .= ' --no-height'
+" An action can be a reference to a function that processes selected lines
+function! s:build_quickfix_list(lines)
+  call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
+  copen
+  cc
+endfunction
 
-" ctrl-[a-z], alt-[a-z], f[1-4], or any single character
 let g:fzf_action = {
-      \ 'ctrl-p': 'edit',
-      \ 'ctrl-t': 'tabedit',
-      \ 'ctrl-o': 'botright split',
-      \ 'ctrl-a':  'vertical botright split' }
-"nnoremap <silent> <Leader><Leader> :Files<CR>
-nnoremap <silent> <Leader>f  :GitFiles<CR>
-nnoremap <silent> <Leader>b  :Buffers<CR>
-nnoremap <silent> <Leader>t  :Tags<CR>
-nnoremap <silent> <Leader>ag :Ag <C-R><C-W><CR>
+      \ 'ctrl-l': function('s:build_quickfix_list'),
+      \ 'ctrl-t': 'tab split',
+      \ 'ctrl-x': 'split',
+      \ 'ctrl-v': 'vsplit' }
 
+let g:fzf_history_dir = '~/.local/share/fzf-history'
+
+"nnoremap <silent> <Leader><Leader> :Files<CR>
+"Most commands support CTRL-T / CTRL-X / CTRL-V key bindings to open in a new tab, a new split, or in a new vertical split
+nnoremap <silent> <Leader>AG :Ag! <C-R><C-W><CR>
+nnoremap <silent> <Leader>B  :Buffers!<CR>
+nnoremap <silent> <Leader>F  :GFiles!<CR>
+nnoremap <silent> <Leader>ag :Ag <C-R><C-W><CR>
+nnoremap <silent> <Leader>b  :Buffers<CR>
+nnoremap <silent> <Leader>c  :Commands<CR>
+nnoremap <silent> <Leader>r  :Rg<CR>
+nnoremap <silent> <Leader>f  :FilesMru --tiebreak=end<CR>
+nnoremap <silent> <Leader>t  :Tags<CR>
+nnoremap <silent> <Leader>p  :ProjectMru --tiebreak=end<CR>
+
+let g:fzf_filemru_bufwrite = 1
+let g:fzf_filemru_git_ls = 1
+
+" Customize fzf colors to match your color scheme
+let g:fzf_colors =
+      \ { 'fg':      ['fg', 'Normal'],
+      \ 'bg':      ['bg', 'Normal'],
+      \ 'hl':      ['fg', 'Comment'],
+      \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+      \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+      \ 'hl+':     ['fg', 'Statement'],
+      \ 'info':    ['fg', 'PreProc'],
+      \ 'border':  ['fg', 'Ignore'],
+      \ 'prompt':  ['fg', 'Conditional'],
+      \ 'pointer': ['fg', 'Exception'],
+      \ 'marker':  ['fg', 'Keyword'],
+      \ 'spinner': ['fg', 'Label'],
+      \ 'header':  ['fg', 'Comment'] }
+
+
+" [Buffers] Jump to the existing window if possible
+let g:fzf_buffers_jump = 1
+" [[B]Commits] Customize the options used by 'git log':
+let g:fzf_commits_log_options = '--graph --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr"'
+
+" [Commands] --expect expression for directly executing the command
+let g:fzf_commands_expect = 'alt-enter,ctrl-x'
+
+
+" Augmenting Ag command using fzf#vim#with_preview function
+" Similarly, we can apply it to fzf#vim#grep. To use ripgrep instead of ag:
+command! -bang -nargs=* Rg
+      \ call fzf#vim#grep(
+      \   'rg --vimgrep '.shellescape(<q-args>), 1,
+      \   <bang>0 ? fzf#vim#with_preview('up:60%')
+      \           : fzf#vim#with_preview(),
+      \   <bang>0)
+
+" Likewise, Files command with preview window
+command! -bang -nargs=? -complete=dir Files
+  \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+
+
+" Mapping selecting mappings
+nmap <leader><tab> <plug>(fzf-maps-n)
+xmap <leader><tab> <plug>(fzf-maps-x)
+omap <leader><tab> <plug>(fzf-maps-o)
+
+
+" Insert mode completion
+" imap <c-x><c-k> <plug>(fzf-complete-word)
+imap <c-x><c-f> <plug>(fzf-complete-path)
+imap <c-x><c-j> <plug>(fzf-complete-file-ag)
+imap <c-x><c-l> <plug>(fzf-complete-line)
+
+" Advanced customization using autoload functions
+inoremap <expr> <c-x><c-k> fzf#vim#complete#word({'left': '15%'})
+
+
+" function! s:fzf_statusline()
+"   " Override statusline as you like
+"   highlight fzf1 ctermfg=161 ctermbg=251
+"   highlight fzf2 ctermfg=23 ctermbg=251
+"   highlight fzf3 ctermfg=237 ctermbg=251
+"   setlocal statusline=%#fzf1#\ >\ %#fzf2#fz%#fzf3#f
+" endfunction
+
+" autocmd! User FzfStatusLine call <SID>fzf_statusline()
+
+" https://medium.com/@crashybang/supercharge-vim-with-fzf-and-ripgrep-d4661fc853d2
 " --column: Show column number
 " --line-number: Show line number
 " --no-heading: Do not show file headings in results
@@ -436,21 +528,14 @@ nnoremap <silent> <Leader>ag :Ag <C-R><C-W><CR>
 " --follow: Follow symlinks
 " --glob: Additional conditions for search (in this case ignore everything in the .git/ folder)
 " --color: Search color options
+" command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>).'| tr -d "\017"', 1, <bang>0)
 "
-command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
-if executable('rg')
 
-  set grepprg=rg\ --vimgrep
-  "                 |
-  "                 `------------ Format results for Vim, include multiple matches per line
-  set grepformat=%f:%l:%c:%m
-else
-  set grepprg=grep\ -rnH\ --exclude='.*.swp'\ --exclude='*~'\ --exclude=tags
-  "                  |||
-  "                  ||`--------- Always print file names
-  "                  |`---------- Print line numbers
-  "                  `----------- Search directories recursively
-endif
+set grepprg=rg\ --vimgrep
+"   "                 |
+"   "                 `------------ Format results for Vim, include multiple matches per line
+set grepformat=%f:%l:%c:%m
+
 " }}}
 " }}}
 " nvim-miniyank {{{
@@ -546,54 +631,54 @@ function! AsyncompleteSetup()
 
 endfunction
 
-  " " SYNTAX
-  " autocmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#necosyntax#get_source_options({
-  "       \ 'name': 'necosyntax',
-  "       \ 'whitelist': ['*'],
-  "       \ 'completor': function('asyncomplete#sources#necosyntax#completor'),
-  "       \ }))
+" " SYNTAX
+" autocmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#necosyntax#get_source_options({
+"       \ 'name': 'necosyntax',
+"       \ 'whitelist': ['*'],
+"       \ 'completor': function('asyncomplete#sources#necosyntax#completor'),
+"       \ }))
 
-  " " BUFFER
-  " autocmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
-  "       \ 'name': 'buffer',
-  "       \ 'whitelist': ['*'],
-  "       \ 'blacklist': ['go'],
-  "       \ 'completor': function('asyncomplete#sources#buffer#completor'),
-  "       \ }))
+" " BUFFER
+" autocmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
+"       \ 'name': 'buffer',
+"       \ 'whitelist': ['*'],
+"       \ 'blacklist': ['go'],
+"       \ 'completor': function('asyncomplete#sources#buffer#completor'),
+"       \ }))
 
-  " let g:UltiSnipsExpandTrigger="<c-e>"
-  " "  SNIPS ultisnips autocomplete
-  " autocmd User asyncomplete_setup call  asyncomplete#register_source(asyncomplete#sources#ultisnips#get_source_options({
-  "       \ 'name': 'ultisnips',
-  "       \ 'whitelist': ['*'],
-  "       \ 'completor': function('asyncomplete#sources#ultisnips#completor'),
-  "       \ }))
+" let g:UltiSnipsExpandTrigger="<c-e>"
+" "  SNIPS ultisnips autocomplete
+" autocmd User asyncomplete_setup call  asyncomplete#register_source(asyncomplete#sources#ultisnips#get_source_options({
+"       \ 'name': 'ultisnips',
+"       \ 'whitelist': ['*'],
+"       \ 'completor': function('asyncomplete#sources#ultisnips#completor'),
+"       \ }))
 
-  " " VIM autocomplete
-  " autocmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#necovim#get_source_options({
-  "       \ 'name': 'necovim',
-  "       \ 'whitelist': ['vim'],
-  "       \ 'completor': function('asyncomplete#sources#necovim#completor'),
-  "       \ }))
+" " VIM autocomplete
+" autocmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#necovim#get_source_options({
+"       \ 'name': 'necovim',
+"       \ 'whitelist': ['vim'],
+"       \ 'completor': function('asyncomplete#sources#necovim#completor'),
+"       \ }))
 
-  " if executable('pyls')
-  "   " pip install python-language-server
-  "   autocmd User lsp_setup call lsp#register_server({
-  "         \ 'name': 'pyls',
-  "         \ 'cmd': {server_info->['pyls']},
-  "         \ 'whitelist': ['python'],
-  "         \ })
-  " endif
+" if executable('pyls')
+"   " pip install python-language-server
+"   autocmd User lsp_setup call lsp#register_server({
+"         \ 'name': 'pyls',
+"         \ 'cmd': {server_info->['pyls']},
+"         \ 'whitelist': ['python'],
+"         \ })
+" endif
 
-  " augroup END
-  " " if executable('typescript-language-server')
-  " "     au User lsp_setup call lsp#register_server({
-  " "         \ 'name': 'typescript-language-server',
-  " "         \ 'cmd': {server_info->[&shell, &shellcmdflag, 'typescript-language-server', '--stdio']},
-  " "         \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'tsconfig.json'))},
-  " "         \ 'whitelist': ['typescript'],
-  " "         \ })
-  " " endif
+" augroup END
+" " if executable('typescript-language-server')
+" "     au User lsp_setup call lsp#register_server({
+" "         \ 'name': 'typescript-language-server',
+" "         \ 'cmd': {server_info->[&shell, &shellcmdflag, 'typescript-language-server', '--stdio']},
+" "         \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'tsconfig.json'))},
+" "         \ 'whitelist': ['typescript'],
+" "         \ })
+" " endif
 
 " }}}
 
@@ -694,7 +779,7 @@ let g:neoterm_size = 4
 let g:neoterm_fixedsize = 0
 let g:neoterm_position = 'horizontal'
 let g:neoterm_keep_term_open = 1
-let g:neoterm_autoscroll = 1
+let g:neoterm_autoscroll = 0
 
 " let g:neoterm_autoinsert = 1
 
@@ -711,13 +796,13 @@ vnoremap <silent> <F8> :TREPLSendSelection<CR>
 noremap  <silent> <F7> :TREPLSendFile<CR>
 
 function! BufferInsertLeaveDo()
-    echo 'Working On: ' . expand('%')
-    update
-    execute  ':Topen | T clear && xQwrapper '  . expand('%')
+  echo 'Working On: ' . expand('%')
+  update
+  execute  ':Topen | T clear && xQwrapper '  . expand('%')
 endfunction
 
 augroup myRepl
-   autocmd!
+  autocmd!
   autocmd BufWritePost,BufEnter,InsertLeave *.xq call BufferInsertLeaveDo()
 augroup END
 
@@ -1024,4 +1109,4 @@ augroup init
 augroup END
 
 
-  " }}}
+" }}}
