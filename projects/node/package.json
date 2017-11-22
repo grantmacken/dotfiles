@@ -4,11 +4,11 @@
   "description": "my node modules",
   "private": "true",
   "devDependencies": {
+    "puppeteer": "latest",
+    "neovim": "latest",
     "autoprefixer": "latest",
     "cssfmt": "latest",
     "cssnano": "latest",
-    "flow-bin": "latest",
-    "flow-language-server": "latest",
     "grunt": "latest",
     "lodash": "^4.17.4",
     "matchdep": "latest",

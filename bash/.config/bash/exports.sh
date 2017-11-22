@@ -59,6 +59,11 @@ if [ -n "${GIT_USER}" ]; then
   # EXPORT ACCESS TOKENS stores in projects dir
   GITHUB_ACCESS_TOKEN=$(<"${PROJECTS}/.github-access-token")
   export GITHUB_ACCESS_TOKEN=$GITHUB_ACCESS_TOKEN
+  GIT_USER=$(git config user.name)
+  export GIT_USER=$GIT_USER
+  EXIST_AUTH=$(echo -n "$GIT_USER:$GITHUB_ACCESS_TOKEN" | base64)
+  export EXIST_AUTH="$EXIST_AUTH"
+
   JWT_AUTH_TOKEN=$(<"${PROJECTS}/.site-access-token")
   # this is used by httpie
   export JWT_AUTH_TOKEN=$JWT_AUTH_TOKEN
@@ -78,6 +83,7 @@ if [ -n "${GIT_USER}" ]; then
     export OPENRESTY_HOME="${OPENRESTY_HOME}"
     # exist
     export EXIST_HOME="${EXIST_HOME}"
+
     # eXist has saxon
     export SAXON_HOME="${EXIST_HOME}/lib/endorsed"
     #SAXON=$(ls ${SAXON_HOME} | grep -oP '^Saxon(.+)\.jar$')
@@ -105,3 +111,18 @@ JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:/bin/java::")
 export JAVA_HOME=${JAVA_HOME}
 
 export NVIM_LISTEN_ADDRESS=/tmp/nvimsocket
+# create a nvim instance on startup
+# if [[ ! -e /tmp/nvimsocket ]] ; then
+#   nvim
+# fi
+# create a nvim instance on startup
+if [[ ! -e $NVIM_LISTEN_ADDRESS ]] ; then
+  nvim
+fi
+
+export EDITOR='nvr --remote-wait-silent'
+export GIT_EDITOR="$EDITOR"
+export VISUAL="$EDITOR"
+
+
+

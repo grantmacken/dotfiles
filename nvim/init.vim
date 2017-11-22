@@ -53,10 +53,9 @@ Plug 'tweekmonster/nvim-api-viewer'
 " neovim terminal
 " Plug 'hkupty/nvimux'
 " git gists and github
-" Plug 'lambdalisue/vim-gista' " not yet compatible with neomake
-" Plug 'lambdalisue/vim-gita', {'on': ['Gita']}
-" Plug 'lambdalisue/vim-gista', {'on': ['Gista']}
-" Plug 'lambdalisue/lista.nvim'
+Plug 'lambdalisue/gina.vim', {'on': ['Gina']}
+Plug 'lambdalisue/vim-gista', {'on': ['Gista']}
+Plug 'lambdalisue/lista.nvim'
 Plug 'airblade/vim-gitgutter'
 " Plug 'jreybert/vimagit'
 " Plugt'lambdalisue/vim-gita'

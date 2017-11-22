@@ -1,12 +1,12 @@
-
+#!/bin/bash
 # create a nvim instance on startup
-if [ ! -e /tmp/nvimsocket ]; then
-  nvim
-fi
+# if [[ ! -e /tmp/nvimsocket ]] ; then
+#   nvim
+# fi
 
-export VISUAL=nvim
-export EDITOR=$VISUAL
-alias v="nvr -cc split --remote-wait +'set bufhidden=wipe'"
+alias h='nvr -o'
+alias v='nvr -O'
+alias t='nvr --remote-tab'
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
@@ -23,4 +23,4 @@ alias pO.="cd $PROJECTS/openresty-existdb"
 alias p1="cd $PROJECTS/gmack.nz"
 
 
-alias featon=ssh featon -t tmux a
+alias featon='ssh featon -t tmux a'

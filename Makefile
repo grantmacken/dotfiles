@@ -71,6 +71,19 @@ neovim-clean:
 	@[ -L $(XDG_CONFIG_HOME)/nvim/init.vim ] && rm -v $(XDG_CONFIG_HOME)/nvim/init.vim || >/dev/null
 	@cd nvim; stow -D -v -t "$(XDG_DATA_HOME)/nvim/site" site
 
+neovim-update:
+	@cd $(HOME)/apps; curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
+	@chmod u+x $(HOME)/apps/nvim.appimage
+	@[ -L $(HOME)/bin/nvim  ]  && echo -n || \
+ ln -s -v -T $(HOME)/apps/nvim.appimage $(HOME)/bin/nvim 
+	@cd $(HOME)/apps;ls
+
+neovim-clients:
+	@node install -g neovim
+
+#@pip install --user -U neovim
+#@gem --user-install neovim
+
 home-bin:
 	@echo 'TASK: use stow to create symlinks in home dir'
 	$(if $(wildcard  $(HOME)/bin ),,mkdir $(HOME)/bin)
