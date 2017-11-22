@@ -1,0 +1,13 @@
+[Unit]
+Description=Get Stock Prices
+
+[Service]
+Type=simple
+Environment="SAXON_HOME=/usr/local/eXist/lib/endorsed"
+Environment="PATH=/usr/local/bin:/usr/bin:/bin:/snap/bin:%h/bin:%h/projects/grantmacken/bin"
+WorkingDirectory=%h/projects/grantmacken/accounts
+ExecStart=%h/projects/grantmacken/accounts/bin/getStockPrices
+
+
+[Install]
+WantedBy=default.target
