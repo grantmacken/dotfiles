@@ -1,5 +1,6 @@
 SHELL=/bin/bash
 include projects/properties/common.properties
+WEB_PROJECTS := gmack.nz zie.nz markup.nz
 APP_LIST = git curl stow
 assert-command-present = $(if $(shell which $1),,$(error '$1' missing and needed for this build))
 $(foreach src,$(APP_LIST),$(call assert-command-present,$(src)))
@@ -22,6 +23,11 @@ SYSTEMD_PATH := $(shell pgrep -fau $$(whoami) systemd | grep user | cut -d ' ' -
 # dig @8.8.8.8 +short gmack.nz
 
 # $(info 'OS NAME: $(OS_NAME) ')
+# A literal space.
+EMPTY :=
+SPACE := $(EMPTY) $(EMPTY)
+ROCKS = luv mpack lua-cjson2
+ROCKS_REG_LIST = $(subst $(SPACE),|,$(ROCKS))
 
 assert-is-root = $(if $(shell id -u | grep -oP '^0$$'),\
  $(info OK! root user, so we can change some system files),\
@@ -118,10 +124,16 @@ home-clean:
 	@$(MAKE) home-bash-clean home-bin-clean home-configs-clean
 
 
+outdatedRocks != luarocks list --outdated | grep -oP '^($(ROCKS_REG_LIST))'
+
 luarocks:
 	@echo '# $(@) #'
-	$(if $(shell luarocks show lua-cjson2 | grep -oP '^lua-cjson2'), luarocks show lua-cjson2 ,$(shell luarocks install --local lua-cjson2) )
-	$(if $(shell luarocks show mpack | grep -oP '^mpack'), luarocks show mpack ,luarocks install --local mpack)
+	@echo '$(ROCKS)'
+	@$(foreach rock,$(ROCKS), luarocks show '$(rock)' | grep -q -oP '^$(rock)' && \
+ luarocks show $(rock) || \
+ luarocks install --local lpeg $(rock) \
+;)
+	@$(foreach rock,$(outdatedRocks), luarocks install --local '$(rock)';)
 
 
 projects-node:
