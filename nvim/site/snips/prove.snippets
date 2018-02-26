@@ -1,0 +1,39 @@
+# prove.snippets
+
+snippet _skel "prove" b
+use Test::Nginx::Socket 'no_plan';
+
+run_tests();
+endsnippet
+
+snippet _ngxTest "nginx::test" b
+use Test::Nginx::Socket 'no_plan';
+
+run_tests();
+
+_DATA__
+
+=== TEST 1: Accept GET
+Endpoint will accept GET
+
+--- config
+location = /t {
+	content_by_lua_block {
+		local util = require('grantmacken.util')
+		local method = util.acceptMethods({
+			'GET'
+			})
+		ngx.say(method)
+	}
+}
+
+--- request
+GET /t
+
+--- response_body
+GET
+
+--- error_code: 200
+
+
+endsnippet

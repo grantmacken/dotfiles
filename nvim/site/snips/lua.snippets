@@ -1,0 +1,20 @@
+# lua.snippets - Snippets for lua file type
+
+snippet _skel "default" b
+local _M = {}
+
+$0
+
+return _M
+endsnippet
+
+snippet _module "lua module" b
+
+local _M = {}
+
+function _M.${1:Function Name}()
+$0
+end
+
+return _M
+endsnippet
