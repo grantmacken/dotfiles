@@ -26,7 +26,7 @@ SYSTEMD_PATH := $(shell pgrep -fau $$(whoami) systemd | grep user | cut -d ' ' -
 # A literal space.
 EMPTY :=
 SPACE := $(EMPTY) $(EMPTY)
-ROCKS = luv mpack lua-cjson2
+ROCKS = luv mpack lua-cjson2 xmlua
 ROCKS_REG_LIST = $(subst $(SPACE),|,$(ROCKS))
 
 assert-is-root = $(if $(shell id -u | grep -oP '^0$$'),\
@@ -71,13 +71,14 @@ neovim:
 	@[ -L $(XDG_CONFIG_HOME)/nvim/init.vim ]  && >/dev/null || \
  ln -s -v -t $(XDG_CONFIG_HOME)/nvim "$$(pwd)/nvim/init.vim"
 	@cd nvim; stow -v -t "$(XDG_DATA_HOME)/nvim/site" site
+	@#cd nvim; stow -D -v -t "../../eXistResty/nvim/site" site
 
 neovim-clean:
 	@echo 'Task: $(notdir $@)'
 	@[ -L $(XDG_CONFIG_HOME)/nvim/init.vim ] && rm -v $(XDG_CONFIG_HOME)/nvim/init.vim || >/dev/null
 	@cd nvim; stow -D -v -t "$(XDG_DATA_HOME)/nvim/site" site
 
-neovim-update:
+X-neovim-update:
 	@cd $(HOME)/apps; curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
 	@chmod u+x $(HOME)/apps/nvim.appimage
 	@[ -L $(HOME)/bin/nvim  ]  && echo -n || \
@@ -103,6 +104,7 @@ home-bash:
 home-configs:
 	@echo 'TASK: use stow to create symlinks in home/.config dir'
 	@stow -v -t ~/.config configs
+	@#systemctl --user daemon-reload
 
 
 home-bin-clean:
@@ -129,12 +131,13 @@ outdatedRocks != luarocks list --outdated | grep -oP '^($(ROCKS_REG_LIST))'
 luarocks:
 	@echo '# $(@) #'
 	@echo '$(ROCKS)'
-	@$(foreach rock,$(ROCKS), luarocks show '$(rock)' | grep -q -oP '^$(rock)' && \
+	@#$(foreach rock,$(ROCKS), luarocks show '$(rock)' | grep -q -oP '^$(rock)' && \
  luarocks show $(rock) || \
- luarocks install --local lpeg $(rock) \
+ luarocks install --local $(rock) \
 ;)
-	@$(foreach rock,$(outdatedRocks), luarocks install --local '$(rock)';)
-
+	@#$(foreach rock,$(outdatedRocks), luarocks install --local '$(rock)';)
+	@[ -L /usr/local/openresty/luajit/lib/lua/5.1/luv.so ]  && echo -n || \
+ ln -s -v -T $(HOME)/.luarocks/lib/lua/5.1/luv.so  /usr/local/openresty/luajit/lib/lua/5.1/luv.so
 
 projects-node:
 	@echo '# $(@) #'
@@ -190,7 +193,6 @@ stow-tmux:
 	$(if $(wildcard  $(HOME)/.tmux/plugins/tmux-sensible),\
  cd $(HOME)/.tmux/plugins/tpm/bin && ./update_plugins all ,\
  cd $(HOME)/.tmux/plugins/tpm/bin && ./install_plugins)
-
 
 neovimBackspaceFix:
 	infocmp $TERM | sed 's/kbs=^[hH]/kbs=\\177/' > $TERM.ti

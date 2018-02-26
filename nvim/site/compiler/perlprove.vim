@@ -26,8 +26,8 @@ set cpo&vim
 "        :make t - run prove and give arguments to prove ('t' in this case)
 " prove is called with '-l -v'
 " The /dev/stdout trick is to make sure vim only gets prove's STDERR
-CompilerSet makeprg=prove\ -l\ -v\ \`if\ test\ -n\ \"$*\"\;\ then\ echo\ \"$*\"\;\ else\ echo\ \"%\"\;\ fi\`\ 2>/dev/stdout\ 1>/dev/null\\\|cat
-
+" CompilerSet makeprg=prove\ -l\ -v\ \`if\ test\ -n\ \"$*\"\;\ then\ echo\ \"$*\"\;\ else\ echo\ \"%\"\;\ fi\`\ 2>/dev/stdout\ 1>/dev/null\\\|cat
+CompilerSet makeprg=prove\ -l\ -v\ %
 CompilerSet errorformat=
 	\%m\ at\ %f\ line\ %l.,
     \%I#\ Looks\ like\ you\ %m%.%#,

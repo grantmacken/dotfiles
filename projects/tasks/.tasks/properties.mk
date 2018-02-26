@@ -1,3 +1,11 @@
+NODE_DIR := ../node_modules
+NODE_BIN_DIR := ../node_modules/.bin
+C := _content
+T := .tmp
+L := .tmp/logs
+B := .build
+D := .deploy
+G := .github
 GIT_USER := $(shell  git config --get user.name )
 GIT_EMAIL := $(shell  git config --get user.email )
 GIT_REMOTE_ORIGIN_URl := $(shell git config --get remote.origin.url )
@@ -6,10 +14,15 @@ GIT_REPO_NAME := $(shell echo $(GIT_REPO_FULL_NAME) |cut -d/ -f2 )
 GIT_REPO_OWNER_LOGIN := $(shell echo $(GIT_REPO_FULL_NAME) |cut -d/ -f1 )
 GITHUB_ACCESS_TOKEN := $(shell echo "$$(<../.github-access-token)")
 SITE_ACCESS_TOKEN := $(shell echo "$$(<../.site-access-token)")
-WEBSITE := https://$(GIT_REPO_NAME)
+# ABBREV ( DOMAIN  OWNER )
+DOMAIN := $(GIT_REPO_NAME)
+OWNER := $(GIT_REPO_OWNER_LOGIN)
+WEBSITE := https://$(DOMAIN)
+
+EXIST_APP_PATH := xmldb:exist:///db/apps/$(DOMAIN)
 # HOST_REMOTE := $(shell dig @8.8.8.8 +short $(GIT_REPO_NAME))
 # REPO declared in ../common.properties
-# REPO_BASE_URL := https://api.github.com
+REPO_BASE_URL := https://api.github.com
 API_REPO="$(REPO_BASE_URL)/repos/$(GIT_REPO_FULL_NAME)"
 ifeq ($(TRAVIS_BRANCH),)
  CURRENT_BRANCH := $(shell git symbolic-ref HEAD 2> /dev/null | sed -e 's/refs\/heads\///' )
@@ -29,6 +42,8 @@ else
  REPO_SLUG := $(TRAVIS_REPO_SLUG)
 endif
 
+
+#TODO dup below
 OWNER := $(shell echo  "$(REPO_SLUG)" |cut -d/ -f1)
 REPO := $(shell echo  "$(REPO_SLUG)" |cut -d/ -f2)
 # live reload
@@ -41,12 +56,11 @@ else
 endif
 
 # determine version
-lastTag != if [ -e $(G)/tags.json ];then jq -r -c '.[0] | .name' $(G)/tags.json;fi
-gitTag != git describe --abbrev=0 --tags
-releaseStrategy != if [ -e $(G)/issue.json ] ; then jq '.milestone.title' $(G)/issue.json; fi
-nextTag !=  gh update-semver $(lastTag) $(releaseStrategy)
-
-VERSION != echo "$(nextTag)" | sed 's/v//'
-XAR != echo "$(D)/$(ABBREV)-$(VERSION).xar"
-CURRENT_DATE  != date "+%Y-%m-%d"
-CURRENT_DATE_TIME != date "+%Y-%m-%dT%H:%M:%S"
+# lastTag != if [ -e $(G)/tags.json ];then jq -r -c '.[0] | .name' $(G)/tags.json;fi
+# gitTag != git describe --abbrev=0 --tags
+# releaseStrategy != if [ -e $(G)/issue.json ] ; then jq '.milestone.title' $(G)/issue.json; fi
+# nextTag !=  gh update-semver $(lastTag) $(releaseStrategy)
+# VERSION != echo "$(nextTag)" | sed 's/v//'
+# XAR != echo "$(D)/$(ABBREV)-$(VERSION).xar"
+# CURRENT_DATE  != date "+%Y-%m-%d"
+# CURRENT_DATE_TIME != date "+%Y-%m-%dT%H:%M:%S"

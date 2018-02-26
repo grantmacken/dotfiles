@@ -1,13 +1,39 @@
-# sh.snippets - bash bang boof
+# markdown.snippets
 
-snippet _skel "Markdown" b
+snippet _skel "default" b
 <!--
+# $1 #
 $0
 -->
+endsnippet
+
+snippet _note "post an note" b
+# ${1:Section Name} #
+
+$0
+
 endsnippet
 
 snippet _article "post an article" b
 <!--
+name: ${1:Post Name} 
+date: ${2:`date --iso`}
+tags: ${3:Post tags}
+-->
+
+
+# ${1:Post Name} #
+
 $0
+
+endsnippet
+
+snippet frontmatter "frontmatter" b
+<!--
+name: ${1:Post Name} 
+date: ${2:`date --iso`}
+tags: ${3:Post tags}
 -->
 endsnippet
+
+

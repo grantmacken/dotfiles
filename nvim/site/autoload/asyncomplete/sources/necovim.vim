@@ -1,5 +1,3 @@
-
-
 " NOTES
 "  {opt} source options is a dictionary set on call in init.vim
 "  then passed to completor func as param

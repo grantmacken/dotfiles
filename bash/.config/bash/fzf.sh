@@ -1,6 +1,7 @@
 #!/bin/bash
 
 FZF_HOME="$HOME/.fzf"
+[ -f $FZF_HOME ] && source $FZF_HOME
 
 if [[ ! "$PATH" == *$FZF_HOME/bin* ]]; then
   export PATH="$PATH:$FZF_HOME/bin"

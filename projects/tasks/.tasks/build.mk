@@ -13,7 +13,6 @@ BUILD : create a release xar
 
 ==========================================================
 
-
 endef
 
 build-help: export buildHelp:=$(buildHelp)
@@ -32,7 +31,7 @@ build-xar-clean:
 
 build-clean:
 	@$(MAKE) --silent build-xar-clean
-	@rm -r $(B)/*
+	@rm -rf $(B)/*
 
 build-restore:
 	@$(MAKE) --silent build-clean

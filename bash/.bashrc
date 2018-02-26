@@ -12,8 +12,12 @@ if [ -d $HOME/.config/bash ] ; then
 fi
 
 source $HOME/projects/owners/ingydotnet/git-subrepo/.rc
-# source /usr/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh
 
+# create a nvim instance on startup
+setxkbmap -option caps:swapescape
+if [[ ! -e $NVIM_LISTEN_ADDRESS ]] ; then
+  nvim
+fi
 
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash

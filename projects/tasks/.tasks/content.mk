@@ -18,12 +18,50 @@
 #
 #
 #############################################################
-SRC_ARTICLES := $(wildcard content/posts/articles/*.md)
 
-ARTICLES  := $(patsubst content/%.md,$(L)/content/%.json,$(SRC_ARTICLES))
+SRC_ARTICLES:= $(shell find $(C)/articles -name '*.md' )
+ARTICLES     := $(patsubst $(C)/articles/%.md,$(T)/articles/%.xhtml,$(SRC_ARTICLES))
 
-# $(info $(SRC_ARTICLES))
-# $(info $(ARTICLES))
+define articleTemplate
+<!---
+title: [TITLE] 
+created: $(shell date --iso)
+draft:   true
+tags:
+-->
+
+### title
+
+ Posuere facilisis eros nulla sed dolor, ac pede elementum praesent arcu est
+tellus, maecenas molestie nonummy adipiscing, elit bibendum. Mollis consequat
+donec sollicitudin, luctus vel, maecenas aliquam quam pellentesque vivamus wisi
+vel, mi in at congue pretium. Nec mauris dignissim donec phasellus vel, dui
+lorem eget magna vestibulum, ultrices sit nam, lectus odio mauris laoreet
+vestibulum sodales. Lectus quam, risus non ac in lectus dapibus, lorem turpis
+condimentum lorem, malesuada potenti, sociis est. Id quis felis, viverra
+euismod, libero mauris augue tristique faucibus augue donec. Odio in, enim
+dolor est vel ullamcorper, amet nec sed nunc sem, tempus elit bibendum urna mi.
+
+
+ Viverra wisi, egestas quam suspendisse, volutpat cras erat aliquam, amet nunc,
+cras eros placerat justo. Sed semper a error a volutpat. Odio senectus in
+tincidunt, eget posuere luctus ipsum voluptate justo cursus, massa tincidunt
+nec integer lacus. Ornare elementum eleifend ultricies proin, donec et ligula
+fusce. Nec faucibus, velit mauris nascetur morbi nam eros, mauris ut et.
+Viverra purus lectus, sed molestie turpis ipsum, netus et vivamus sagittis
+auctor et in, cras eget eget urna.
+
+endef
+
+article: export mkArticleTemplate:=$(articleTemplate)
+article:
+	@echo "## $@ ##"
+	@read -p "enter unique title ➥ " title;\
+ echo "$${mkArticleTemplate}" | \
+ sed "s/^title:.*/title: '$$title'/" | \
+ sed -r "s/^##.*/## $$title/"  \
+ > $(C)/articles/$(shell date --iso)-$$(echo $${title} | sed 's/ /_/g').md
+
 
 content: $(ARTICLES)
 
@@ -32,18 +70,15 @@ watch-content:
 
 .PHONY:   watch-content
 
-# @xq store-built-resource \
-# '$(join data/,$(NAME))' \
-# '$(abspath  $(subst /$(subst $(NAME)/content/,,$(<)),,$(<)))' \
-# '$(<)' \
-# '$(call getMimeType,$(suffix $(notdir $(<))))' \
-# 'content/$*'
-# in eXist and log response
 
-$(L)/content/%.log: content/%.md
+$(T)/articles/%.xhtml: $(C)/articles/*.md
 	@echo "## $@ ##"
 	@mkdir -p $(@D)
 	@echo "SRC: $<"
+	@echo "$(call cat,$<)"
+	@resty -e 'local h = require("resty.hoedown");print(h[[# Hello World]])'
+
+ssasas:
 	@echo "eXist content collection_uri: $(join apps/,$(NAME))"
 	@echo "directory in file system: $(subst $(<),,$(abspath  $(<)))"
 	@echo "eXist store pattern: : $(<) "

@@ -78,7 +78,6 @@ Keyboard: set capslock to escape
 TODO! : automate - fetch from git - make - setup service
 
 ```
-make caps2sec
 make neovimBackspaceFix
 ```
 

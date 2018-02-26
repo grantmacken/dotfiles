@@ -43,7 +43,6 @@ help-env:
 
 help-var:
 	@echo 'BIN_DIR ': $(abspath ../bin)
-	@echo 'SAXON ': $(SAXON)
 	@echo 'REPO_SLUG': $(REPO_SLUG)
 	@echo 'OWNER': $(OWNER)
 	@echo 'REPO': $(REPO)
@@ -64,5 +63,5 @@ endif
 	@echo XAR $(XAR)
 	@echo TINY-LR_UP $(TINY-LR_UP)
 
-.PHONY: help 
+.PHONY: help
 

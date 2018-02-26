@@ -48,9 +48,9 @@ endef
 
 define issueTemplate
 <!--
-ISSUE_TITLE='WIP new build'
-ISSUE_LABEL='bug'
-ISSUE_MILESTONE='patch'
+TITLE: WIP new build
+LABEL: bug
+MILESTONE: patch
 -->
 WIP new build
 
@@ -110,10 +110,10 @@ branchSlug != if [ -e $(G)/issue.json ]; then \
 fi
 
 repo:
-	$(MAKE) $(G)/repo.json
+	@echo "##[ $@ ]##"
+	@$(MAKE) --silent $(G)/repo.json
 
 # TODO! incorp  gh default-labels and default milestone
-
 
 $(G)/repo.json:
 	@echo "##[ $@ ]##"
@@ -152,12 +152,18 @@ issue:
 	@git status --short
 	@$(if $(onMaster),\
  $(MAKE) --silent issue-clean && \
- $(MAKE) --silent $(G)/branch.json , \
+ $(MAKE) --silent $(G)/issue.json , \
  $(MAKE) --silent issue-patch )
 
 issue-clean:
 	@echo "##[ $@ ]##"
 	@if [ -e issue.md ] ; then rm issue.md; fi
+	@repo get repo
+	@repo get milestones
+	@repo get labels
+	@repo get tags
+
+xxxxx:
 	@$(call cleanFetched,issue)
 	@$(call cleanFetched,branch)
 	@gh get-repo
@@ -172,12 +178,12 @@ issue.md:
 	@echo "##[ $@ ]##"
 	@echo "$${issueTemplate}" > $@
 	@read -p "enter issue title ➥ " title;\
- sed -i -r "s/^ISSUE_TITLE=.*/ISSUE_TITLE='$$title'/" $@;\
+ sed -i -r "s/^TITLE=.*/TITLE='$$title'/" $@;\
  sed -i -r "s/^WIP .*/WIP $$title/" $@;
 
 $(G)/issue.json: issue.md
 	@echo "##[ $@ ]##"
-	@gh create-issue
+	@issue
 
 $(G)/branch.json: $(G)/issue.json
 	@echo "##[ $@ ]##"

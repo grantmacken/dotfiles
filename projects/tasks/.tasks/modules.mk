@@ -44,33 +44,43 @@ watch-modules:
 $(B)/modules/%.xqm: modules/%.xqm
 	@echo "##  $*  ##"
 	@[ -d @D ] || mkdir -p $(@D)
-	@echo "src: [ $< ]"
-	@xQcompile $< && echo "checked if exist can compile the module"
-	@cp $< $@ && echo 'copied files into build directory'
+	@echo "src:    [ $< ]"
+	@echo "domain: [ $(DOMAIN) ]"
+	@COMPILED=$$( xQcmpl  $< );if [ -n "$${COMPILED}" ];\
+ then ( echo "$${COMPILED}";false ); else true; fi
+	@echo 'Success: passed can complile checkpoint'
+	@cp $< $@ && echo 'Done: copied file into build directory'
 	@echo '-----------------------------------------------------------------'
 
 $(B)/modules/%.xq: modules/%.xq
 	@echo "##  $*  ##"
 	@[ -d @D ] || mkdir -p $(@D)
 	@echo "src: [ $< ]"
-	@xQcompile $< && echo "checked if exist can compile the module"
-	@cp $< $@ && echo 'copied files into build directory'
+	@echo "domain: [ $(DOMAIN) ]"
+	@COMPILED=$$( xQcmpl  $< );if [ -n "$${COMPILED}" ];\
+ then ( echo "$${COMPILED}"; false ); else true; fi
+	@echo 'OK: can compile checkpoint'
+	@cp -v $< $@
 	@echo '-----------------------------------------------------------------'
 
-$(L)/modules/%.log: $(B)/modules/%.xqm 
-	@echo "## $@ ##" 
+$(L)/modules/%.log: $(B)/modules/%.xqm
+	@echo "## $@ ##"
 	@[ -d @D ] || mkdir -p $(@D)
-	@echo 'Upload $(basename $@) to eXist'
-	@xQstore $< > $@
-	@xQperm $< 'rwxr-xr-x'
+	@echo 'Store [ $< ]'
+	@STORED=$$(xQstore $< );[ -n "$$STORED" ] && echo "$$STORED" | tee $@;
+	@PERM=$$(xQperm $< 'rwxr-xr-x');[ -n "$$PERM" ] && echo "$$PERM";
+	@if [ '$<' == '$(B)/modules/api/router.xqm' ];then xQreg modules/api/router.xqm;fi;
 	@echo "Uploaded eXist path: [ $$(cat $@) ]"
+	@echo '-----------------------------------------------------------------'
 
 $(L)/modules/%.log: $(B)/modules/%.xq
 	@echo "## $@ ##"
 	@[ -d @D ] || mkdir -p $(@D)
-	@echo 'Upload $(basename $@) to eXist'
-	@xQstore $< > $@
+	@echo 'Store [ $< ]'
+	@STORED=$$(xQstore $< );[ -n "$$STORED" ] && echo "$$STORED" | tee $@;
+	@PERM=$$(xQperm $< 'rwxr-xr-x');[ -n "$$PERM" ] && echo "$$PERM";
 	@echo "Uploaded eXist path: [ $$(cat $@) ]"
+	@echo '-----------------------------------------------------------------'
 
 $(L)/upModules.log: $(UPLOAD_MODULE_LOGS)
 	@$(MAKE) --silent $(UPLOAD_MODULE_LOGS)
@@ -79,9 +89,9 @@ $(L)/upModules.log: $(UPLOAD_MODULE_LOGS)
  cat $$log >> $@ ; \
  done
 	@echo "$$( sort $@ | uniq )" > $@
-	@echo '----------------------------'
-	@echo '|  Uploaded Module Into eXist  |'
-	@echo '----------------------------'
+	@echo '--------------------------------'
+	@echo '   Stored "$(DOMAIN)" Modules  '
+	@echo '--------------------------------'
 	@cat $@
 	@echo '----------------------------'
 	@touch $(UPLOAD_MODULE_LOGS)
