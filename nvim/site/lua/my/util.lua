@@ -1,27 +1,11 @@
 local _M = {}
 
+local fs = require('my.fs')
+local log = require('my.log').log
+local api = vim.api
+
 function _M.echom(message)
-  vim.api.nvim_command('echom "' .. tostring(message) .. '"')
-end
-
-
-function _M.read(f)
-  local open     = io.open
-  local f, e = open(f, "rb")
-  if not f then
-    return nil, e
-  end
-  local c = f:read "*a"
-  f:close()
-  return c
-end
-
--- TODO if not in use remove
-
-function _M.tablelength(T)
-  local count = 0
-  for _ in pairs(T) do count = count + 1 end
-  return count
+  api.nvim_command('echom "' .. tostring(message) .. '"')
 end
 
 -- TODO if not in use remove
@@ -70,50 +54,14 @@ function _M.listKeys( T )
   return table.concat(t," | ")
 end
 
-function _M.printIPairs( T )
-  -- print( type(v))
-  for i, v in ipairs( T ) do
-    -- print( type(v))
-    if type(v) == "string" then
-      print( tostring(i) .. ', value: '  .. v )
-    end
-    if type(v) == "number" then
-      print( tostring(i) .. ', value: '  .. tostring(v) )
-    end
-    if type(v) == "table" then
-      if util.isArray( v ) > 0 then
-        printIPairs( v )
-      end
-    end
-  end
+function _M.isGlobalVar( v )
+  local value, err = pcall(api.nvim_get_var, v )
+   if not value then
+     log(' [ERR] ' .. err )
+     return false
+    else
+     return true
+   end
 end
-
-function _M.printPairs( T , spacer )
-  for k, v in pairs( T ) do
-    -- print( type(v))
-    if type(v) == "string" then
-      print( spacer .. 'key:' .. k .. ', value: '  .. v )
-    end
-    if type(v) == "number" then
-      print(  spacer .. 'key: ' .. tostring(k) .. ', value: '  .. tostring(v) )
-    end
-    if type(v) == "table" then
-      print( spacer .. ' key:: ' .. tostring(k) )
-      spacer = spacer .. '  '
-      if util.isArray( v ) < 0 then
-        printPairs( v , spacer )
-      end
-      if util.isArray( v ) == 0 then
-        print( spacer .. 'EMPTY TABLE: ' .. tostring(util.isArray( v )))
-      end
-      if util.isArray( v ) > 0 then
-        print( spacer .. 'TODO ARRAY TABLE')
-       -- printPairs(instance)
-      end
-      spacer = ' '
-    end
-  end
-end
-
-
+  --   local bvHasProjection, err = pcall(isBufferVar,'projectionist')
 return _M

@@ -14,14 +14,16 @@ setlocal nowrap
 setlocal norelativenumber
 setlocal nonumber
 " we don't want quickfix buffers to pop up when doing :bn or :bp
-set nobuflisted
+" set nobuflisted
 " are we in a location list or a quickfix list?
-let b:isLoc = len(getloclist(0)) > 0 ? 1 : 0
-
+" let b:isLoc = len(getloclist(0)) > 0 ? 1 : 0
+" :botright cwindow
 " force the quickfix window to be opened at the bottom
-" of the screen and take the full width
-wincmd J
-autocmd BufEnter <buffer> wincmd J
+" of the screen and take the full width wincmd J
+augroup quickfix_config
+  autocmd! * <buffer>
+  autocmd BufEnter <buffer> wincmd J
+augroup END
 
 " nnoremap <silent><buffer><nowait> s <C-W><CR><C-W>p<C-W>J<C-W>p
 " nnoremap <silent><buffer><nowait> v <C-W><CR><C-W>L<C-W>p<C-W>J<C-W>p
@@ -30,7 +32,7 @@ autocmd BufEnter <buffer> wincmd J
 " hit q to quit
 nnoremap <silent><buffer><nowait> q :call my#qf#close()<CR>
 
-autocmd BufEnter <buffer> call my#qf#AdjustWindowHeight(3,10)
+" autocmd BufEnter <buffer> call my#qf#AdjustWindowHeight(3,10)
 
 
 let &cpoptions = s:save_cpo

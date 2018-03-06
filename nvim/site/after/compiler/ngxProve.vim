@@ -2,12 +2,14 @@
 " Compiler: ngxTest home made
 " Maintainer: Grant MacKenzie
 " Last Change: 2018
+" h write-compiler-plugin
+" h :compiler
 
-let g:current_compiler = 'ngxTest'
+let g:current_compiler = 'ngxProve'
 let s:cpo_save = &cpoptions
 set cpoptions&vim
 
-let $PROVEFILE = g:my_test_file
+let $PROVEFILE = b:my_test_file
 CompilerSet makeprg=ngxProve\ $PROVEFILE
 
 " sample warning: foo.html:8:1: Warning: inserting missing 'foobar' element

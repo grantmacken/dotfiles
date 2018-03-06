@@ -486,7 +486,7 @@ nnoremap <A-j> <C-w>j
 nnoremap <A-k> <C-w>k
 nnoremap <A-l> <C-w>l
 "}}}
-" neovim terminal {{{
+" terminal {{{
 " tnoremap <expr> <A-r> '<C-\><C-n>'.nr2char(getchar()).'pi'
 
 set switchbuf+=useopen
@@ -504,9 +504,10 @@ tnoremap <Esc> <C-\><C-n>
 " https://neovim.io/doc/user/nvim_terminal_emulator.html#nvim-terminal-emulator
 " TermChanged, TermClose, TermResponse
 augroup myTerm
-  autocmd TermOpen * nested lua require('my.term').options()
-  " autocmd TermClose  * nested lua require('my.util').echom(' - Term Closed ')
-  " autocmd TermResponse  * nested lua require('my.util').echom(' - Term Response ')
+   autocmd TermOpen * lua require('my.term').onOpen()
+  " autocmd TermChanged * lua require('my.term').onChanged()
+  " autocmd TermClose * lua require('my.term').onClose()
+  " autocmd TermResponse * lua require('my.term').onResponse()
 augroup END
 " }}}
 " Functions {{{
@@ -519,22 +520,23 @@ function! StylePreviewWindow()
   endif
 endfunction
 " }}}
-" Quickfix {{{
+" Make and Quickfix {{{
+command! -nargs=* Make Accio <args>
 command! -nargs=0 Prove lua require('my.project').prove()
 command! -nargs=0 Qnext lua require('my.qf').rotateNext()
 command! -nargs=0 Qprev lua require('my.qf').rotatePrev()
+command! -nargs=0 Qtoggle lua require('my.qf').toggle()
 nnoremap <silent> [q :Qnext<CR>
 nnoremap <silent> ]q :Qprev<CR>
+nnoremap <silent> <leader>q :Qtoggle<CR>
 "GF: site/lua/my/qf.lua
-nnoremap <silent> <leader>l :call my#qf#toggle("Location List", 'l')<CR>
-nnoremap <silent> <leader>q :call my#qf#toggle("Quickfix List", 'c')<CR>
+" nnoremap <silent> <leader>l :call my#qf#toggle("Quickfix List", 'c')<CR>
 augroup myQuickfix
   autocmd!
-  autocmd QuickFixCmdPre call my#qf#pre()
+  autocmd QuickFixCmdPre lua require('my.qf').onCmdPre()
   " GF: site/autoload/my/qf.vim
-  " site/auto
   " before a quicklist command is run
-  autocmd QuickFixCmdPost call my#qf#post()
+  autocmd QuickFixCmdPost lua require('my.qf').onCmdPost()
   " after a quicklist command is run
   "GF: nvim/site/autoload/my/qf.vim
   " our shell commands 'make' etc run from project root
@@ -545,8 +547,8 @@ augroup myQuickfix
   "GF: nvim/site/after/ftplugin/qf.vim
   "Then the BufReadPost event is triggered,
   " using 'quickfix' for the buffer name
-  autocmd BufReadPost quickfix  call my#qf#filled()
-  autocmd BufWinEnter quickfix call my#qf#entered()
+  autocmd BufReadPost quickfix lua require('my.qf').onFilled()
+  autocmd BufWinEnter quickfix  lua require('my.qf').onEntered()
   "GF: nvim/site/autoload/my/qf.vim
 augroup END
 " }}}
@@ -591,11 +593,20 @@ augroup init
   autocmd BufNewFile,BufRead *.md set filetype=markdown
   autocmd BufWinEnter * call StylePreviewWindow()
   autocmd User asyncomplete_setup call my#asyncomplete#setup()
+  " ---------------------------------------------------
+  " Projections
+  " -----------
+  " ProjectionistDetect    - tries to detect projection for current file in buffer
+  "                        - if detected sets
+  "                            - b:projectionist_file
+  "                            - b:projectionist  (object)
+  " @see projectionist auto commands
+  " triggered when searching for projections
+  autocmd User ProjectionistDetect   lua require('my.project').detect()
   "  triggered when projections found
-  autocmd User ProjectionistActivate lua require('my.project').init()
+  autocmd User ProjectionistActivate lua require('my.project').activate()
   " ---------------------------------------------------
 
 augroup END
 
 " }}}
-

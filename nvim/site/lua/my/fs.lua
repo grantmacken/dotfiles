@@ -26,4 +26,11 @@ function _M.writeFile(s,f)
   return ''
 end
 
+function _M.appendToFile(s,f)
+  local fd   = assert(uv.fs_open(f, 'a', 438))
+  assert(uv.fs_write(fd,s, -1))
+  assert(uv.fs_close(fd))
+  return ''
+end
+
 return _M

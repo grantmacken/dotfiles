@@ -12,17 +12,7 @@ function! my#qf#getBufferList()
   return l:buflist
 endfunction
 
-function! my#qf#close()
-  let l:buflist = my#qf#getBufferList()
-  let bufnr = bufnr("%")
-  for buf in split(l:buflist, "\n")
-    if (buf =~# '^\s*'.bufnr)
-      let close = (buf =~# '\[Quickfix List\]' ? "cclose" : "lclose")
-      execute close
-      return
-    endif
-  endfor
-endfunction
+
 
 function! my#qf#AdjustWindowHeight(minheight, maxheight)
   let l = 1

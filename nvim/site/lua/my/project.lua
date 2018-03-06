@@ -3,55 +3,14 @@ local _M = {}
 local cjson = require('cjson')
 local util = require('my.util')
 local fs = require('my.fs')
+local log = require('my.log').log
 local api = vim.api
 
 --[[
 -- :NvimAPI
 -- :h api
 -- :h lua
--- :command " to list commands
--- api.nvim_command('echom "' .. tostring(message) .. '"')
--- api.nvim_call_function( 'neoterm#tnew,{}')
---  :h termopen
--- print( util.listKeys(nt))
---   $DATAPATH
 --]]
-
--- function! my#project#init() abort
---   lua 
---   for [root, value] in projectionist#query('framework')
---     " echomsg value
---     " lua vim.api.nvim_set_var('framework', value)
---     break
---   endfor
--- endfunction
--- buffers(api)
--- api.nvim_command('echom "OK"')
--- local win = api.nvim_get_current_win()
--- local winNum = api.nvim_win_get_number(win)
--- local winBuf = api.nvim_win_get_buf(win)
--- print( winBuf )
---  print( winNum )
---  print( api.nvim_eval('$DATAPATH') )
---  print( api.nvim_eval('expand("$CACHEPATH/*")') )
--- -- print(api.nvim_call_function( 'win_getid',{}))
--- --- api.nvim_command('DeleteHiddenBuffers')
--- local nt = api.nvim_get_var('neoterm')
--- print( nt['last_id'] )
--- print( nt['open'] )
-
--- print( type(nt['instances']) )
--- local nt = api.nvim_get_var('neoterm')
--- -- print( type(nt['instances']) )
--- -- api.nvim_call_function('g:neoterm.has_any',{})
--- local hasAny = api.nvim_eval('g:neoterm.has_any()')
---  print( type(hasAny) )
--- print( hasAny )
--- api.nvim_command('TcloseAll!')
--- api.nvim_command('Tnew')
--- api.nvim_command('Tnew')
--- api.nvim_command('T1 echo "On Your Marks"')
--- api.nvim_command('T2 echo "Ready Set Go"'
 
 local function isGlobalVar( v )
   local value = api.nvim_get_var( v )
@@ -67,7 +26,7 @@ local function isGlobalVar( v )
 end
 
 local function isBufferVar( v )
-  local window = api.nvim_get_current_win() 
+  local window = api.nvim_get_current_win()
   local buffer = api.nvim_win_get_buf(window)
   local value = api.nvim_buf_get_var( buffer, v )
   if type(value) ~= 'table' then
@@ -149,16 +108,19 @@ end
 
 
 local function getProjectionValue( projection )
+  -- log( ' - get projection value: ' .. projection )
   local arr = {}
   arr[1] = projection
   -- local value, err = pcall(isGlobalVar,'my_placeholder_window')
-  local value = api.nvim_call_function('my#project#value',arr)
-  if not value  then
+  local value, err = pcall(api.nvim_call_function,'my#project#value',arr)
+  if not value then
+    log( '[ERR] ' ..  err )
     return nil
   end
-  -- util.echom( str)
-  return value
+  return api.nvim_call_function('my#project#value',arr)
 end
+
+_M.getProjectionValue = getProjectionValue
 
 function _M.openInTerminalWindow( projection )
   -- api.nvim_command('DeleteHiddenBuffers')
@@ -222,37 +184,65 @@ function _M.openInSplitWindow( projection )
   api.nvim_set_current_win(placeHolderWindow)
 end
 
-function _M.init()
-  local placeHolderWindow
-  local gvPlaceHolder, err = pcall(isGlobalVar,'my_placeholder_window')
-  if not gvPlaceHolder then
-    local bvHasProjection, err = pcall(isBufferVar,'projectionist')
-    if bvHasProjection then
-      placeHolderWindow = api.nvim_get_current_win()
-    else
-      placeHolderWindow = ''
-    end
-    api.nvim_set_var('my_placeholder_window',placeHolderWindow)
-  end
+function _M.detect()
+  -- log( ' -  searching for projections'  )
+  -- local placeHolderWindow
+  -- local gvPlaceHolder, err = pcall(isGlobalVar,'my_placeholder_window')
+  -- if not gvPlaceHolder then
+  --   local bvHasProjection, err = pcall(isBufferVar,'projectionist')
+  --   if bvHasProjection then
+  --     placeHolderWindow = api.nvim_get_current_win()
+  --   else
+  --     placeHolderWindow = ''
+  --   end
+  --   api.nvim_set_var('my_placeholder_window',placeHolderWindow)
+  -- end
   -- util.echom( err)
   return
 end
 
-function _M.prove()
-  local bufHasProjection, err = pcall(isBufferVar,'projectionist')
-  if not bufHasProjection then
+function _M.activate()
+  log( ' - projection activated'  )
+  local buffer = api.nvim_get_current_buf()
+  --local bufHasProjection, err = pcall(isBufferVar,'projectionist')
+  local value, err = pcall(api.nvim_buf_get_var, buffer,'projectionist_file')
+  if not value then
+    log('[ERR] ' .. err )
     return
   end
-  local projectionValue =  getProjectionValue('test')
-  if not projectionValue['file'] then
-    util.echom( 'OH NO!! no test projection for buffer ' )
-    return
+  local bufferName = api.nvim_buf_get_name( buffer )
+  -- log( ' - bufferName: ' .. getRelativePath(bufferName) )
+  api.nvim_buf_set_var( buffer, 'my_test_file', getTestFile(buffer) )
+  -- log( ' - has projectionist file: ' .. tostring(value) )
+  -- log( ' - file: ' .. getRelativePath(api.nvim_buf_get_var( buffer,'projectionist_file')))
+   --log( ' -----------------------------------------  ' )
+  return
+end
+
+
+function getTestFile( buffer )
+  -- log( ' - get test file'  )
+  local sTest =  getProjectionValue('test')
+  local sType =  getProjectionValue('type')
+  -- local sAlternate =  getProjectionValue('alternate')
+  -- log( ' -  ' .. tostring( sTest) )
+  -- log( ' -  ' .. tostring( sType) )
+  -- log( ' -  ' .. tostring( sAlternate) )
+  if sType ~= 'test' then
+    return getProjectionValue('alternate')
   else
-  -- api.nvim_set_var('my_test_file',projectionValue['file'])
+    return getRelativePath(api.nvim_buf_get_var( buffer,'projectionist_file'))
   end
-  -- util.echom(  api.nvim_get_var('my_test_file' ))
-  local accioDo = projectionValue['do']
-   api.nvim_call_function('accio#accio',accioDo)
+end
+
+function _M.prove()
+  ----log( ' - projection prove'  )
+  --local buffer = api.nvim_get_current_buf()
+  ---- local fCurBuf = getRelativePath(api.nvim_buf_get_var( buffer,'projectionist_file'))
+  --local fTest =  getTestFile(buffer)
+  --local oTest =  getProjectionValue('test')
+  --api.nvim_buf_set_var( buffer, 'my_test_file' ,fTest )
+  --api.nvim_call_function('accio#accio',oTest)
 end
 
 return _M

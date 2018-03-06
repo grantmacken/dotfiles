@@ -14,8 +14,8 @@
 " - Echoing the error message when the cursor is on an error line.
 " @see compiler
 
-let g:accio_create_empty_quickfix = 1
-let g:accio_auto_copen = 1 "automatically open quick list
+let g:accio_create_empty_quickfix = 0
+let g:accio_auto_copen = 0 "automatically open quick list
 " let g:accio_update_interval = 250
 
 " Note:  Noah Frederick's  after ... sets text and signs
