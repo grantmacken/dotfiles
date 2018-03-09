@@ -94,7 +94,7 @@ Plug 'w0rp/ale'
 "GF: site/after/plugin/ale.vim
 Plug 'sbdchd/neoformat'
 "GF: site/after/plugin/neoformat.vim
-Plug 'pgdouyon/vim-accio' "@see https://github.com/pgdouyon/vim-accio
+" Plug 'pgdouyon/vim-accio' "@see https://github.com/pgdouyon/vim-accio
 "GF: nvim/site/after/plugin/accio.vim
 Plug 'romainl/vim-qlist'
 " https://github.com/romainl/vim-qlist/blob/master/doc/qlist.txt
@@ -260,7 +260,7 @@ highlight VertSplit guifg=#585858 guibg=#585858
 " colorscheme nova
 " i
 " }}}
-" BASIC SETTINGS {{{
+"z BASIC SETTINGS {{{
 " ==================
 
 augroup vimrc
@@ -322,7 +322,7 @@ set colorcolumn=120     " Highlight the 120 th character limit
 set synmaxcol=200
 set scrolloff=2         " Keep at least 2 lines above/below
 set sidescrolloff=2     " Keep at least 2 lines left/right
-
+set signcolumn=yes    " keep signcolumn open
 " split dividers
 " set fillchars=""
 " hi VertSplit guibg=#556873 ctermbg=2
@@ -412,24 +412,7 @@ set autoread      "Always reload buffer when external changes detected
 " - fzf
 " }}}
 " }}}
-" PLUGIN SETTINGS
-" formating: easyalign {{{
-
-"" }}}
-" nvim-miniyank {{{
-" https://github.com/bfredl/nvim-miniyank
-" map p <Plug>(miniyank-autoput)
-" map P <Plug>(miniyank-autoPut)
-
-" map <Leader>p <Plug>(miniyank-startput)
-" map <Leader>P <Plug>(miniyank-startPut)
-
-" map <leader>n <Plug>(miniyank-cycle)
-" map <Leader>c <Plug>(miniyank-tochar)
-" map <Leader>l <Plug>(miniyank-toline)
-" map <Leader>b <Plug>(miniyank-toblock)
-" }}}
-" Auto Completions and Snippets and Templates {{{
+" Auto Completions {{{
 " Popup Menu Styling
 " set shortmess+=c
 " set shortmess=aoOTI     " Shorten messages and don't show intro
@@ -451,30 +434,49 @@ set completeopt+=noinsert       " auto select feature like neocomplete
 set completeopt-=preview
 " set completeopt+=longest
 " set completeopt+=preview
-" startPut
-" augroup END
-" " if executable('typescript-language-server')
-" "     au User lsp_setup call lsp#register_server({
-" "         \ 'name': 'typescript-language-server',
-" "         \ 'cmd': {server_info->[&shell, &shellcmdflag, 'typescript-language-server', '--stdio']},
-" "         \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'tsconfig.json'))},
-" "         \ 'whitelist': ['typescript'],
-" "         \ })
-" " endif
+" }}}
+
+
+" terminal {{{
+" tnoremap <expr> <A-r> '<C-\><C-n>'.nr2char(getchar()).'pi'
+
+set switchbuf+=useopen
+" map esc in term
 
 " }}}
+" Functions {{{
+"
+function! StylePreviewWindow()
+  if &previewwindow
+    setlocal nowrap
+    setlocal norelativenumber
+    setlocal nonumber
+  endif
+endfunction
+" }}}
+" Commands {{{
+" command! -nargs=* Make Accio <args>
+command! -nargs=0 Prove lua require('my.jobs').qfJobs('prove')
+command! -nargs=0 Qnext lua require('my.qf').rotateNext()
+command! -nargs=0 Qprev lua require('my.qf').rotatePrev()
+command! -nargs=0 Qtoggle lua require('my.qf').toggle()
+
+"GF: site/lua/my/qf.lua
+" nnoremap <silent> <leader>l :call my#qf#toggle("Quickfix List", 'c')<CR>
+" }}}
+" Mappings  {{{
 " {{{ Use Alt {1,2 ... } to go to tab by number
 " noremap <leader>1 1gt
 noremap <A-1> 1gt
 noremap <A-2> 2gt
-noremap <leader>3 3gt
-noremap <leader>4 4gt
-noremap <leader>5 5gt
-noremap <leader>6 6gt
-noremap <leader>7 7gt
-noremap <leader>8 8gt
-noremap <leader>9 9gt
-noremap <leader>0 :tablast<cr>
+noremap <A-3> 3gt
+noremap <A-4> 4gt
+noremap <A-5> 5gt
+noremap <A-6> 6gt
+noremap <A-7> 7gt
+noremap <A-8> 8gt
+noremap <A-9> 9gt
+noremap <A-0> :tablast<cr>
 " }}}
 " {{{ Use Alt {h,j.k,l} to navigate windows
 tnoremap <A-h> <C-\><C-n><C-w>h
@@ -486,11 +488,29 @@ nnoremap <A-j> <C-w>j
 nnoremap <A-k> <C-w>k
 nnoremap <A-l> <C-w>l
 "}}}
-" terminal {{{
-" tnoremap <expr> <A-r> '<C-\><C-n>'.nr2char(getchar()).'pi'
+" quickfix {{{
+nnoremap <silent> [q :Qnext<CR>
+nnoremap <silent> ]q :Qprev<CR>
+nnoremap <silent> <leader>q :Qtoggle<CR>
+nnoremap <F9> :Prove<CR>
+" }}}
+" https://github.com/junegunn/vim-easy-align
+" Start interactive EasyAlign in visual mode (e.g. vipga)
+xmap ga <Plug>(EasyAlign)
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign
+" LEADER MAPPINGS - my leader is the space bar
+nnoremap <silent> <leader>d :Dirvish %:p:h<CR>
+nnoremap <silent> <leader>tb :tabnew<space>
 
-set switchbuf+=useopen
-" map esc in term
+" autocmd! InsertChange,TextChanged *.html update | :Accio [ "tidy", "xmlwf", "xmllint" ]
+" <F8> sav and run checker
+"  autocmd BufWrite <buffer> Accio ["xqm"]
+
+" vim-commentary maps, since it is loaded lazily
+map  gc  <Plug>Commentary
+nmap gcc <Plug>CommentaryLine
+" terminal
 tnoremap <Esc> <C-\><C-n>
 " when in terminal go back to previous window
 " tnoremap <F12> <C-\><C-n><C-w><C-p>
@@ -503,40 +523,15 @@ tnoremap <Esc> <C-\><C-n>
 " https://neovim.io/doc/user/autocmd.html#TermClose
 " https://neovim.io/doc/user/nvim_terminal_emulator.html#nvim-terminal-emulator
 " TermChanged, TermClose, TermResponse
-augroup myTerm
-   autocmd TermOpen * lua require('my.term').onOpen()
-  " autocmd TermChanged * lua require('my.term').onChanged()
-  " autocmd TermClose * lua require('my.term').onClose()
-  " autocmd TermResponse * lua require('my.term').onResponse()
-augroup END
-" }}}
-" Functions {{{
-"
-function! StylePreviewWindow()
-  if &previewwindow
-    setlocal nowrap
-    setlocal norelativenumber
-    setlocal nonumber
-  endif
-endfunction
-" }}}
-" Make and Quickfix {{{
-command! -nargs=* Make Accio <args>
-command! -nargs=0 Prove lua require('my.project').prove()
-command! -nargs=0 Qnext lua require('my.qf').rotateNext()
-command! -nargs=0 Qprev lua require('my.qf').rotatePrev()
-command! -nargs=0 Qtoggle lua require('my.qf').toggle()
-nnoremap <silent> [q :Qnext<CR>
-nnoremap <silent> ]q :Qprev<CR>
-nnoremap <silent> <leader>q :Qtoggle<CR>
-"GF: site/lua/my/qf.lua
-" nnoremap <silent> <leader>l :call my#qf#toggle("Quickfix List", 'c')<CR>
+"}}}
+" {{{ Augroups [ myQuickfix , init ]
 augroup myQuickfix
   autocmd!
-  autocmd QuickFixCmdPre lua require('my.qf').onCmdPre()
+  autocmd QuitPre * lua require('my.qf').close()
+  autocmd QuickFixCmdPre caddexpr lua require('my.qf').onCmdPre()
   " GF: site/autoload/my/qf.vim
   " before a quicklist command is run
-  autocmd QuickFixCmdPost lua require('my.qf').onCmdPost()
+  autocmd QuickFixCmdPost caddexpr lua require('my.qf').onCmdPost()
   " after a quicklist command is run
   "GF: nvim/site/autoload/my/qf.vim
   " our shell commands 'make' etc run from project root
@@ -547,37 +542,22 @@ augroup myQuickfix
   "GF: nvim/site/after/ftplugin/qf.vim
   "Then the BufReadPost event is triggered,
   " using 'quickfix' for the buffer name
-  autocmd BufReadPost quickfix lua require('my.qf').onFilled()
+  autocmd BufReadPost quickfix  lua require('my.qf').onFilled()
   autocmd BufWinEnter quickfix  lua require('my.qf').onEntered()
   "GF: nvim/site/autoload/my/qf.vim
 augroup END
-" }}}
-" Mappings and Abbreviations {{{
-nnoremap <F9> luafile $DATAPATH/lua/my/run.lua<CR>
-" https://github.com/junegunn/vim-easy-align
-" Start interactive EasyAlign in visual mode (e.g. vipga)
-xmap ga <Plug>(EasyAlign)
-" Start interactive EasyAlign for a motion/text object (e.g. gaip)
-nmap ga <Plug>(EasyAlign
-" LEADER MAPPINGS - my leader is the space bar
-nnoremap <silent> <leader>d :Dirvish %:p:h<CR>
-nnoremap <silent> <leader>tb :tabnew<space>
 
-
-
-" autocmd! InsertChange,TextChanged *.html update | :Accio [ "tidy", "xmlwf", "xmllint" ]
-" <F8> sav and run checker
-"  autocmd BufWrite <buffer> Accio ["xqm"]
-
-" vim-commentary maps, since it is loaded lazily
-map  gc  <Plug>Commentary
-nmap gcc <Plug>CommentaryLine
-
-"}}}
-" {{{ Init
-augroup init
+augroup myTerm
   autocmd!
+   autocmd TermOpen * lua require('my.term').onOpen()
+  " autocmd TermChanged * lua require('my.term').onChanged()
+  " autocmd TermClose * lua require('my.term').onClose()
+  " autocmd TermResponse * lua require('my.term').onResponse()
+augroup END
 
+augroup myInit
+  autocmd!
+  autocmd VimEnter  * lua require('my.jobs').init()
   " autocmd CursorHold  term://* lua require('my.util').echom(' - Buffer Cursor Hold  ')
   autocmd BufWritePost $MYVIMRC nested source $MYVIMR
   " autocmd BufEnter * :syntax sync fromstart
@@ -593,6 +573,7 @@ augroup init
   autocmd BufNewFile,BufRead *.md set filetype=markdown
   autocmd BufWinEnter * call StylePreviewWindow()
   autocmd User asyncomplete_setup call my#asyncomplete#setup()
+
   " ---------------------------------------------------
   " Projections
   " -----------
@@ -602,11 +583,10 @@ augroup init
   "                            - b:projectionist  (object)
   " @see projectionist auto commands
   " triggered when searching for projections
-  autocmd User ProjectionistDetect   lua require('my.project').detect()
-  "  triggered when projections found
-  autocmd User ProjectionistActivate lua require('my.project').activate()
+   autocmd User ProjectionistDetect  lua require('my.project').detect()
+  "  triggered when projections found:
+   autocmd User ProjectionistActivate lua require('my.project').activate()
   " ---------------------------------------------------
-
 augroup END
 
 " }}}
