@@ -5,16 +5,26 @@
 " http://vim.wikia.com/wiki/Toggle_to_open_or_close_the_quickfix_window
 "
 " TODO: convert to lua
-function! my#qf#getBufferList()
+function! my#quicklist#getBufferList()
   redir =>l:buflist
   silent! ls!
   redir END
   return l:buflist
 endfunction
 
+function! my#quicklist#close()
+  let l:buflist = my#quicklist#getBufferList()
+  let bufnr = bufnr("%")
+  for buf in split(l:buflist, "\n")
+    if (buf =~# '^\s*'.bufnr)
+      let close = (buf =~# '\[Quickfix List\]' ? "cclose" : "lclose")
+      execute close
+      return
+    endif
+  endfor
+endfunction
 
-
-function! my#qf#AdjustWindowHeight(minheight, maxheight)
+function! my#quicklist#AdjustWindowHeight(minheight, maxheight)
   let l = 1
   let n_lines = 0
   let w_width = winwidth(0)
@@ -30,8 +40,8 @@ endfunction
 " https://gist.github.com/juanpabloaj/5845848
 
 
-function! my#qf#toggle(bufname, pfx)
-  let l:buflist = my#qf#getBufferList()
+function! my#quicklist#toggle(bufname, pfx)
+  let l:buflist = my#quicklist#getBufferList()
   for l:bufnum in map(filter(split(l:buflist, '\n'), 'v:val =~ "'.a:bufname.'"'), 'str2nr(matchstr(v:val, "\\d\\+"))')
     if bufwinnr(l:bufnum) != -1
       exec(a:pfx.'close')
@@ -50,26 +60,26 @@ function! my#qf#toggle(bufname, pfx)
   endif
 endfunction
 
-" :h qf
+" :h quicklist
 " -------------------------
-"  on qf commands triggers
+"  on quicklist commands triggers
 "  e.g. make
 
-function! my#qf#pre()
-  " echomsg 'my qf pre'
+function! my#quicklist#pre()
+  " echomsg 'my quicklist pre'
 endfunction
 
-function! my#qf#post()
-  " echomsg 'my qf post'
+function! my#quicklist#post()
+  " echomsg 'my quicklist post'
 endfunction
 
 " -------------------------
-"  on qf buffer triggers
+"  on quicklist buffer triggers
 
-function! my#qf#filled()
-  " echomsg 'my qf filled'
+function! my#quicklist#filled()
+  " echomsg 'my quicklist filled'
 endfunction
 
-function! my#qf#entered()
-  " echomsg 'my qf entered'
+function! my#quicklist#entered()
+  " echomsg 'my quicklist entered'
 endfunction

@@ -8,8 +8,8 @@ set cpoptions&vim
 function! my#statusline#statusline()
   let left_status = " %(%{my#statusline#getBuftypeText()}%.60t%m%r%)"
   let right_status = "%{&filetype} | %l::%-2v "
-  let accio_status = exists("*accio#statusline") ? ' %#WarningMsg#%{accio#statusline(" Errors %d ", "")}%*' : ""
-  return left_status . accio_status . "  %=  " . right_status
+  " let accio_status = exists("*accio#statusline") ? ' %#WarningMsg#%{accio#statusline(" Errors %d ", "")}%*' : ""
+  return left_status .  "  %=  " . right_status
   set statusline=
 endfunction
 
@@ -78,9 +78,9 @@ endfunction
 
 function! my#statusline#rulerFormat()
     " let git_branch = '%{empty(fugitive#head(6)) ? "" : fugitive#head(6) . " |"}'
-    let accio_errors = '%#WarningMsg#%{accio#statusline("  Errors %d ", "")}%*%{empty(accio#statusline("Errors %d", "")) ? "" : "|"}'
+    " let accio_errors = '%#WarningMsg#%{accio#statusline("  Errors %d ", "")}%*%{empty(accio#statusline("Errors %d", "")) ? "" : "|"}'
     let cursor_info = ' %l::%-2v%'
-    return '%55(%=' . accio_errors . cursor_info . ')'
+    return '%55(%=' . cursor_info . ')'
 endfunction
 
 let &cpoptions = s:save_cpo
