@@ -1,8 +1,6 @@
 local _M = {}
 
-local cjson = require('cjson')
 local util = require('my.util')
-local fs = require('my.fs')
 local log = require('my.log').log
 local api = vim.api
 
@@ -12,49 +10,6 @@ local api = vim.api
 -- :h lua
 --]]
 
-local function isGlobalVar( v )
-  local value = api.nvim_get_var( v )
-  if type(value) ~= 'number' then
-    return false
-  else
-    if value == 1 then
-      return true
-    else 
-      return false
-    end
-  end
-end
-
-local function isBufferVar( v )
-  local window = api.nvim_get_current_win()
-  local buffer = api.nvim_win_get_buf(window)
-  local value = api.nvim_buf_get_var( buffer, v )
-  if type(value) ~= 'table' then
-    return false
-  else
-    return true
-  end
-end
-
---[[
---Place holders
---]]
--- local function onStdOut()
---   print( stdOut)
---   return
--- end
-
--- local function onStdErr()
---   return
--- end
-
--- local function onExit( win, placeHolderWindow )
---    -- util.echom( ' - on exit' )
---    api.nvim_win_set_height(win, 7)
---    api.nvim_set_current_win(placeHolderWindow)
---    _M.openInSplitWindow('log')
---   return
--- end
 
 local function getRelativePath( fPath )
   local dProjectPath = api.nvim_call_function('projectionist#path',{})
@@ -105,7 +60,6 @@ local function findBufNameInWin( fName )
   end
  return winFound
 end
-
 
 local function getProjectionValue( projection )
   -- log( ' - get projection value: ' .. projection )
@@ -186,18 +140,6 @@ end
 
 function _M.detect()
   -- log( ' -  searching for projections'  )
-  -- local placeHolderWindow
-  -- local gvPlaceHolder, err = pcall(isGlobalVar,'my_placeholder_window')
-  -- if not gvPlaceHolder then
-  --   local bvHasProjection, err = pcall(isBufferVar,'projectionist')
-  --   if bvHasProjection then
-  --     placeHolderWindow = api.nvim_get_current_win()
-  --   else
-  --     placeHolderWindow = ''
-  --   end
-  --   api.nvim_set_var('my_placeholder_window',placeHolderWindow)
-  -- end
-  -- util.echom( err)
   return
 end
 

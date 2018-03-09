@@ -1,7 +1,5 @@
 local _M = {}
 
-local util = require('my.util')
-local fs = require('my.fs')
 local log = require('my.log').log
 local api = vim.api
 

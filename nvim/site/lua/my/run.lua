@@ -6,13 +6,9 @@
 --  turn imto module
 --]]
 
-local cjson = require('cjson')
 local util = require('my.util')
 local jobs = require('my.jobs')
-local fs = require('my.fs')
-local qf = require('my.qf')
 local log = require('my.log').log
-local project = require('my.project')
 local api = vim.api
 
   -- local buf = api.nvim_get_current_buf()
@@ -141,57 +137,19 @@ local function isBufferVar( v )
   end
 end
 
-jobs.initProjectJobs()
-jobs.setJobsForBuffer()
+jobs.defineSigns()
+jobs.jobsForBuffer()
 
-log( 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' )
--- get jobs for session
-local oMyJobs = api.nvim_get_var( 'my_jobs' )
-local iMyJobsCount = util.isArray( oMyJobs )
-local oThisJob = oMyJobs[iMyJobsCount]
-log( ' - buffer: ' .. oThisJob['buffer'] )
-log( ' - window: ' .. oThisJob['window'] )
-log( ' - compiler: ' .. oThisJob['compiler'] )
-log( ' - make program: ' ..  oThisJob['makeprg'] )
-log( ' - error format: ' ..  oThisJob['errorformat'] )
+-- local oMyJobs = api.nvim_get_var( 'my_jobs' )
+-- local jobStack = {}
 
--- clear qflist-
--- qflist title
-local qfTitle = {}
-qfTitle['title'] = 'my compiler job'
-log( 'global errorformat: ' .. api.nvim_get_option('errorformat'))
-log( 'global makeprg: ' .. api.nvim_get_option('makeprg'))
-
-api.nvim_set_option('errorformat',oThisJob['errorformat'])
-api.nvim_call_function('setqflist',{{},'r',qfTitle})
---api.nvim_command('compiler ' .. oThisJob['compiler'])
-local jobID =  api.nvim_call_function('my#jobs#job',{oThisJob['makeprg']})
- -- local jobID =  api.nvim_call_function('my#jobs#job',{'ls'})
-log( 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' )
-
--- api.nvim_set_var('errorformat',oThisJob['errorformat'])
--- log(api.nvim_get_var('errorformat'))
-
---
---
-  
--- local txt = 'lualib/grantmacken/util.lua:182:I: [ acceptContentTypes() ] the content types this endpoint can handle'
-
--- local jobWaitOpts = {}
-  -- jobWaitOpts[1] = {jobID}
-  -- local wait = api.nvim_call_function('jobwait', jobWaitOpts )
-
-
-
--- local sTermCommand = 'ls'
--- local oOpts = {
---     sTermCommand,
---     ['on_stdout'] = onStdOut( id, data, event),
---     ['on_stderr'] = onStdErr(...),
---     ['on_exit'] = onExit(...)
---   }
-
--- local jobID =  api.nvim_call_function('termopen', oOpts)
+-- for key, value in pairs(oMyJobs) do
+--   local oThisJob = oMyJobs[key]
+--    table.insert( jobStack, oThisJob )
+-- end
+-- -- do first job first
+--  api.nvim_buf_set_var(0, 'myBufferJobs', util.reverseTable(jobStack))
+--  jobs.doJob()
 
 -- log( ' - quicklist items'  )
 -- empty dictionary

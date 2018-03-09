@@ -1,36 +1,33 @@
 local _M = {}
 
-local uv  = require('luv')
+-- local uv  = require('luv')
 -- https://github.com/luvit/luv/blob/eb87f736ce4398252e3573b153beb5e790b1f0e1/tests/test-fs.lua
 -- http://docs.libuv.org/en/v1.x/fs.html
 
 function _M.cwd()
-  return assert(uv.fs_realpath('./'))
+ -- return assert(uv.fs_realpath('./'))
 end
 
-function _M.open(f)
-  return uv.fs_open(f, 'r', tonumber('644', 8))
+function _M.open( file )
+  return io.open( file, 'r')
 end
 
-function _M.chunk(fd)
-local stat = assert(uv.fs_fstat(fd))
-local chunk = assert(uv.fs_read(fd, stat.size, 0))
-assert(uv.fs_close(fd))
+function _M.chunk( fd )
+local chunk = fd:read("*all")
+fd:close()
 return chunk
 end
 
-function _M.writeFile(s,f)
-  local fd   = assert(uv.fs_open(f, 'w', 438))
-  assert(uv.fs_write(fd,s, -1))
-  assert(uv.fs_close(fd))
-  return ''
+function _M.writeFile( s, f )
+  local fd   = assert(io.open( f, 'w' ))
+  fd:write( s )
+  fd:close()
 end
 
-function _M.appendToFile(s,f)
-  local fd   = assert(uv.fs_open(f, 'a', 438))
-  assert(uv.fs_write(fd,s, -1))
-  assert(uv.fs_close(fd))
-  return ''
+function _M.appendToFile( s, f )
+  local fd   = assert(io.open( f, 'a' ))
+  fd:write( s )
+  fd:close()
 end
 
 return _M

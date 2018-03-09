@@ -1,6 +1,5 @@
 local _M = {}
 
-local fs = require('my.fs')
 local log = require('my.log').log
 local api = vim.api
 
@@ -64,4 +63,14 @@ function _M.isGlobalVar( v )
    end
 end
   --   local bvHasProjection, err = pcall(isBufferVar,'projectionist')
+
+function _M.reverseTable( T )
+    local reversedTable = {}
+    local itemCount = #T
+    for k, v in ipairs( T ) do
+        reversedTable[itemCount + 1 - k] = v
+    end
+    return reversedTable
+end
+
 return _M
