@@ -1,11 +1,11 @@
 let s:save_cpo = &cpoptions
 set cpoptions&vim
 
-augroup xquery
-  autocmd BufWrite <buffer> Accio ["xQcompile"]
-  " autocmd InsertEnter * call SetKW()
-  " autocmd InsertLeave * call UnSetKW()
-augroup END
+" augroup xquery
+"   "  autocmd BufWrite <buffer> Accio ["xQcompile"]
+"   " autocmd InsertEnter * call SetKW()
+"   " autocmd InsertLeave * call UnSetKW()
+" augroup END
 
 " NOTES:
 
