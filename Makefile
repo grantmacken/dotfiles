@@ -26,7 +26,7 @@ SYSTEMD_PATH := $(shell pgrep -fau $$(whoami) systemd | grep user | cut -d ' ' -
 # A literal space.
 EMPTY :=
 SPACE := $(EMPTY) $(EMPTY)
-ROCKS = luv mpack lua-cjson2 xmlua
+ROCKS = luv mpack lua-cjson2 xmlua formatter
 ROCKS_REG_LIST = $(subst $(SPACE),|,$(ROCKS))
 
 assert-is-root = $(if $(shell id -u | grep -oP '^0$$'),\
@@ -117,7 +117,7 @@ home-bash-clean:
 
 home-configs-clean:
 	@echo 'TASK: use stow to remove symlinks in home/.config dir'
-	@stow -D -v -t ~/.config configs
+	@stow -D -v -t ~/.config configsj
 
 home:
 	@$(MAKE) home-bash home-bin home-configs
@@ -131,13 +131,13 @@ outdatedRocks != luarocks list --outdated | grep -oP '^($(ROCKS_REG_LIST))'
 luarocks:
 	@echo '# $(@) #'
 	@echo '$(ROCKS)'
-	@#$(foreach rock,$(ROCKS), luarocks show '$(rock)' | grep -q -oP '^$(rock)' && \
+	@$(foreach rock,$(ROCKS), luarocks show '$(rock)' | grep -q -oP '^$(rock)' && \
  luarocks show $(rock) || \
- luarocks install --local $(rock) \
-;)
-	@#$(foreach rock,$(outdatedRocks), luarocks install --local '$(rock)';)
+ luarocks install --local $(rock);)
+	@$(foreach rock,$(outdatedRocks), luarocks install --local '$(rock)';)
 	@[ -L /usr/local/openresty/luajit/lib/lua/5.1/luv.so ]  && echo -n || \
  ln -s -v -T $(HOME)/.luarocks/lib/lua/5.1/luv.so  /usr/local/openresty/luajit/lib/lua/5.1/luv.so
+	@cd $(HOME)/.luarocks; stow -v -t "$(UP_TARG_DIR)/bin" bin
 
 projects-node:
 	@echo '# $(@) #'
