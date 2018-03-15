@@ -4,24 +4,28 @@
   "description": "my node modules",
   "private": "true",
   "devDependencies": {
-    "autoprefixer": "^7.2.2",
+    "autoprefixer": "^7.2.6",
     "cssfmt": "latest",
     "cssnano": "latest",
-    "grunt": "latest",
-    "lodash": "^4.17.4",
+    "grunt": "^1.0.2",
+    "lodash": "^4.17.5",
     "lorem-cli": "latest",
+    "lua-fmt": "latest",
     "matchdep": "latest",
-    "neovim": "latest",
-    "postcss": "^6.0.14",
+    "neovim": "^3.5.2",
+    "postcss": "^6.0.19",
     "postcss-cli-simple": "latest",
-    "postcss-cssnext": "latest",
+    "postcss-cssnext": "^3.1.0",
     "postcss-quantity-queries": "latest",
-    "prettier": "^1.9.1",
+    "prettier": "^1.11.1",
     "puppeteer": "^0.13.0",
-    "stylelint": "^8.3.1",
-    "tape": "latest",
+    "stylelint": "^8.4.0",
+    "tape": "^4.9.0",
     "time-grunt": "^1.4.0",
-    "typescript": "^2.6.2",
-    "typescript-language-server": "^0.1.5"
+    "typescript": "^2.7.2",
+    "typescript-language-server": "^0.1.9"
+  },
+  "dependencies": {
+    "npm": "^5.7.1"
   }
 }

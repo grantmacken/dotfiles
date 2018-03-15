@@ -2,7 +2,9 @@ local _M = {}
 
 local util = require('my.util')
 local log = require('my.log').log
-local project = require('my.project')
+local getProjectionValue = require('my.project').getProjectionValue
+-- project.getProjectionValue( projection )
+local signTypes = require('my.signs').signTypes
 --local md5 = require('resty.md5')
 local api = vim.api
 
@@ -30,53 +32,6 @@ oThisJob['compiler'] =  via project.getProjectionValue( 'jobs' )
 oThisJob['makeprg'] = makePrg
 oThisJob['errorformat'] = errorFormat
 --]]
-
-local signTypes = {
-['E'] = 'MyErrorSign',
-['W'] = 'MyWarningSign',
-['I'] = 'MyInfoSign'
-}
-
-local function defineSigns()
---  log(' - define signs')
-  local str
-
-  str =   'highlight ALEWarningSign guibg=#4e4e4e'
-  api.nvim_command( str )
-
-  str =   'highlight ALEErrorSign guibg=#4e4e4e'
-  api.nvim_command( str )
-
-  str =   'highlight MyWarningSign guifg=#d7005f guibg=#4e4e4e'
-  api.nvim_command( str )
-
-  str =   'highlight MyWarningSign guifg=#d7875f guibg=#4e4e4e'
-  api.nvim_command( str )
-
-  str =   'sign define ' .. signTypes['E'] ..
-  ' text=⛆' ..
-  ' texthl=ALEErrorSign'
-  api.nvim_command( str )
-  str =   'sign define ' .. signTypes['W'] ..
-  ' text=⛆' ..
-  ' texthl=MyWarningSign'
-  api.nvim_command( str )
-  str =   'sign define ' .. signTypes['I'] ..
-  ' text=⛆' ..
-  ' texthl=MyWarningSign'
-  api.nvim_command( str )
-  str =   'sign define ' .. signTypes['I'] ..
-  ' text=⛆' ..
-  ' texthl=LineNr'
-  api.nvim_command( str )
-end
-
-
-function _M.init()
-  defineSigns()
-end
-
-
 
 local function clearSigns()
   -- log(' - clear signs')
@@ -196,7 +151,7 @@ function _M.qfJobs( projection )
   log(' - set "' .. projection  .. '" compiler jobs')
   log('  -----------------------------------')
   local oMyJobs = {}
-  local oBufJobs = project.getProjectionValue( projection )
+  local oBufJobs = getProjectionValue( projection )
   if type(oBufJobs) ~= 'table' then
     log( ' - no jobs for curent buffer' )
     return
@@ -248,22 +203,3 @@ function _M.qfJobs( projection )
 end
 
 return _M
-
-  -- log( ' - quickfix-error-lists')
-  -- -- current list for this buffer
-  -- local what = {}
-  -- what['all'] = true
-  -- local qfDic = api.nvim_call_function('getqflist',{what})
-  -- -- echo getqflist({'nr': 2, 'title': 1})
-  -- log( util.listKeys(qfDic) )
-  -- log( ' - quickfix-error-list number: ' ..  qfDic['nr'])
-  -- log( ' - quickfix-error-list title: ' ..  qfDic['title'])
-  -- local qfErrorWindow
-  -- if not qfDic['window'] then
-  --   qfErrorWindow = 'closed'
-  -- else
-  --   qfErrorWindow = 'opened'
-  -- end
-
-  -- log( ' - jobs for buffer' )
-  -- log('    ---------------')

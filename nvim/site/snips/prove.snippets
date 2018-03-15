@@ -8,6 +8,13 @@ endsnippet
 
 snippet _ngxTest "nginx::test" b
 use Test::Nginx::Socket 'no_plan';
+use Cwd qw(cwd);
+
+my $pwd = cwd();
+
+$ENV{TEST_NGINX_RESOLVER} = '8.8.8.8';
+no_long_string();
+#no_diff();
 
 run_tests();
 
@@ -15,7 +22,6 @@ _DATA__
 
 === TEST 1: Accept GET
 Endpoint will accept GET
-
 --- config
 location = /t {
 	content_by_lua_block {

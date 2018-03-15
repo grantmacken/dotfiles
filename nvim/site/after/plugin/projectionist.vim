@@ -1,4 +1,14 @@
+
+if !exists("g:autoloaded_projectionist")
+  finish
+endif
+
+
+
+
+
 " https://github.com/tpope/vim-projectionist/blob/master/doc/projectionist.txt
+"
 " https://www.youtube.com/watch?v=3jDafvUESbs
 " https://github.com/wincent/wincent/blob/57a3bf2001/roles/dotfiles/files/.vim/after/plugin/projectionist.vim
 " https://github.com/fsharpasharp/vim-dirvinist

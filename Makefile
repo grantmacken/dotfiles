@@ -26,8 +26,7 @@ SYSTEMD_PATH := $(shell pgrep -fau $$(whoami) systemd | grep user | cut -d ' ' -
 # A literal space.
 EMPTY :=
 SPACE := $(EMPTY) $(EMPTY)
-ROCKS = luv mpack lua-cjson2 xmlua formatter
-ROCKS_REG_LIST = $(subst $(SPACE),|,$(ROCKS))
+
 
 assert-is-root = $(if $(shell id -u | grep -oP '^0$$'),\
  $(info OK! root user, so we can change some system files),\
@@ -125,7 +124,8 @@ home:
 home-clean:
 	@$(MAKE) home-bash-clean home-bin-clean home-configs-clean
 
-
+ROCKS = luv mpack lua-cjson2 xmlua formatter checks
+ROCKS_REG_LIST = $(subst $(SPACE),|,$(ROCKS))
 outdatedRocks != luarocks list --outdated | grep -oP '^($(ROCKS_REG_LIST))'
 
 luarocks:

@@ -1,17 +1,17 @@
 local _M = {}
 
-local log = require('my.log').log
+-- local log = require('my.log').log
 local api = vim.api
 
 function _M.onOpen()
-  log(' - on term open')
-  log('   ------------')
+  --  log(' - on term open')
+  -- log('   ------------')
   local title = api.nvim_buf_get_var(0, 'term_title')
-  local jobID = api.nvim_buf_get_var(0, 'terminal_job_id')
-  local jobPID = api.nvim_buf_get_var(0, 'terminal_job_pid')
-   log(' - title: '  ..  title )
-   log(' - jobID: '  ..  jobID )
-   log(' - jobPID: ' ..  jobPID )
+  -- local jobID = api.nvim_buf_get_var(0, 'terminal_job_id')
+  -- local jobPID = api.nvim_buf_get_var(0, 'terminal_job_pid')
+   -- log(' - title: '  ..  title )
+   -- log(' - jobID: '  ..  jobID )
+   -- log(' - jobPID: ' ..  jobPID )
   api.nvim_win_set_option(0, 'number', false)
   api.nvim_win_set_option(0, 'relativenumber', false)
   api.nvim_win_set_option(0, 'spell', false)
@@ -20,7 +20,7 @@ function _M.onOpen()
   api.nvim_buf_set_option(0, 'modified', false )
   -- allow closing buffer without warning
   api.nvim_buf_set_option(0, 'bufhidden','wipe')
-  --- if not in window wipeout 
+  -- if not in window wipeout
   api.nvim_win_set_option(0, 'statusline', title )
   -- scrollback
   -- buffhiden
@@ -49,22 +49,21 @@ function _M.onOpen()
  --     log( line )
  --   end
  -- end
- log('--------------------------------')
+ -- log('--------------------------------')
 end
 
 function _M.onResponse(...)
-  log(' - on term response')
-  local title = api.nvim_buf_get_var(0, 'term_title')
-  local jobID = api.nvim_buf_get_var(0, 'terminal_job_id')
-  local jobPID = api.nvim_buf_get_var(0, 'terminal_job_pid')
-  log(' - title: ' .. title)
-  log(' - jobID: ' .. jobID)
-  log(' - jobPID: ' .. jobPID)
+  -- log(' - on term response')
+  -- local title = api.nvim_buf_get_var(0, 'term_title')
+  -- local jobID = api.nvim_buf_get_var(0, 'terminal_job_id')
+  -- local jobPID = api.nvim_buf_get_var(0, 'terminal_job_pid')
+  -- log(' - title: ' .. title)
+  -- log(' - jobID: ' .. jobID)
+  -- log(' - jobPID: ' .. jobPID)
 end
 
 function _M.onClose()
- log(' - on term open')
-
+ -- log(' - on term open')
 end
 
 function _M.open()

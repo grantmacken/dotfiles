@@ -19,13 +19,19 @@ return chunk
 end
 
 function _M.writeFile( s, f )
-  local fd   = assert(io.open( f, 'w' ))
+  local fd  = io.open( f, 'w' )
+  if not fd then
+    return fd
+  end
   fd:write( s )
   fd:close()
 end
 
 function _M.appendToFile( s, f )
-  local fd   = assert(io.open( f, 'a' ))
+  local fd  = io.open( f, 'a' )
+  if not fd then
+    return fd
+  end
   fd:write( s )
   fd:close()
 end

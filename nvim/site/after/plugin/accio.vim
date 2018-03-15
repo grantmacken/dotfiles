@@ -1,6 +1,11 @@
 " FILE: nvim/site/after/plugin/accio.vim 
 " Maintainer: Grant Mackenzie
-"
+if !exists('g:loaded_accio')
+  finish
+endif
+
+let g:accio_create_empty_quickfix = 0
+let g:accio_auto_copen = 0 "automatically open quick list
 " Accio setting
 " Compile Build Test with Accio
 " Used for Async
@@ -14,8 +19,7 @@
 " - Echoing the error message when the cursor is on an error line.
 " @see compiler
 
-let g:accio_create_empty_quickfix = 0
-let g:accio_auto_copen = 0 "automatically open quick list
+
 " let g:accio_update_interval = 250
 
 " Note:  Noah Frederick's  after ... sets text and signs
@@ -32,9 +36,8 @@ let g:accio_auto_copen = 0 "automatically open quick list
 " @gf nvim/site/compiler/xqm.vim
 
 " let g:gista#client#use_git_config_github_user = 1
-if !exists('g:loaded_accio')
-  finish
-endif
+
+
 
 " SIGNS
 

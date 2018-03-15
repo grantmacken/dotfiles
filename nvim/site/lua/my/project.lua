@@ -9,7 +9,18 @@ local api = vim.api
 -- :h api
 -- :h lua
 --]]
-
+local function getProjectionValue( projection )
+  -- log( ' - get projection value: ' .. projection )
+  local arr = {}
+  arr[1] = projection
+  -- local value, err = pcall(isGlobalVar,'my_placeholder_window')
+  local value, err = pcall(api.nvim_call_function,'my#project#value',arr)
+  if not value then
+    log( '[ERR] ' ..  err )
+    return nil
+  end
+  return api.nvim_call_function('my#project#value',arr)
+end
 
 local function getRelativePath( fPath )
   local dProjectPath = api.nvim_call_function('projectionist#path',{})
@@ -17,6 +28,71 @@ local function getRelativePath( fPath )
   local iProjectPathLength =  api.nvim_strwidth(dProjectPath) +2
   return string.sub( fPath, iProjectPathLength )
 end
+
+_M.getProjectionValue = getProjectionValue
+
+function _M.detect()
+  -- util.echom( ' -  searching for projections')
+  -- log( ' -  searching for projections'  )
+  return
+end
+
+function _M.activate()
+  -- log( ' - projection activated'  )
+  -- 
+  local buffer = api.nvim_get_current_buf()
+  --local bufHasProjection, err = pcall(isBufferVar,'projectionist')
+  local value, err = pcall(api.nvim_buf_get_var, buffer,'projectionist_file')
+  if not value then
+    -- log('[ERR] ' .. err )
+    return
+  end
+  local projectPath = api.nvim_buf_get_var(buffer,'projectionist_file')
+  local bufferName = getRelativePath(api.nvim_buf_get_name( buffer ))
+
+  local oProofs = getProjectionValue( 'prove' )
+  if type(oProofs) == 'table' then
+    local iProofs = util.isArray( oProofs )
+    if  iProofs > 0  then
+      log ( ' - prove tap tests for: ' .. bufferName)
+      local sType =  getProjectionValue('type')
+      local sTestFile = bufferName
+      if sType ~= 'test' then
+        sTestFile = getProjectionValue('alternate')
+      end
+      api.nvim_buf_set_var( buffer, 'my_test_file', sTestFile )
+      log ( ' - tap test file: ' .. sTestFile)
+    end
+  end
+
+  local oLinters = getProjectionValue( 'linters' )
+  if type(oLinters) == 'table'then
+    local iLinters = util.isArray( oLinters )
+    if  iLinters > 0  then
+      log ( ' - setup linters for ' .. bufferName)
+      api.nvim_buf_set_var( buffer, 'ale_linters', oLinters )
+      -- set linting for buffer
+    end
+  end
+
+  local sFormatter = getProjectionValue( 'format' )
+  if type(sFormatter) == 'string' then
+      log ( ' - setup formatters for ' .. bufferName)
+      api.nvim_buf_set_option( buffer, 'formatprg', sFormatter )
+      -- set linting for buffer
+  end
+end
+
+function _M.init()
+  require('my.signs').define()
+  require('my.log').clean()
+end
+
+
+-- TODO! remove below
+
+
+
 
 --[[
 Find command in terminal window
@@ -61,20 +137,7 @@ local function findBufNameInWin( fName )
  return winFound
 end
 
-local function getProjectionValue( projection )
-  -- log( ' - get projection value: ' .. projection )
-  local arr = {}
-  arr[1] = projection
-  -- local value, err = pcall(isGlobalVar,'my_placeholder_window')
-  local value, err = pcall(api.nvim_call_function,'my#project#value',arr)
-  if not value then
-    log( '[ERR] ' ..  err )
-    return nil
-  end
-  return api.nvim_call_function('my#project#value',arr)
-end
 
-_M.getProjectionValue = getProjectionValue
 
 function _M.openInTerminalWindow( projection )
   -- api.nvim_command('DeleteHiddenBuffers')
@@ -138,53 +201,6 @@ function _M.openInSplitWindow( projection )
   api.nvim_set_current_win(placeHolderWindow)
 end
 
-function _M.detect()
-  -- log( ' -  searching for projections'  )
-  return
-end
 
-function _M.activate()
-  log( ' - projection activated'  )
-  local buffer = api.nvim_get_current_buf()
-  --local bufHasProjection, err = pcall(isBufferVar,'projectionist')
-  local value, err = pcall(api.nvim_buf_get_var, buffer,'projectionist_file')
-  if not value then
-    log('[ERR] ' .. err )
-    return
-  end
-  local bufferName = api.nvim_buf_get_name( buffer )
-  -- log( ' - bufferName: ' .. getRelativePath(bufferName) )
-  api.nvim_buf_set_var( buffer, 'my_test_file', getTestFile(buffer) )
-  -- log( ' - has projectionist file: ' .. tostring(value) )
-  -- log( ' - file: ' .. getRelativePath(api.nvim_buf_get_var( buffer,'projectionist_file')))
-   --log( ' -----------------------------------------  ' )
-  return
-end
-
-
-function getTestFile( buffer )
-  -- log( ' - get test file'  )
-  local sTest =  getProjectionValue('test')
-  local sType =  getProjectionValue('type')
-  -- local sAlternate =  getProjectionValue('alternate')
-  -- log( ' -  ' .. tostring( sTest) )
-  -- log( ' -  ' .. tostring( sType) )
-  -- log( ' -  ' .. tostring( sAlternate) )
-  if sType ~= 'test' then
-    return getProjectionValue('alternate')
-  else
-    return getRelativePath(api.nvim_buf_get_var( buffer,'projectionist_file'))
-  end
-end
-
-function _M.prove()
-  ----log( ' - projection prove'  )
-  --local buffer = api.nvim_get_current_buf()
-  ---- local fCurBuf = getRelativePath(api.nvim_buf_get_var( buffer,'projectionist_file'))
-  --local fTest =  getTestFile(buffer)
-  --local oTest =  getProjectionValue('test')
-  --api.nvim_buf_set_var( buffer, 'my_test_file' ,fTest )
-  --api.nvim_call_function('accio#accio',oTest)
-end
 
 return _M

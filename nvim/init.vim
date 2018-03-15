@@ -200,7 +200,7 @@ Plug 'othree/html5.vim'                         "   HTML 5 with  WAI-ARIA attrib
 Plug 'othree/xml.vim'                           "   XML tags while you type
 Plug 'tbastos/vim-lua', { 'for': 'lua' } "          LUA syntax and indentation support
 Plug 'othree/nginx-contrib-vim', {'for': 'nginx'} " NGINX
-Plug 'ledger/vim-ledger'                          " lEDGER
+Plug 'ledger/vim-ledger', {'for': 'ledger'}                           " lEDGER
 Plug 'junegunn/vader.vim'                         " VIM    testing vim plugings -- use for syntax
 
 " Plug 'heavenshell/vim-jsdoc' "  jsdocs  https://github.com/heavenshell/vim-jsdoc
@@ -260,7 +260,7 @@ highlight VertSplit guifg=#585858 guibg=#585858
 " colorscheme nova
 " i
 " }}}
-"z BASIC SETTINGS {{{
+" BASIC SETTINGS {{{
 " ==================
 
 augroup vimrc
@@ -435,9 +435,7 @@ set completeopt-=preview
 " set completeopt+=longest
 " set completeopt+=preview
 " }}}
-
-
-" terminal {{{
+" Terminal {{{
 " tnoremap <expr> <A-r> '<C-\><C-n>'.nr2char(getchar()).'pi'
 
 set switchbuf+=useopen
@@ -488,21 +486,34 @@ nnoremap <A-j> <C-w>j
 nnoremap <A-k> <C-w>k
 nnoremap <A-l> <C-w>l
 "}}}
-" quickfix {{{
+" QUICKFIX {{{
 nnoremap <silent> [q :Qnext<CR>
 nnoremap <silent> ]q :Qprev<CR>
 nnoremap <silent> <leader>q :Qtoggle<CR>
 nnoremap <F9> :Prove<CR>
 " }}}
+" LEADER MAPPINGS - my leader is the space bar {{{
+nnoremap <silent> <leader>d :Dirvish %:p:h<CR>
+nnoremap <silent> <leader>tb :tabnew<space>
+" }}}
+" {{{ INSERT MAPPINGS
+
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<cr>"
+imap <F2> <Plug>(asyncomplete_force_refresh)
+
+" NOTE: ultisnips works with asyncomplete
+" after <ENTER>
+" <CNTRL><e> will expand
+" NOTE
+" }}}: 
+" PLUGIN MAPPINGS {{{
 " https://github.com/junegunn/vim-easy-align
 " Start interactive EasyAlign in visual mode (e.g. vipga)
 xmap ga <Plug>(EasyAlign)
 " Start interactive EasyAlign for a motion/text object (e.g. gaip)
 nmap ga <Plug>(EasyAlign
-" LEADER MAPPINGS - my leader is the space bar
-nnoremap <silent> <leader>d :Dirvish %:p:h<CR>
-nnoremap <silent> <leader>tb :tabnew<space>
-
 " autocmd! InsertChange,TextChanged *.html update | :Accio [ "tidy", "xmlwf", "xmllint" ]
 " <F8> sav and run checker
 "  autocmd BufWrite <buffer> Accio ["xqm"]
@@ -510,7 +521,8 @@ nnoremap <silent> <leader>tb :tabnew<space>
 " vim-commentary maps, since it is loaded lazily
 map  gc  <Plug>Commentary
 nmap gcc <Plug>CommentaryLine
-" terminal
+" }}}
+" TERMINAL MAPPINGS {{{
 tnoremap <Esc> <C-\><C-n>
 " when in terminal go back to previous window
 " tnoremap <F12> <C-\><C-n><C-w><C-p>
@@ -523,6 +535,8 @@ tnoremap <Esc> <C-\><C-n>
 " https://neovim.io/doc/user/autocmd.html#TermClose
 " https://neovim.io/doc/user/nvim_terminal_emulator.html#nvim-terminal-emulator
 " TermChanged, TermClose, TermResponse
+" }}}
+
 "}}}
 " {{{ Augroups [ myQuickfix , init ]
 augroup myQuickfix
@@ -557,7 +571,7 @@ augroup END
 
 augroup myInit
   autocmd!
-  autocmd VimEnter  * lua require('my.jobs').init()
+  autocmd VimEnter  * lua require('my.project').init()
   " autocmd CursorHold  term://* lua require('my.util').echom(' - Buffer Cursor Hold  ')
   autocmd BufWritePost $MYVIMRC nested source $MYVIMR
   " autocmd BufEnter * :syntax sync fromstart

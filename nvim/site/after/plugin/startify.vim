@@ -1,4 +1,7 @@
 
+" if !exists('g:autoloaded_startify')
+"   finish
+" endif
 
 let g:startify_session_dir =  expand($CACHEPATH . '/session')
 let g:startify_session_autoload = 1
@@ -44,16 +47,8 @@ hi StartifySpecial ctermfg=240
 " save everything here
 " ls  $HOME/.cache/nvim/session/
 " rm  $HOME/.cache/nvim/session/*
-set sessionoptions-=globals
-set sessionoptions-=help
 
 " http://vim.wikia.com/wiki/Quick_tips_for_using_tab_pages
 " set sessionoptions=blank,buffers,curdirs,tabpages,winsize
 
-" let g:prosession_tmux_title = 1
-" let g:prosession_tmux_title_format = 'neovim @@@'
-" let g:prosession_on_startup = 1
-" let g:prosession_default_session = 0
-" let g:prosession_per_branch = 0
-" let g:prosession_branch_cmd = 'git rev-parse --abbrev-ref HEAD 2>/dev/null' " for each branch
-" let g:prosession_dir = expand($CACHEPATH . '/session')
+
