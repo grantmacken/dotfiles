@@ -7,7 +7,6 @@ function! my#asyncomplete#setup()
       \ 'completor': function('asyncomplete#sources#necosyntax#completor'),
       \ }))
 
-
   call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options(
         \{
         \ 'name': 'ultisnips',
@@ -19,7 +18,7 @@ function! my#asyncomplete#setup()
   call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
         \ 'name': 'buffer',
         \ 'whitelist': ['*'], 
-        \ 'blacklist': ['go', 'xquery'], 
+        \ 'blacklist': ['go', 'xquery'],
         \ 'priority': 2,
         \ 'completor': function('asyncomplete#sources#buffer#completor'),
         \}))
@@ -29,7 +28,13 @@ function! my#asyncomplete#setup()
   "       \{ 'name': 'xQuery', 'whitelist': ['xquery'], 'priority': 2, 'refresh_pattern': '\(\s\k\+$\|:$\)', 'completor': function('asyncomplete#sources#xQuery#completor'), }))
   "
   " VIM
-  call asyncomplete#register_source(asyncomplete#sources#necovim#get_source_options({ 'name': 'necovim', 'whitelist': ['vim'], 'priority': 2, 'completor': function('asyncomplete#sources#necovim#completor'), }))
+  call asyncomplete#register_source(asyncomplete#sources#necovim#get_source_options(
+        \{
+        \'name': 'necovim', 
+        \'whitelist': ['vim'],
+        \'priority': 2,
+        \'completor': function('asyncomplete#sources#necovim#completor'),
+        \}))
 
 endfunction
 

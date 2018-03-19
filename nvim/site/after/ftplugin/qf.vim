@@ -30,10 +30,9 @@ augroup END
 " nnoremap <silent><buffer><nowait> t <C-W><CR><C-W>T
 
 " hit q to quit
-nnoremap <silent><buffer><nowait> q :call my#qf#close()<CR>
+nnoremap <silent><buffer><nowait> q lua require('my.qf').close()
 
 " autocmd BufEnter <buffer> call my#qf#AdjustWindowHeight(3,10)
-
 
 let &cpoptions = s:save_cpo
 unlet s:save_cpo

@@ -4,31 +4,27 @@ local _M = {}
 -- h getqflist
 
 local util = require('my.util')
-local log = require('my.log').log
 local api = vim.api
-
 
 -- GF: nvim/site/after/ftplugin/qf.vim
 function _M.close()
-  local bClose, err = pcall( api.nvim_command,'cclose')
+  local bClose, err = pcall( api.nvim_command,'cclose' )
   if not bClose then
      util.echom( ' - err: ' .. err)
   end
 end
 
 function _M.rotateNext()
-  local bNext, err = pcall( api.nvim_command,'cnext')
+  local bNext = pcall( api.nvim_command,'cnext' )
   if not bNext then
-    -- util.echom( ' - err: ' .. err)
-    local bFirst, err = pcall( api.nvim_command,'cfirst')
+    return pcall( api.nvim_command,'cfirst')
   end
 end
 
 function _M.rotatePrev()
-  local bNext, err = pcall( api.nvim_command,'cprevious')
+  local bNext = pcall( api.nvim_command,'cprevious')
   if not bNext then
-     -- util.echom( ' - err: ' .. err)
-    local bFirst, err = pcall( api.nvim_command,'clast')
+    return pcall( api.nvim_command,'clast')
   end
 end
 
@@ -62,20 +58,16 @@ function _M.hasBuffer()
   -- log( '- is quickfix window open' )
   local buffers = api.nvim_list_bufs()
   local bBufFound = false
-  local iBufNumber
   for i, buffer in ipairs(buffers) do
     local bufferType = api.nvim_buf_get_option( buffer, 'buftype' )
     if bufferType == 'quickfix' then
       bBufFound = true
-      iBufNumber = buffer
       break
     end
   end
   if not bBufFound then
-    -- log(' - no  quickfix buffer found')
     return false
   else
-    -- log(' - quickfix buffer found')
     return true
   end
 end

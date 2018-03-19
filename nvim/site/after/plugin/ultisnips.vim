@@ -1,5 +1,7 @@
 
-
+if !exists('g:asyncomplete_loaded')
+    finish
+endif
 
 "@see nvim/site/autoload/my/asyncomplete.vim
 "@see nvim/site/after/plugin/asyncomplete.vim
@@ -17,6 +19,7 @@
 let g:UltiSnipsSnippetsDir = expand('$DATAPATH/snips')
 let g:UltiSnipsSnippetDirectories = [g:UltiSnipsSnippetsDir]
 let g:UltiSnipsEditSplit = 'context'
+
 let g:UltiSnipsListSnippets = "<C-E>"
 let g:UltiSnipsExpandTrigger = "<C-e>"
 let g:UltiSnipsJumpForwardTrigger = "<Right>"

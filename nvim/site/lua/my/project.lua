@@ -32,6 +32,12 @@ end
 _M.getProjectionValue = getProjectionValue
 
 function _M.detect()
+  local value, err = pcall(api.nvim_get_var, 'my_project_init')
+  if not value then
+    api.nvim_set_var('my_project_init', 0)
+    -- log('[ERR] ' .. err )
+    return
+  end
   -- util.echom( ' -  searching for projections')
   -- log( ' -  searching for projections'  )
   return
@@ -39,7 +45,15 @@ end
 
 function _M.activate()
   -- log( ' - projection activated'  )
-  -- 
+
+  local value, err = pcall(api.nvim_get_var, 'my_project_init')
+  if not value then
+    require('my.log').clear()
+    log( ' - project activated'  )
+    log( ' - ================='  )
+    api.nvim_set_var('my_project_init', true )
+  end
+
   local buffer = api.nvim_get_current_buf()
   --local bufHasProjection, err = pcall(isBufferVar,'projectionist')
   local value, err = pcall(api.nvim_buf_get_var, buffer,'projectionist_file')
@@ -47,46 +61,63 @@ function _M.activate()
     -- log('[ERR] ' .. err )
     return
   end
-  local projectPath = api.nvim_buf_get_var(buffer,'projectionist_file')
-  local bufferName = getRelativePath(api.nvim_buf_get_name( buffer ))
 
-  local oProofs = getProjectionValue( 'prove' )
-  if type(oProofs) == 'table' then
-    local iProofs = util.isArray( oProofs )
-    if  iProofs > 0  then
-      log ( ' - prove tap tests for: ' .. bufferName)
-      local sType =  getProjectionValue('type')
-      local sTestFile = bufferName
-      if sType ~= 'test' then
-        sTestFile = getProjectionValue('alternate')
+  local projectFile = getRelativePath(api.nvim_buf_get_var(buffer,'projectionist_file'))
+  local value = pcall(api.nvim_buf_get_var, buffer, 'my_buffer_init')
+  if not value then
+    log( ' - buffer activated: [ ' .. projectFile .. ' ]'  )
+    api.nvim_buf_set_var( buffer, 'my_buffer_init', true )
+    --  tests array
+    local oProofs = getProjectionValue( 'prove' )
+    if type(oProofs) == 'table' then
+      local iProofs = util.isArray( oProofs )
+      if  iProofs > 0  then
+        local sType =  getProjectionValue('type')
+        log ( ' - - tests type: [ ' .. sType .. ' ]' )
+        log ( ' - - tests sequence: : [ ' .. table.concat(oProofs," | ") .. ' ]'  )
+        local sTestFile = projectFile
+        if sType ~= 'ngxTest' then
+          sTestFile = getProjectionValue('alternate')
+        end
+        api.nvim_buf_set_var( buffer, 'my_test_file', sTestFile )
+        log ( ' - - test file: [ ' .. sTestFile .. ' ]')
+        --api.nvim_command( 'autocmd CursorHold <buffer=' .. buffer .. '>  echo "hold"' )
+        --@see nvim/site/lua/my/jobs.lua
+        local str = 'autocmd BufWritePost <buffer=' ..
+        buffer ..'>  lua require("my.jobs").qfJobs("prove")'
+        api.nvim_command( str )
+         log ( ' - - run tests on [ ' .. str  .. ' ]')
       end
-      api.nvim_buf_set_var( buffer, 'my_test_file', sTestFile )
-      log ( ' - tap test file: ' .. sTestFile)
     end
-  end
-
-  local oLinters = getProjectionValue( 'linters' )
-  if type(oLinters) == 'table'then
-    local iLinters = util.isArray( oLinters )
-    if  iLinters > 0  then
-      log ( ' - setup linters for ' .. bufferName)
-      api.nvim_buf_set_var( buffer, 'ale_linters', oLinters )
-      -- set linting for buffer
+    -- linters array
+    local oLinters = getProjectionValue( 'linters' )
+    if type(oLinters) == 'table'then
+      local iLinters = util.isArray( oLinters )
+      if  iLinters > 0  then
+        log ( ' - - setup ale linters: [ ' .. table.concat(oLinters," | ") .. ' ]' )
+        api.nvim_buf_set_var( buffer, 'ale_linters', oLinters )
+        -- set linting for buffer
+      end
     end
-  end
-
-  local sFormatter = getProjectionValue( 'format' )
-  if type(sFormatter) == 'string' then
-      log ( ' - setup formatters for ' .. bufferName)
+    -- format program string
+    local sFormatter = getProjectionValue( 'format' )
+    if type(sFormatter) == 'string' then
+      log ( ' - - setup formatter: [ ' .. sFormatter .. ' ]' )
       api.nvim_buf_set_option( buffer, 'formatprg', sFormatter )
       -- set linting for buffer
+    end
+    -- format program string
+    -- TODO!
+    local sCoverage = getProjectionValue( 'coverage' )
+    if type(sCoverage) == 'string' then
+      log ( ' - - setup coverage: [ ' .. sCoverage .. ' ]' )
+      api.nvim_buf_set_var( buffer, 'my_coverage', sCoverage )
+      -- set linting for buffer
+    end
   end
 end
 
-function _M.init()
-  require('my.signs').define()
-  require('my.log').clean()
-end
+
 
 
 -- TODO! remove below

@@ -134,13 +134,13 @@ end
 
 function _M.jobExit( jobID, status, event, oMyJobs )
   -- log(' - job exit: ' ..  oMyJobs[ util.isArray( oMyJobs )] )
-   log(' - job id: ' .. tostring( jobID ) )
-   log(' - job status: ' .. tostring( status ) )
-   log(' - job event: ' .. tostring( event ) )
-   local iJobs = util.isArray( oMyJobs )
-   log(' - jobs count: ' .. tostring( iJobs) )
+  -- log(' - job id: ' .. tostring( jobID ) )
+  -- log(' - job status: ' .. tostring( status ) )
+  -- log(' - job event: ' .. tostring( event ) )
   table.remove(oMyJobs, 1)
-  if util.isArray( oMyJobs ) > 0 then
+  local iJobs = util.isArray( oMyJobs )
+  if iJobs > 0 then
+    log(' - remaining jobs count: ' .. tostring( iJobs ) )
     doJob( oMyJobs )
   else
     jobsFinished()
@@ -198,8 +198,14 @@ function _M.qfJobs( projection )
     -- oMyJobs key based on compiler
     oMyJobs[i] = oThisJob
   end
-   print( ' ... backgound jobs start ')
+   -- print( ' ... backgound jobs start ')
    doJob( oMyJobs )
+end
+
+
+function _M.trmJobs( projection )
+  log(' - set "' .. projection  .. '"terminal job')
+  log('  -----------------------------------')
 end
 
 return _M

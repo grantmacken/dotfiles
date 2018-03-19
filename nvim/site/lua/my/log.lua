@@ -20,7 +20,7 @@ function _M.log( str )
   fs.appendToFile( line ,log.outfile )
 end
 
-function _M.clean( str )
+function _M.clear()
   local line = ''
   fs.writeFile( line ,log.outfile )
 end

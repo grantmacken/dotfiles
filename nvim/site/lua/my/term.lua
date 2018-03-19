@@ -1,6 +1,8 @@
 local _M = {}
 
--- local log = require('my.log').log
+local log = require('my.log').log
+local util = require('my.util')
+local getProjectionValue = require('my.project').getProjectionValue
 local api = vim.api
 
 function _M.onOpen()
@@ -66,34 +68,54 @@ function _M.onClose()
  -- log(' - on term open')
 end
 
-function _M.open()
-  local opts = {}
-  local cmd = 'ls'
-  api.nvim_command('botright 7new')
-  api.nvim_command('call termopen("ls",{})')
-  -- local sID = api.nvim_call_function('termopen',{})
-  
-  -- cmd ' if exec on path call by name '
-  -- termopen( cmd, opts)
-  -- returns job-id
-  -- like job-start opts are job handlers
-  -- on_stdout
-  -- on_stderr
-  -- on_exit
-  -- cwd
-   -- api.nvim_win_set_option(0, 'hidden', false)
+
+
+function _M.jobOut(jobID, data, event)
+  log(' - job std out')
+  log(' - job id: ' .. tostring( jobID ) )
+  log(' - job data: ' .. type( data ) )
+  log(' - job event: ' .. tostring( event ) )
+  if util.isArray( data ) > 0 then
+    for i, datum in ipairs(data) do
+      log(' - datum: ' .. datum  )
+      -- api.nvim_command('caddexpr "' .. datum .. '"')
+    end
+  end
 end
 
--- function! my#term#preserve(command)
---   setlocal lazyredraw
---   let l:search=@/
+function _M.jobErr(jobID, data, event)
+  log(' - job std err')
+  log(' - job id: ' .. tostring( jobID ) )
+  log(' - job data: ' .. type( data ) )
+  log(' - job event: ' .. tostring( event ) )
+end
 
---   let l:last_view = winsaveview()
---   execute a:command
---   call winrestview(l:last_view)
+function _M.jobExit( jobID, status, event, oMyJob )
+  -- log(' - job exit: ' ..  oMyJobs[ util.isArray( oMyJobs )] )
+  log(' - job id: ' .. tostring( jobID ) )
+  log(' - job status: ' .. tostring( status ) )
+  log(' - job event: ' .. tostring( event ) )
+end
 
---   let @/=l:search
---   redraw
---   setlocal nolazyredraw
--- endfunction
+function _M.job( projection )
+  log(' - ' .. projection  .. '" term job')
+  log('  -----------------------------------')
+  local sBufJob = getProjectionValue( projection )
+  if type(sBufJob) ~= 'string' then
+    log( ' - no job for curent buffer' )
+    return
+  end
+  local window = api.nvim_get_current_win()
+  local buffer = api.nvim_win_get_buf(window)
+  local bufferName =  api.nvim_buf_get_name( buffer )
+  local sTitle =  projection .. ' job for buffer [' .. buffer .. '] ' .. bufferName
+  local oThisJob = {}
+  oThisJob['buffer'] = buffer
+  oThisJob['window'] = window
+  oThisJob['cmd'] = sBufJob
+  log( ' - job: ' .. oThisJob['cmd'])
+  api.nvim_command('botright 10new')
+  api.nvim_call_function('my#term#job',{oThisJob})
+end
+
 return _M

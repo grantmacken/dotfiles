@@ -6,9 +6,9 @@
 --  turn imto module
 --]]
 
-local util = require('my.util')
-local jobs = require('my.jobs')
+
 local log = require('my.log').log
+local trm = require('my.term')
 local api = vim.api
 
   -- local buf = api.nvim_get_current_buf()
@@ -76,69 +76,10 @@ local function findCmdInTermWin( sCmd )
 end
 
 
-local function onStdOut()
-  -- log( ' - on std out'  )
-end
-
-local function onStdErr()
-  -- log( ' - on std err'  )
-  return
-end
-
-local function onExit()
-  log( ' - on job exit'  )
-  -- log( jobs[1] )
-  return
-end
+trm.job( 'coverage' )
 
 
-local function openTerm()
-  log( ' - open term' )
-  local oMyJobs = api.nvim_get_var( 'my_jobs' )
-  local iMyJobsCount = util.isArray( oMyJobs )
-  local oThisJob = oMyJobs[iMyJobsCount]
-  log( ' - buffer: ' .. oThisJob['buffer'] )
-  log( ' - window: ' .. oThisJob['window'] )
-  log( ' - compiler: ' .. oThisJob['compiler'] )
-  log( ' - make program: ' ..  oThisJob['makeprg'] )
-  log( ' - error format: ' ..  oThisJob['errorformat'] )
-  local sTermCommand = oThisJob['makeprg']
-  if type(sTermCommand) ~= 'string' then
-    return
-  end
-  local oOpts = {
-    sTermCommand,
-    ['on_stdout'] = onStdOut(),
-    ['on_stderr'] = onStdErr(),
-    ['on_exit'] = onExit()
-  }
-  log( ' - close term windows with same command ')
-  local winFound, bufferName, buffer = findCmdInTermWin( sTermCommand )
-  if winFound then
-    api.nvim_command('close! ' .. winFound )
-  end
-  log( ' - create small window ')
-  api.nvim_command('botright 3new')
-  log( ' - run terminal command')
-  api.nvim_call_function('termopen',oOpts)
-  log( ' - return focus to editing window')
-  api.nvim_set_current_win(oThisJob['window'])
-end
 
-
-local function isBufferVar( v )
-  local window = api.nvim_get_current_win()
-  local buffer = api.nvim_win_get_buf(window)
-  local value = api.nvim_buf_get_var( buffer, v )
-  if type(value) ~= 'table' then
-    return false
-  else
-    return true
-  end
-end
-
-jobs.defineSigns()
-jobs.jobsForBuffer()
 
 -- local oMyJobs = api.nvim_get_var( 'my_jobs' )
 -- local jobStack = {}

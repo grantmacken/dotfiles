@@ -6,7 +6,7 @@ use Test::Nginx::Socket 'no_plan';
 run_tests();
 endsnippet
 
-snippet _ngxTest "nginx::test" b
+snippet _testNginxSocket "Test::Nginx::Socket"  b
 use Test::Nginx::Socket 'no_plan';
 use Cwd qw(cwd);
 
@@ -18,7 +18,7 @@ no_long_string();
 
 run_tests();
 
-_DATA__
+__DATA__
 
 === TEST 1: Accept GET
 Endpoint will accept GET
@@ -40,6 +40,30 @@ GET /t
 GET
 
 --- error_code: 200
+endsnippet
 
+snippet _testResty "Test::Resty"  b
+use lib 't/lib';
+use Test::Resty;
+plan tests => blocks() * 3;
+run_tests();
 
+__DATA__
+
+=== TEST 1: description
+--- src
+os.execute('')
+--- out chop
+xxxx
+--- err
+--- ret: 0
+
+endsnippet
+
+snippet opts "opts"  b
+--- opts
+endsnippet
+
+snippet src "src"  b
+--- src
 endsnippet

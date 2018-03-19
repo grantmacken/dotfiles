@@ -62,7 +62,6 @@ function _M.isGlobalVar( v )
      return true
    end
 end
-  --   local bvHasProjection, err = pcall(isBufferVar,'projectionist')
 
 function _M.reverseTable( T )
     local reversedTable = {}

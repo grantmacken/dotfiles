@@ -18,6 +18,7 @@ let $PROJECTS_PATH=expand( $HOME . '/projects/grantmacken' )
 " pyenv activate neovim3
 " pip install neovim jedi pylint mistune psutil setproctitle
 " pip install python-language-server
+" pip install --python-language-server
 " Python based linters
 " pycodestyle pyflakes flake8 vim-vint proselint yamllint
 " https://github.com/mhinz/neovim-remote
@@ -113,6 +114,7 @@ Plug 'kassio/neoterm'
 " ------------------------------
 " Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
 Plug 'prabirshrestha/asyncomplete.vim'
+" Plug 'prabirshrestha/asyncomplete.vim', { 'branch': 'TextChangedP' }
 Plug 'prabirshrestha/async.vim'
 " Plug 'prabirshrestha/vim-lsp', { 'branch': 'dev' }
 " Plug 'prabirshrestha/asyncomplete-lsp.vim'
@@ -454,6 +456,7 @@ endfunction
 " }}}
 " Commands {{{
 " command! -nargs=* Make Accio <args>
+"@see nvim/site/lua/my/jobs.lua 
 command! -nargs=0 Prove lua require('my.jobs').qfJobs('prove')
 command! -nargs=0 Qnext lua require('my.qf').rotateNext()
 command! -nargs=0 Qprev lua require('my.qf').rotatePrev()
@@ -497,12 +500,8 @@ nnoremap <silent> <leader>d :Dirvish %:p:h<CR>
 nnoremap <silent> <leader>tb :tabnew<space>
 " }}}
 " {{{ INSERT MAPPINGS
-
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<cr>"
-imap <F2> <Plug>(asyncomplete_force_refresh)
-
+" tab completion
+" @see nvim/site/after/plugin/asyncomplete.vim
 " NOTE: ultisnips works with asyncomplete
 " after <ENTER>
 " <CNTRL><e> will expand
@@ -541,11 +540,11 @@ tnoremap <Esc> <C-\><C-n>
 " {{{ Augroups [ myQuickfix , init ]
 augroup myQuickfix
   autocmd!
+  "@see site/lua/my/qf.lua
   autocmd QuitPre * lua require('my.qf').close()
-  autocmd QuickFixCmdPre caddexpr lua require('my.qf').onCmdPre()
-  " GF: site/autoload/my/qf.vim
+  " autocmd QuickFixCmdPre caddexpr lua require('my.qf').onCmdPre()
   " before a quicklist command is run
-  autocmd QuickFixCmdPost caddexpr lua require('my.qf').onCmdPost()
+  " autocmd QuickFixCmdPost caddexpr lua require('my.qf').onCmdPost()
   " after a quicklist command is run
   "GF: nvim/site/autoload/my/qf.vim
   " our shell commands 'make' etc run from project root
@@ -556,7 +555,7 @@ augroup myQuickfix
   "GF: nvim/site/after/ftplugin/qf.vim
   "Then the BufReadPost event is triggered,
   " using 'quickfix' for the buffer name
-  autocmd BufReadPost quickfix  lua require('my.qf').onFilled()
+  " autocmd BufReadPost quickfix  lua require('my.qf').onFilled()
   autocmd BufWinEnter quickfix  lua require('my.qf').onEntered()
   "GF: nvim/site/autoload/my/qf.vim
 augroup END
@@ -571,7 +570,7 @@ augroup END
 
 augroup myInit
   autocmd!
-  autocmd VimEnter  * lua require('my.project').init()
+  autocmd VimEnter * lua require('my.signs').define()
   " autocmd CursorHold  term://* lua require('my.util').echom(' - Buffer Cursor Hold  ')
   autocmd BufWritePost $MYVIMRC nested source $MYVIMR
   " autocmd BufEnter * :syntax sync fromstart
@@ -586,8 +585,8 @@ augroup myInit
   autocmd BufNewFile,BufRead *.t set filetype=prove "  instead of perl
   autocmd BufNewFile,BufRead *.md set filetype=markdown
   autocmd BufWinEnter * call StylePreviewWindow()
+  "@see nvim/site/autoload/my/asyncomplete.vim
   autocmd User asyncomplete_setup call my#asyncomplete#setup()
-
   " ---------------------------------------------------
   " Projections
   " -----------
@@ -597,8 +596,9 @@ augroup myInit
   "                            - b:projectionist  (object)
   " @see projectionist auto commands
   " triggered when searching for projections
-   autocmd User ProjectionistDetect  lua require('my.project').detect()
+  " autocmd User ProjectionistDetect  lua require('my.project').detect()
   "  triggered when projections found:
+  "@see nvim/site/lua/my/project.lua
    autocmd User ProjectionistActivate lua require('my.project').activate()
   " ---------------------------------------------------
 augroup END
