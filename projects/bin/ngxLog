@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# extract -- logged items
+
+FILE_PATH="proxy/lualib/"
+LOG=t/servroot/logs/error.log
+awk -v user="$FILE_PATH" 'BEGIN { FS = ":" } ;{printf("%s:%s:I: [%s ]%s\n",user$1,$2,$3,$4,$5)}' < \
+  <( grep -oP  '^.+\[lua\]\s\K(.+)(?=,\sclient)' $LOG)

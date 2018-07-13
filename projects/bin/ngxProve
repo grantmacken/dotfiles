@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+declare -a ARR
+FILE=$1
+readarray ARR < <(docker exec or prove -v "$FILE" 2>/dev/null | grep -oP '(^not\sok\s.+$)')
+i=0
+while (( ${#ARR[@]} > i )); do
+  PATTERN="${ARR[i++]}"
+  APPEND=$(echo "$PATTERN" | cut -d: -f2)
+  PATTERN2=$(echo "$PATTERN" | grep -oP 'TEST (\d){1,3}')
+  grep -oHn "$PATTERN2" "$FILE" | \
+    sed "s/:TEST /:W: Failed Test /" | sed "s/$/$APPEND/"
+done
+
+
