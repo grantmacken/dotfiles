@@ -1,3 +1,0 @@
-#!/bin/bash +x
-####################
-sudo journalctl -f -u eXist.service -o cat | grep -oP '^.+\) \K(.+)$'

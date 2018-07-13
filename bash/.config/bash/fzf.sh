@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 FZF_HOME="$HOME/.fzf"
 [ -f $FZF_HOME ] && source $FZF_HOME
 

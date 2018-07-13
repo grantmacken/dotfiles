@@ -116,7 +116,7 @@ home-bash-clean:
 
 home-configs-clean:
 	@echo 'TASK: use stow to remove symlinks in home/.config dir'
-	@stow -D -v -t ~/.config configsj
+	@stow -D -v -t ~/.config configs
 
 home:
 	@$(MAKE) home-bash home-bin home-configs

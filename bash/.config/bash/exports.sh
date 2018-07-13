@@ -37,7 +37,7 @@ if [[ ! "$PATH" == *${HOME_BIN}* ]]; then
 fi
 
 # git controlled project development
-
+ 
 GIT_USER="$( git config --get user.name )"
 # if we have a user name set a PROJECTS folder
 if [ -n "${GIT_USER}" ]; then
@@ -111,15 +111,6 @@ JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:/bin/java::")
 export JAVA_HOME=${JAVA_HOME}
 
 export NVIM_LISTEN_ADDRESS=/tmp/nvimsocket
-# create a nvim instance on startup
-# if [[ ! -e /tmp/nvimsocket ]] ; then
-#   nvim
-# fi
-# create a nvim instance on startup
-if [[ ! -e $NVIM_LISTEN_ADDRESS ]] ; then
-  nvim
-fi
-
 export EDITOR='nvr --remote-wait-silent'
 export GIT_EDITOR="$EDITOR"
 export VISUAL="$EDITOR"

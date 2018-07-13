@@ -3,8 +3,15 @@ if !exists("g:autoloaded_projectionist")
   finish
 endif
 
+" try to extend transformation
 
+function! s:env(var) abort
+  return exists('*DotenvGet') ? DotenvGet(a:var) : eval('$'.a:var)
+endfunction
 
+function! g:projectionist_transformations.domain(input, o) abort
+  return s:env('DOMAIN')
+endfunction
 
 
 " https://github.com/tpope/vim-projectionist/blob/master/doc/projectionist.txt

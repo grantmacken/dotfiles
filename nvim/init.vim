@@ -55,12 +55,14 @@ Plug 'justinmk/vim-dirvish'
 "URL: https://github.com/justinmk/vim-dirvish/blob/master/doc/dirvish.txt
 "GF: site/after/ftplugin/dirvish.vim
 Plug 'fsharpasharp/vim-dirvinist'
-Plug 'tpope/vim-eunuch'     " https://github.com/tpope/vim-eunuch
 " https://www.youtube.com/watch?v=Av2pDIY7nRY
 Plug 'mhinz/vim-startify'
 "GF: site/after/plugin/startify.vim
 "@ sessions
 Plug 'tpope/vim-projectionist'
+Plug 'tpope/vim-eunuch'     " https://github.com/tpope/vim-eunuch
+Plug 'tpope/vim-dotenv' " https://github.com/tpope/vim-dotenv
+
 " Plug 'tpope/vim-dispatch'
 " Plug 'radenling/vim-dispatch-neovim'
 
@@ -82,7 +84,7 @@ Plug 'tweekmonster/nvim-api-viewer'
 " ---------------------------
 " neovim terminal
 " Plug 'hkupty/nvimux'
-" git gists and github
+" git gists and gith0;29M0;29mub
 " Plug 'lambdalisue/gina.vim', {'on': ['Gina']}
 " Plug 'lambdalisue/vim-gista', {'on': ['Gista']}
 " Plug 'lambdalisue/lista.nvim'
@@ -123,6 +125,7 @@ Plug 'Shougo/neco-vim'          " VIM autocompletions https://github.com/Shougo/
 Plug 'prabirshrestha/asyncomplete-necovim.vim'  " VIM source via neco-vim
 Plug 'Shougo/neco-syntax'       " SYNTAX https://github.com/Shougo/neco-syntax
 Plug 'prabirshrestha/asyncomplete-necosyntax.vim' " SYNTAX source via neco-syntax
+Plug 'wellle/tmux-complete.vim'
 " Plug 'prabirshrestha/asyncomplete-emoji.vim'
 " Plug 'yami-beta/asyncomplete-omni.vim'
 " Plug 'prabirshrestha/asyncomplete-tags.vim' " https://github.com/prabirshrestha/asyncomplete-tags.vim
@@ -201,10 +204,10 @@ Plug 'hail2u/vim-css3-syntax', { 'for': 'css' } "   CSS3 syntax support
 Plug 'othree/html5.vim'                         "   HTML 5 with  WAI-ARIA attribute support
 Plug 'othree/xml.vim'                           "   XML tags while you type
 Plug 'tbastos/vim-lua', { 'for': 'lua' } "          LUA syntax and indentation support
-Plug 'othree/nginx-contrib-vim', {'for': 'nginx'} " NGINX
+Plug 'chr4/nginx.vim'                           "   NGINX with embeded lua block highlight
+" Plug 'othree/nginx-contrib-vim', {'for': 'nginx'} " NGINX
 Plug 'ledger/vim-ledger', {'for': 'ledger'}                           " lEDGER
 Plug 'junegunn/vader.vim'                         " VIM    testing vim plugings -- use for syntax
-
 " Plug 'heavenshell/vim-jsdoc' "  jsdocs  https://github.com/heavenshell/vim-jsdoc
 " Plug 'ternjs/tern_for_vim', { 'do': 'npm install' } " setup tern
 " Plug 'carlitux/deoplete-ternjs' " COMPLETION: deoplete tern as recomended by Shougo
@@ -271,9 +274,8 @@ augroup END
 
 " Editor UI Appearance {{{
 " MOUSE
-
 set mouse=a
-set mousemodel=popup_setpos
+" set mousemodel=popup_setpos
 " window  settings {{{
 set notitle             " No need for a title
 set noequalalways       " Don't resize windows on split or close
@@ -439,10 +441,8 @@ set completeopt-=preview
 " }}}
 " Terminal {{{
 " tnoremap <expr> <A-r> '<C-\><C-n>'.nr2char(getchar()).'pi'
-
 set switchbuf+=useopen
 " map esc in term
-
 " }}}
 " Functions {{{
 "

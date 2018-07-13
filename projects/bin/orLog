@@ -1,8 +1,26 @@
-#!/bin/bash +x
+#!/usr/bin/env bash
 ####################
 # tail -f  ${OPENRESTY_HOME}/nginx/logs/error.log | \
 #  grep --line-buffered -oP '^.+\K\[lua\].+$$' | \
 #  cut -d ',' -f1
-tail t/servroot/logs/error.log -n 30| \
- grep --line-buffered -oP '^.+\K\[lua\].+$$' | \
- cut -d ',' -f1
+# tail t/servroot/logs/error.log -n 30| \
+#  grep --line-buffered -oP '^.+\K\[lua\].+$$' | \
+#  cut -d ',' -f1
+
+#!/usr/bin/env bash
+# extract -- logged items
+
+# FILE_PATH="proxy/lualib/"
+# docker logs or 1>/dev/null |
+#   grep --line-buffered  -oP  '^.+\[lua\]\s\K(.+)(?=,\sclient)' |
+#   awk -v user="$FILE_PATH" 'BEGIN { FS = ":" } ;{printf("%s:%s:I: [%s ]%s\n",user$1,$2,$3,$4,$5)}' 
+
+# docker logs or > stdout.log 2>stderr.log
+# cat stderr.log |  grep  -oP  '^.+\[lua\]\s\K(.+)(?=,\sclient)' 
+
+FILE_PATH="proxy/lualib/"
+docker logs or 2>&1 >/dev/null |
+  grep  -oP  '^.+\[lua\]\s\K([\w-_]+\.lua.+)(?=,\sclient)' |
+  tail |
+  awk -v user="$FILE_PATH" 'BEGIN { FS = ":" } ;{printf("%s:%s:I: [%s ]%s\n",user$1,$2,$3,$4,$5)}'
+

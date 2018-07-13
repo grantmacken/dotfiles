@@ -11,12 +11,11 @@
 " can still send commands to it with :T
 "  :T %  " can send special commands
 "help cmdline-special
-let g:neoterm_size = 4
+let g:neoterm_size = 10
 let g:neoterm_fixedsize = 0
-let g:neoterm_position = 'horizontal'
 let g:neoterm_keep_term_open = 1
 let g:neoterm_autoscroll = 0
-
+let g:neoterm_default_mod = 'botright'
 " let g:neoterm_autoinsert = 1
 
 " define a mapping
@@ -26,7 +25,6 @@ let g:neoterm_automap_keys = '<F5>'
 command! -nargs=+ TT Topen | T
 nnoremap <silent> <F4> :TT
 nnoremap <silent> <F6> :Ttoggle<CR>
-
 nnoremap <silent> <F8> :TREPLSendLine<CR>
 vnoremap <silent> <F8> :TREPLSendSelection<CR>
 noremap <silent> <F7> :TREPLSendFile<CR>

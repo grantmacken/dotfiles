@@ -8,11 +8,8 @@ endsnippet
 
 snippet _testNginxSocket "Test::Nginx::Socket"  b
 use Test::Nginx::Socket 'no_plan';
-use Cwd qw(cwd);
+log_level('debug'); # to ensure any log-level can be outputted
 
-my $pwd = cwd();
-
-$ENV{TEST_NGINX_RESOLVER} = '8.8.8.8';
 no_long_string();
 #no_diff();
 
@@ -24,23 +21,66 @@ __DATA__
 Endpoint will accept GET
 --- config
 location = /t {
-	content_by_lua_block {
-		local util = require('grantmacken.util')
-		local method = util.acceptMethods({
-			'GET'
-			})
-		ngx.say(method)
-	}
+  content_by_lua_block {
+    local sURL =  'http://example.com'
+    local sContainerName = 'or'
+    local req = require("grantmacken.req").get(sURL, sContainerName)
+  }
 }
 
 --- request
 GET /t
 
---- response_body
-GET
-
 --- error_code: 200
+
+--- no_error_log
+[error]
+[warn]endsnippet
+
+snippet _router "restXQ router tests"  b
+use Test::Nginx::Socket 'no_plan';
+log_level('debug'); # to ensure any log-level can be outputted
+#no_diff();
+no_long_string();
+run_tests();
+
+__DATA__
+
+=== TEST 1: HTTP request homepage
+--- config
+location = / {
+  resolver 127.0.0.1;
+  content_by_lua_block {
+    local http = require("resty.http")
+    local httpc = http.new()
+    httpc:set_timeout(500)
+    httpc:proxy_response(httpc:request_uri('http://example.com',{}))
+    httpc:set_keepalive()
+  }
+}
+--- request
+GET /
+--- error_code: 200
+
+=== TEST 2: HTTPS request home page
+--- config
+location = / {
+  resolver 127.0.0.1;
+    content_by_lua_block {
+    local http = require("resty.http")
+    local httpc = http.new()
+    httpc:set_timeout(500)
+    httpc:proxy_response(httpc:request_uri('https://example.com',{}))
+    httpc:set_keepalive()
+    }
+}
+--- request
+GET /
+--- error_code: 200
+
 endsnippet
+
+
 
 snippet _testResty "Test::Resty"  b
 use lib 't/lib';

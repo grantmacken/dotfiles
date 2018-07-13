@@ -1,0 +1,10 @@
+#!/bin/bash +x
+
+isReachable="$( dig @8.8.8.8 +short github.com | grep -oP '^([0-9]{1,3}[\.]){3}[0-9]{1,3}$' | head -1 )"
+
+if [ -z "${isReachable}" ] ; then
+  echo 'Github is not reachable at the moment'
+  exit 1
+fi
+
+docker exec or /home/bin/xQrepo "$@"
