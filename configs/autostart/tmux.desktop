@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=dual-monitor-tmux
+#@gf /home/gmack/.local/bin/dual-desktop
+Exec=/home/gmack/.local/bin/dual-desktop

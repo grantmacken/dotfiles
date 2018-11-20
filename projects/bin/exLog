@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# extract eXist logged items
+# into a simple errorformat
+# CompilerSet errorformat=%f:%l:%t:\ %m
+declare -a ARR
+readarray ARR < <( docker logs ex | grep -oP '^\(.+$') 
+i=0
+while (( ${#ARR[@]} > i )); do
+  PATTERN="${ARR[i++]}"
+  MESSAGE=$(echo "$PATTERN" | grep -oP '^.+\)\K(.+)')
+  TYPE=INFO
+  LINE=$(echo "$PATTERN" | cut -d' ' -f2)
+  FILE=$(echo "$PATTERN" | cut -d' ' -f3  | tr ')' ':' | grep -oP '^.+\K(modules/.+$)' )
+  # #   %f:%l:%t:\ %m
+  # echo "${FILE}:${LINE}:${TYPE}: ${MESSAGE}"
+  echo  "${FILE}${LINE}:${TYPE}:${MESSAGE}"
+
+done
+

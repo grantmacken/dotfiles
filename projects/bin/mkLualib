@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+declare -a ARR
+FILE=$1
+readarray ARR < <(make lualib | grep -oP '^(not\sok|ok)\s\K(.+)$')
+i=0
+while (( ${#ARR[@]} > i )); do
+  PATTERN="${ARR[i++]}"
+  echo $PATTERN
+done

@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+
+GIT_USER=$(git config user.name)
+PROJECT=dorex
+
+cd $HOME/projects/${GIT_USER}/${PROJECT}
+source .env
+# ## Get screen info
+# screen1=$( xrandr | grep -oP '^(.+connected.+)(?=\s\()' | head -1 )
+# screen2=$( xrandr | grep -oP '^(.+connected.+)(?=\s\()' | tail -1 )
+
+# pos=$( echo $screen1 | grep -oP '\d{4}x\d{4}\+\K\d{1,4}' )
+
+# ## Figure out which screen is to the right of which
+# if [ $pos -eq 0  ]
+# then
+#     right=$screen1
+#     left=$screen2
+# else
+#     right=$screen2
+#     left=$screen1
+# fi
+
+# echo "right: $right"
+# echo "left: $left"
+
+termLeftID=$(xdotool search --onlyvisible --name "terminal left" | tail -1)
+if [ -z "$termLeftID" ] ; then
+  gnome-terminal --geometry 173x47+19+24 \
+    --working-directory $HOME/projects/${GIT_USER}/${PROJECT} \
+    --hide-menubar \
+    --title='terminal left'
+fi
+sleep 3
+tmxClientCount=$(tmux list-clients | wc -l )
+# echo "tmux client count: $(tmux list-clients | wc -l )"
+# tmux list-clients
+# tmux list-clients | grep -oP 'left'
+# hasLeftTerminal="$( tmux list-clients | grep -oP '\s\Kleft' )"
+leftSession="$(tmux list-sessions | grep -oP "^left")"
+termLeftID=$(xdotool search --onlyvisible --name "terminal left" | tail -1)
+if [ -z "${leftSession}" ] ; then
+  # echo ' [ no left session ] '
+  tmux new-session -d -s left -t $(git config user.name) -c $HOME/projects/${GIT_USER}/${PROJECT}
+  if [ -z "$(tmux list-windows -t left | grep -oP 'proxy' )" ] ; then
+    tmux new-window -t left -d -a -n proxy "nvim"
+  fi
+  if [ -z "$(tmux list-windows -t left | grep -oP 'domain' )" ] ; then
+    tmux new-window -t left -d -a -n domain "nvim"
+  fi
+fi
+
+leftIsAttached="$(tmux list-sessions | grep -oP '^left.+\(\Kattached')"
+if [ -z "${leftIsAttached}" ] ; then
+  # echo ' [ left session is NOT attached  ] - attach *left* session to left terminal'
+  xdotool windowactivate --sync $termLeftID
+  xdotool type --clearmodifiers "tmux attach-session -c $HOME/projects/${GIT_USER}/${PROJECT} -t left"
+  xdotool key  --clearmodifiers 'Return'
+  # xdotool windowactivate --sync $termLeftID
+fi
+
+
+# hasRightTerminal="$( tmux list-clients | grep -oP '\s\Kright' )"
+
+sleep 3
+
+rightLeftID=$(xdotool search --onlyvisible --name "terminal right" | tail -1)
+if [ -z "$rightLeftID" ] ; then
+  gnome-terminal --geometry 173x47+1920+24 \
+    --working-directory $HOME/projects/${GIT_USER}/${PROJECT} \
+    --hide-menubar \
+    --title='terminal right'
+fi
+
+sleep 3
+rightSession="$(tmux list-sessions | grep -oP "^right")"
+termRightID=$(xdotool search --onlyvisible --name "terminal right" | tail -1)
+if [ -z "${rightSession}" ] ; then
+  # echo ' [ no right session ] '
+  tmux new-session -d -s right -t $(git config user.name) -c $HOME/projects/${GIT_USER}/${PROJECT}
+fi
+
+rightIsAttached="$(tmux list-sessions | grep -oP '^right.+\(\Kattached')"
+if [ -z "${rightIsAttached}" ] ; then
+  # echo ' [ right session is NOT attached  ] - attach *right* session to right terminal'
+  xdotool windowactivate --sync $termRightID
+  xdotool type --clearmodifiers "tmux attach-session -c $HOME/projects/${GIT_USER}/${PROJECT} -t right"
+  xdotool key  --clearmodifiers 'Return'
+fi
+# tmux respawn-pane -t ${SESSION}:1.1  -k 'docker logs ex -f'
+# tmux respawn-pane -t ${SESSION}:1.2  -k 'docker logs or -f'
