@@ -1,26 +1,20 @@
 #!/usr/bin/env bash
 ####################
-# tail -f  ${OPENRESTY_HOME}/nginx/logs/error.log | \
-#  grep --line-buffered -oP '^.+\K\[lua\].+$$' | \
-#  cut -d ',' -f1
-# tail t/servroot/logs/error.log -n 30| \
-#  grep --line-buffered -oP '^.+\K\[lua\].+$$' | \
-#  cut -d ',' -f1
-
-#!/usr/bin/env bash
-# extract -- logged items
-
-# FILE_PATH="proxy/lualib/"
-# docker logs or 1>/dev/null |
-#   grep --line-buffered  -oP  '^.+\[lua\]\s\K(.+)(?=,\sclient)' |
-#   awk -v user="$FILE_PATH" 'BEGIN { FS = ":" } ;{printf("%s:%s:I: [%s ]%s\n",user$1,$2,$3,$4,$5)}' 
-
-# docker logs or > stdout.log 2>stderr.log
-# cat stderr.log |  grep  -oP  '^.+\[lua\]\s\K(.+)(?=,\sclient)' 
-
+# CompilerSet errorformat=%f:%l:%t:\ %m
+declare -a ARR
+readarray ARR < <( docker logs or 2>&1 >/dev/null |
+  grep  -aoP  '^.+\K\[(info|error|warn)\].+\[lua\]\s([\w-_]+\.lua.+)(?=,\sclient)' |
+  tail -n 20  )
+i=0
 FILE_PATH="proxy/lualib/"
-docker logs or 2>&1 >/dev/null |
-  grep  -oP  '^.+\[lua\]\s\K([\w-_]+\.lua.+)(?=,\sclient)' |
-  tail |
-  awk -v user="$FILE_PATH" 'BEGIN { FS = ":" } ;{printf("%s:%s:I: [%s ]%s\n",user$1,$2,$3,$4,$5)}'
+while (( ${#ARR[@]} > i )); do
+  PATTERN="${ARR[i++]}"
+  MESSAGE=$(echo "$PATTERN" | cut -d: -f5-7)
+  FUNCTION=$(echo "$PATTERN" | cut -d: -f4)
+  TYPE=$(echo "$PATTERN" | grep -oP '\[\K(info|error|warn)(?=\])' | cut -c1 | tr '[:lower:]' '[:upper:]' )
+  LINE=$(echo "$PATTERN" | cut -d: -f3)
+  FILE=$(echo "$PATTERN" | cut -d: -f2 | cut -d' ' -f4 )
+  #   %f:%l:%t:\ %m
+  echo "${FILE_PATH}${FILE}:${LINE}:${TYPE}: orLog ${FUNCTION} - ${MESSAGE}"
+done
 

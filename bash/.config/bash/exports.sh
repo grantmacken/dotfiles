@@ -61,6 +61,14 @@ if [ -n "${GIT_USER}" ]; then
   export GITHUB_ACCESS_TOKEN=$GITHUB_ACCESS_TOKEN
   GIT_USER=$(git config user.name)
   export GIT_USER=$GIT_USER
+  #DOCKER
+  DOCKER_USERNAME=$(git config user.name)
+  export DOCKER_USERNAME=$DOCKER_USERNAME
+  DOCKER_PASSWORD=$(git config user.name)
+  export DOCKER_PASSWORD=$(<"${PROJECTS}/.github-access-token")
+  DOCKER_EMAIL=$(git config user.email)
+  export DOCKER_EMAIL=$DOCKER_EMAIL
+
   EXIST_AUTH=$(echo -n "$GIT_USER:$GITHUB_ACCESS_TOKEN" | base64)
   export EXIST_AUTH="$EXIST_AUTH"
 
@@ -69,29 +77,24 @@ if [ -n "${GIT_USER}" ]; then
   export JWT_AUTH_TOKEN=$JWT_AUTH_TOKEN
   export SITE_ACCESS_TOKEN=$JWT_AUTH_TOKEN
 
-  alias p="cd $PROJECTS"
-  alias p.="cd $PROJECTS/dotfiles"
-  alias p..="cd $PROJECTS/accounts"
-  alias p...="cd $PROJECTS/openresty-existdb"
-  alias p1="cd $PROJECTS/gmack.nz"
 
   COMMON_PROPERTIES=$PROJECTS/common.properties
   if [ -e ${COMMON_PROPERTIES} ] ; then
     source ${COMMON_PROPERTIES}
      # ssh into
     export SSH="${SSH}"
-    export OPENRESTY_HOME="${OPENRESTY_HOME}"
-    # exist
-    export EXIST_HOME="${EXIST_HOME}"
+    #export OPENRESTY_HOME="${OPENRESTY_HOME}"
+    ## exist
+    #export EXIST_HOME="${EXIST_HOME}"
 
-    # eXist has saxon
-    export SAXON_HOME="${EXIST_HOME}/lib/endorsed"
-    #SAXON=$(ls ${SAXON_HOME} | grep -oP '^Saxon(.+)\.jar$')
-    #export SAXON="${SAXON}"
-    # eXist has ant
-    export ANT_HOME="${EXIST_HOME}/tools/ant/lib"
-    export NS="${NS}"
-    export REPO_BASE_URL="${REPO_BASE_URL}"
+    ## eXist has saxon
+    #export SAXON_HOME="${EXIST_HOME}/lib/endorsed"
+    ##SAXON=$(ls ${SAXON_HOME} | grep -oP '^Saxon(.+)\.jar$')
+    ##export SAXON="${SAXON}"
+    ## eXist has ant
+    #export ANT_HOME="${EXIST_HOME}/tools/ant/lib"
+    #export NS="${NS}"
+    #export REPO_BASE_URL="${REPO_BASE_URL}"
   fi
 
   LEDGER_FILE=${PROJECTS}/accounts/main.ledger
@@ -110,10 +113,10 @@ fi
 JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:/bin/java::")
 export JAVA_HOME=${JAVA_HOME}
 
-export NVIM_LISTEN_ADDRESS=/tmp/nvimsocket
-export EDITOR='nvr --remote-wait-silent'
-export GIT_EDITOR="$EDITOR"
-export VISUAL="$EDITOR"
+# export NVIM_LISTEN_ADDRESS=/tmp/nvimsocket
+# export EDITOR='nvr --remote-wait-silent'
+# export GIT_EDITOR="$EDITOR"
+# export VISUAL="$EDITOR"
 
 
 

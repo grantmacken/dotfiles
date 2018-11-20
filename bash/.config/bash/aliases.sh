@@ -4,9 +4,9 @@
 #   nvim
 # fi
 
-alias h='nvr -o'
-alias v='nvr -O'
-alias t='nvr --remote-tab'
+# alias h='nvr -o'
+# alias v='nvr -O'
+# alias t='nvr --remote-tab'
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
@@ -18,9 +18,12 @@ alias fold="fold -s"
 
 alias p="cd $HOME/projects/$( git config --get user.name )"
 alias p.="cd $HOME/projects/$( git config --get user.name )/dotfiles"
-alias pA="cd $PROJECTS/accounts"
-alias pO.="cd $PROJECTS/openresty-existdb"
-alias p1="cd $PROJECTS/gmack.nz"
+alias pA="cd $HOME/projects/$( git config --get user.name )/accounts"
+alias pD="cd $HOME/projects/$( git config --get user.name )/dorex"
+
+# alias tmx="pD && tmux new-session -s dorex -t $( git config --get user.name )"
+
+alias SSH='gcloud compute ssh gmack'
 
 
-alias featon='ssh featon -t tmux a'
+#alias featon='ssh featon -t tmux a'

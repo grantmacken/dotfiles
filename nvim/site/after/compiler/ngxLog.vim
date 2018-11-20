@@ -4,10 +4,7 @@
 " Last Change: 2018
 " h write-compiler-plugin
 " h :compiler
-
 let g:current_compiler = 'ngxLog'
-let s:cpo_save = &cpoptions
-set cpoptions&vim
 
 CompilerSet makeprg=ngxLog
 
@@ -17,7 +14,6 @@ CompilerSet makeprg=ngxLog
 "  'W' warning message
 "  'I' informational message
 
-CompilerSet errorformat=%f:%l:%t:\ %m
-
-let &cpoptions = s:cpo_save
-unlet s:cpo_save
+CompilerSet errorformat=
+      \%f:%l:%t:\ %m,
+      \%-G%.%#

@@ -54,7 +54,7 @@ Plug 'tweekmonster/fzf-filemru'
 Plug 'justinmk/vim-dirvish' 
 "URL: https://github.com/justinmk/vim-dirvish/blob/master/doc/dirvish.txt
 "GF: site/after/ftplugin/dirvish.vim
-Plug 'fsharpasharp/vim-dirvinist'
+"Plug 'fsharpasharp/vim-dirvinist'
 " https://www.youtube.com/watch?v=Av2pDIY7nRY
 Plug 'mhinz/vim-startify'
 "GF: site/after/plugin/startify.vim
@@ -80,6 +80,9 @@ Plug 'arithran/vim-delete-hidden-buffers'
 " let g:rooter_patterns = ['.projections.json', '.git/']
 
 Plug 'tweekmonster/nvim-api-viewer'
+Plug 'tmux-plugins/vim-tmux-focus-events'
+Plug 'roxma/vim-tmux-clipboard'
+Plug 'christoomey/vim-tmux-navigator'
 " }}}
 " ---------------------------
 " neovim terminal
@@ -88,6 +91,7 @@ Plug 'tweekmonster/nvim-api-viewer'
 " Plug 'lambdalisue/gina.vim', {'on': ['Gina']}
 " Plug 'lambdalisue/vim-gista', {'on': ['Gista']}
 " Plug 'lambdalisue/lista.nvim'
+Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 " Plug 'jreybert/vimagit'
 " Plugt'lambdalisue/vim-gita'
@@ -110,22 +114,20 @@ Plug 'romainl/vim-qlist'
 " |'suffixesadd'| helps Vim infer `foo.js` from `foo`
 " |'path'| tells Vim where to look for include files
 " Plug 'skywind3000/asyncrun.vim'
-Plug 'kassio/neoterm'
+" Plug 'kassio/neoterm'
 " Plug 'janko-m/vim-test'
 " Auto Completions and Snippets.
 " ------------------------------
 " Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
 Plug 'prabirshrestha/asyncomplete.vim'
-" Plug 'prabirshrestha/asyncomplete.vim', { 'branch': 'TextChangedP' }
 Plug 'prabirshrestha/async.vim'
 " Plug 'prabirshrestha/vim-lsp', { 'branch': 'dev' }
-" Plug 'prabirshrestha/asyncomplete-lsp.vim'
 Plug 'prabirshrestha/asyncomplete-buffer.vim' " BUFFER source
 Plug 'Shougo/neco-vim'          " VIM autocompletions https://github.com/Shougo/neco-syntax
 Plug 'prabirshrestha/asyncomplete-necovim.vim'  " VIM source via neco-vim
 Plug 'Shougo/neco-syntax'       " SYNTAX https://github.com/Shougo/neco-syntax
 Plug 'prabirshrestha/asyncomplete-necosyntax.vim' " SYNTAX source via neco-syntax
-Plug 'wellle/tmux-complete.vim'
+" Plug 'wellle/tmux-complete.vim'
 " Plug 'prabirshrestha/asyncomplete-emoji.vim'
 " Plug 'yami-beta/asyncomplete-omni.vim'
 " Plug 'prabirshrestha/asyncomplete-tags.vim' " https://github.com/prabirshrestha/asyncomplete-tags.vim
@@ -167,7 +169,7 @@ Plug 'junegunn/vim-peekaboo' "https://github.com/junegunn/vim-peekaboo
 Plug 'bradford-smith94/quick-scope' 
 " https://github.com/bradford-smith94/quick-scope
 "GF: site/after/plugin/quickscope.vim
-Plug 'junegunn/vim-easy-align' " https://github.com/junegunn/vim-easy-align
+" Plug 'junegunn/vim-easy-align' " https://github.com/junegunn/vim-easy-align
 Plug 'machakann/vim-highlightedyank' " highligh yank text
 " Plug 'bfredl/nvim-miniyank'       " https://github.com/bfredl/nvim-miniyank
 " Plug 'cohama/lexima.vim'
@@ -415,7 +417,6 @@ set autoread      "Always reload buffer when external changes detected
 " - startify
 " - fzf
 " }}}
-" }}}
 " Auto Completions {{{
 " Popup Menu Styling
 " set shortmess+=c
@@ -480,14 +481,28 @@ noremap <A-9> 9gt
 noremap <A-0> :tablast<cr>
 " }}}
 " {{{ Use Alt {h,j.k,l} to navigate windows
-tnoremap <A-h> <C-\><C-n><C-w>h
-tnoremap <A-j> <C-\><C-n><C-w>j
-tnoremap <A-k> <C-\><C-n><C-w>k
-tnoremap <A-l> <C-\><C-n><C-w>l
-nnoremap <A-h> <C-w>h
-nnoremap <A-j> <C-w>j
-nnoremap <A-k> <C-w>k
-nnoremap <A-l> <C-w>l
+let g:tmux_navigator_no_mappings = 1
+let g:tmux_navigator_disable_when_zoomed = 1
+
+if $TMUX !=# ''
+  nnoremap <silent> <A-h> :TmuxNavigateLeft<cr>
+  nnoremap <silent> <A-j> :TmuxNavigateDown<cr>
+  nnoremap <silent> <A-k> :TmuxNavigateUp<cr>
+  nnoremap <silent> <A-l> :TmuxNavigateRight<cr>
+else
+  nnoremap <silent> <A-h> <C-w>h
+  nnoremap <silent> <A-k> <C-w>k
+  nnoremap <silent> <A-j> <C-w>j
+  nnoremap <silent> <A-l> <C-w>l
+endif
+" tnoremap <A-h> <C-\><C-n><C-w>h
+" tnoremap <A-j> <C-\><C-n><C-w>j
+" tnoremap <A-k> <C-\><C-n><C-w>k
+" tnoremap <A-l> <C-\><C-n><C-w>l
+" nnoremap <A-h> <C-w>h
+" nnoremap <A-j> <C-w>j
+" nnoremap <A-k> <C-w>k
+" nnoremap <A-l> <C-w>l
 "}}}
 " QUICKFIX {{{
 nnoremap <silent> [q :Qnext<CR>
@@ -600,7 +615,9 @@ augroup myInit
   "  triggered when projections found:
   "@see nvim/site/lua/my/project.lua
    autocmd User ProjectionistActivate lua require('my.project').activate()
+  " autocmd User BuildPhaseComplete lua require("my.jobs").qfJobs("prove")
   " ---------------------------------------------------
+ "  lua require('nvimux').bootstrap()
 augroup END
 
 " }}}

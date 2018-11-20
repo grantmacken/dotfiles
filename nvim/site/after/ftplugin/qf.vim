@@ -1,5 +1,3 @@
-let s:save_cpo = &cpoptions
-set cpoptions&vim
 " FILE: nvim/site/after/ftplugin/qf.vim
 " GF: nvim/site/autoload/my/quicklist.vim
 " GF: nvim/init.vim
@@ -34,5 +32,3 @@ nnoremap <silent><buffer><nowait> q lua require('my.qf').close()
 
 " autocmd BufEnter <buffer> call my#qf#AdjustWindowHeight(3,10)
 
-let &cpoptions = s:save_cpo
-unlet s:save_cpo

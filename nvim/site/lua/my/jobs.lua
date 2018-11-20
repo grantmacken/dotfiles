@@ -102,12 +102,15 @@ local function jobsFinished()
   for i, err in ipairs(qflist) do
     -- for each error 
     -- log(util.listKeys( err))
-    if  err['type'] == 'E' then
-      placeSign(err, i)
-    elseif err['type'] == 'W' then
-      placeSign(err, i)
-    elseif err['type'] == 'I' then
-      placeSign(err, i)
+    -- log(err['lnum']) 
+    if err['lnum'] > 0 then
+      if  err['type'] == 'E' then
+        placeSign(err, i)
+      elseif err['type'] == 'W' then
+        placeSign(err, i)
+      elseif err['type'] == 'I' then
+        placeSign(err, i)
+      end
     end
   end
 end
@@ -120,7 +123,8 @@ function _M.jobOut(jobID, data, event)
   if util.isArray( data ) > 0 then
     for i, datum in ipairs(data) do
       -- log(' - datum: ' .. datum  )
-      api.nvim_command('caddexpr "' .. datum .. '"')
+      -- let filename = fnamemodify(line, ':p:.'
+      api.nvim_command('silent! caddexpr "' .. datum .. '"')
     end
   end
 end
@@ -133,10 +137,15 @@ function _M.jobErr(jobID, data, event)
 end
 
 function _M.jobExit( jobID, status, event, oMyJobs )
-  -- log(' - job exit: ' ..  oMyJobs[ util.isArray( oMyJobs )] )
-  -- log(' - job id: ' .. tostring( jobID ) )
-  -- log(' - job status: ' .. tostring( status ) )
-  -- log(' - job event: ' .. tostring( event ) )
+   --log(' - job exit: ' ..  oMyJobs[ util.isArray( oMyJobs )] )
+   -- log(' - job id: ' .. tostring( jobID ) )
+   log(' - job status: ' .. tostring( status ) )
+   -- log(' - job event: ' .. tostring( event ) )
+   if status ~= 0 then
+    log(' - job failed - returned exit status: ' .. tostring( status ) )
+    jobsFinished()
+   end
+
   table.remove(oMyJobs, 1)
   local iJobs = util.isArray( oMyJobs )
   if iJobs > 0 then
@@ -188,6 +197,8 @@ function _M.qfJobs( projection )
     -- invoke compiler for buffer
     --  this will set makeprg and errorformat
     api.nvim_command('compiler ' .. value )
+    --  |:cd| to the innermost root
+    api.nvim_command('Pcd')
     makePrg = api.nvim_buf_get_option(0, 'makeprg')
     errorFormat = api.nvim_buf_get_option(0, 'errorformat')
     oThisJob['makeprg'] = makePrg

@@ -6,8 +6,6 @@
 " h :compiler
 
 let g:current_compiler = 'ngxProve'
-let s:cpo_save = &cpoptions
-set cpoptions&vim
 
 let $PROVEFILE = b:my_test_file
 CompilerSet makeprg=ngxProve\ $PROVEFILE
@@ -22,5 +20,3 @@ CompilerSet makeprg=ngxProve\ $PROVEFILE
 
 CompilerSet errorformat=%f:%l:%t:\ %m
 
-let &cpoptions = s:cpo_save
-unlet s:cpo_save

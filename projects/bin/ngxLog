@@ -1,7 +1,17 @@
 #!/usr/bin/env bash
 # extract -- logged items
-
-FILE_PATH="proxy/lualib/"
+declare -a ARR
 LOG=t/servroot/logs/error.log
-awk -v user="$FILE_PATH" 'BEGIN { FS = ":" } ;{printf("%s:%s:I: [%s ]%s\n",user$1,$2,$3,$4,$5)}' < \
-  <( grep -oP  '^.+\[lua\]\s\K(.+)(?=,\sclient)' $LOG)
+readarray ARR < <( grep  -oP  '^.+\K\[(info|error|warn)\].+\[lua\]\s([\w-_]+\.lua.+)(?=,\sclient)' "$LOG" )
+i=0
+FILE_PATH="proxy/lualib/"
+while (( ${#ARR[@]} > i )); do
+  PATTERN="${ARR[i++]}"
+  MESSAGE=$(echo "$PATTERN" | cut -d: -f5-7)
+  FUNCTION=$(echo "$PATTERN" | cut -d: -f4)
+  TYPE=$(echo "$PATTERN" | grep -oP '\[\K(info|error|warn)(?=\])' | cut -c1 | tr '[:lower:]' '[:upper:]' )
+  LINE=$(echo "$PATTERN" | cut -d: -f3)
+  FILE=$(echo "$PATTERN" | cut -d: -f2 | cut -d' ' -f4 )
+  #   %f:%l:%t:\ %m
+  echo "${FILE_PATH}${FILE}:${LINE}:${TYPE}: tLog ${FUNCTION} - ${MESSAGE}"
+done

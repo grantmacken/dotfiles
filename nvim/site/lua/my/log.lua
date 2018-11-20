@@ -4,11 +4,8 @@ local fs = require('my.fs')
 -- local util = require('my.util')
 
 local log = {}
-log.outfile = '.logs/project.log'
+log.outfile = 'tmp/project.log'
 
-local function projectLog()
- 
-end
 
 function _M.log( str )
   local line =  '[' ..

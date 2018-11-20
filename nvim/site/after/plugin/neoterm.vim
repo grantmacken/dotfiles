@@ -1,4 +1,6 @@
-"
+if !exists("g:neoterm_loaded")
+  finish
+endif
 "================================================
 "    NEOTERM
 "================================================
@@ -11,6 +13,7 @@
 " can still send commands to it with :T
 "  :T %  " can send special commands
 "help cmdline-special
+
 let g:neoterm_size = 10
 let g:neoterm_fixedsize = 0
 let g:neoterm_keep_term_open = 1

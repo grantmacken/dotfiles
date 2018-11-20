@@ -7,4 +7,4 @@ if [ -z "${isReachable}" ] ; then
   exit 1
 fi
 
-docker exec or /home/bin/xQrepo "$@"
+docker exec or ./site/bin/xQrepo "$@"

@@ -6,8 +6,6 @@
 " h :compiler
 
 let g:current_compiler = 'orLog'
-let s:cpo_save = &cpoptions
-set cpoptions&vim
 
 CompilerSet makeprg=orLog
 
@@ -17,7 +15,7 @@ CompilerSet makeprg=orLog
 "  'W' warning message
 "  'I' informational message
 
-CompilerSet errorformat=%f:%l:%t:\ %m
+CompilerSet errorformat=
+      \%f:%l:%t:\ %m,
+      \%-G%.%#
 
-let &cpoptions = s:cpo_save
-unlet s:cpo_save

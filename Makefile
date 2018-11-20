@@ -8,13 +8,14 @@ $(foreach src,$(APP_LIST),$(call assert-command-present,$(src)))
 XDG_CACHE_HOME ?= $(HOME)/.cache
 XDG_CONFIG_HOME ?= $(HOME)/.config
 XDG_DATA_HOME ?= $(HOME)/.local/share
+XDG_BIN ?= $(HOME)/.local/bin
 UP_TARG_DIR := $(abspath ../)
 
-GIT_USER="$(shell git config --get user.name )"
-GIT_REMOTE_ORIGIN_URl="$(shell git config --get remote.origin.url )"
-GIT_REPO_FULL_NAME="$(shell echo $(GIT_REMOTE_ORIGIN_URl) | sed -e 's/git@github.com://g' | sed -e 's/\.git//g' )"
-GIT_REPO_NAME="$(shell echo $(GIT_REPO_FULL_NAME) |cut -d/ -f2 )"
-GIT_REPO_OWNER_LOGIN="$(shell echo $(GIT_REPO_FULL_NAME) |cut -d/ -f1 )"
+GIT_USER=$(shell git config user.name )
+GIT_REMOTE_ORIGIN_URl=$(shell git config --get remote.origin.url )
+GIT_REPO_FULL_NAME=$(shell echo $(GIT_REMOTE_ORIGIN_URl) | sed -e 's/git@github.com://g' | sed -e 's/\.git//g' )
+GIT_REPO_NAME=$(shell echo $(GIT_REPO_FULL_NAME) |cut -d/ -f2 )
+GIT_REPO_OWNER_LOGIN=$(shell echo $(GIT_REPO_FULL_NAME) |cut -d/ -f1 )
 
 OS_NAME := $(shell cat /etc/*release | grep -oP '^NAME="\K\w+')
 SYSTEMD_PATH := $(shell pgrep -fau $$(whoami) systemd | grep user | cut -d ' ' -f 2)
@@ -26,7 +27,6 @@ SYSTEMD_PATH := $(shell pgrep -fau $$(whoami) systemd | grep user | cut -d ' ' -
 # A literal space.
 EMPTY :=
 SPACE := $(EMPTY) $(EMPTY)
-
 
 assert-is-root = $(if $(shell id -u | grep -oP '^0$$'),\
  $(info OK! root user, so we can change some system files),\
@@ -89,40 +89,39 @@ neovim-clients:
 
 #@pip install --user -U neovim
 #@gem --user-install neovim
+#@gf ~/.local/bin
 
-home-bin:
-	@echo 'TASK: use stow to create symlinks in home dir'
-	$(if $(wildcard  $(HOME)/bin ),,mkdir $(HOME)/bin)
-	@stow -v -t ~/bin bin
+.PHONY: bin
+bin:
+	@echo 'TASK: use stow to create symlinks in ~/.local/bin dir'
+	@stow -v -t ~/.local/bin bin
 
-home-bash:
+.PHONY: bin
+clean-bin:
+	@echo 'TASK: use stow to remove symlinks in home bin dir '
+	@stow -D -v -t ~/bin bin
+
+.PHONY: bash
+bash:
 	@echo 'TASK: use stow to create bash symlinks in home dir'
 	$(if $(wildcard  $(XDG_CONFIG_HOME)/bash ),,mkdir -p $(XDG_CONFIG_HOME)/bash)
 	@stow -v -t ~ bash
 
-home-configs:
+.PHONY: clean-bash
+clean-bash:
+	@echo 'TASK : use stow to remove bash symlinks in home dir'
+	@stow -D -v -t ~ bash
+
+.PHONY: configs
+configs:
 	@echo 'TASK: use stow to create symlinks in home/.config dir'
 	@stow -v -t ~/.config configs
 	@#systemctl --user daemon-reload
 
-
-home-bin-clean:
-	@echo 'TASK: use stow to remove symlinks in home bin dir '
-	@stow -D -v -t ~/bin bin
-
-home-bash-clean:
-	@echo 'TASK : use stow to remove bash symlinks in home dir'
-	@stow -D -v -t ~ bash
-
-home-configs-clean:
+.PHONY: clean-configs
+clean-configs:
 	@echo 'TASK: use stow to remove symlinks in home/.config dir'
 	@stow -D -v -t ~/.config configs
-
-home:
-	@$(MAKE) home-bash home-bin home-configs
-
-home-clean:
-	@$(MAKE) home-bash-clean home-bin-clean home-configs-clean
 
 ROCKS = luv mpack lua-cjson2 xmlua formatter checks
 ROCKS_REG_LIST = $(subst $(SPACE),|,$(ROCKS))
@@ -187,13 +186,6 @@ solus-packages: bin/my-solus-packages.list
 backup-brashrc:
 	@mv $(HOME)/.bashrc $(HOME)/.bashrc-$(date +%F).bk
 
-stow-tmux:
-	$(if $(wildcard  $(HOME)/.tmux/plugins ),,git clone https://github.com/tmux-plugins/tpm $(HOME)/.tmux/plugins/tpm)
-	@stow -v -t ~ tmux
-	$(if $(wildcard  $(HOME)/.tmux/plugins/tmux-sensible),\
- cd $(HOME)/.tmux/plugins/tpm/bin && ./update_plugins all ,\
- cd $(HOME)/.tmux/plugins/tpm/bin && ./install_plugins)
-
 neovimBackspaceFix:
 	infocmp $TERM | sed 's/kbs=^[hH]/kbs=\\177/' > $TERM.ti
 	tic $TERM.ti
@@ -214,29 +206,18 @@ caps2esc:
 # set up local py enviroment
 # to run neovim
 
-define caps2escService
-[Unit]
-Description=caps2esc
 
-[Service]
-ExecStart=/bin/nice -n -20 /home/gmack/bin/caps2esc
+############
+# TMUX
+############ 
 
-[Install]
-WantedBy=multi-user.target
-endef
-
-capsService: export caps2escService:=$(caps2escService)
-capsService:
-	@echo "setup caps2Sec under systemd"
-	@$(call assert-is-root)
-	$(if $(wildcard ../../oblitum/caps2esc/caps2esc), $(info 'good to go') ,$(error 'oh no!'))
-	@cp ../../oblitum/caps2esc/caps2esc /home/gmack/bin
-	@echo '====================================================================================='
-	@echo "$${caps2escService}" >  $(SYSTEMD_PATH)/caps2esc.service
-	@cat  /usr/lib/systemd/system/caps2esc.service
-	@systemctl enable caps2esc.service
-	@systemctl start caps2esc.service
-	@journalctl -f -u caps2esc.service -o cat
+.PHONY: stow-tmux
+stow-tmux:
+	$(if $(wildcard  $(HOME)/.tmux/plugins ),,git clone https://github.com/tmux-plugins/tpm $(HOME)/.tmux/plugins/tpm)
+	@stow -v -t ~ tmux
+	$(if $(wildcard  $(HOME)/.tmux/plugins/tmux-sensible),\
+ cd $(HOME)/.tmux/plugins/tpm/bin && ./update_plugins all ,\
+ cd $(HOME)/.tmux/plugins/tpm/bin && ./install_plugins)
 
 define myTmuxService
 [Unit]
@@ -247,10 +228,50 @@ Documentation=man:tmux(1)
 Type=oneshot
 RemainAfterExit=yes
 Environment=DISPLAY=:0
-ExecStart=$(shell which tmux) -2 new-session -d %u
-ExecStop=$(shell which tmux) kill-session -t %u
+ExecStart=$(shell which tmux) new-session -d -s $(GIT_USER)
+ExecStop=$(shell which tmux) kill-server
+WorkingDirectory=$(HOME)/projects/$(GIT_USER)
+KillMode=none
 
 [Install]
-WantedBy=default.target
+WantedBy=graphical.target
 endef
+
+.PHONY: tmux
+tmux: /home/gmack/.config/systemd/user/tmux.service
+	@systemctl --no-pager --user enable tmux.service
+	@systemctl --no-pager --user start tmux.service
+	@systemctl --no-pager --user status tmux.service
+	@tmux ls
+
+.PHONY: clean-tmux
+clean-tmux:
+	@rm  -f $(HOME).config/systemd/user/tmux.service
+
+.PHONY: clean-tmux
+clean-tmux:
+	@systemctl --no-pager --user status tmux.service
+
+/home/gmack/.config/systemd/user/tmux.service: export myTmuxService:=$(myTmuxService)
+/home/gmack/.config/systemd/user/tmux.service: clean-tmux
+	@echo "$$myTmuxService" > $@
+
+define myDockerService
+[Unit]
+Description=Docker Compose Up
+# Requires=docker.service
+# After=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=%h/projects/$(GIT_USER)/dorex
+ExecStart=docker-compose up -d
+ExecStop=docker-compose down
+KillMode=none
+
+[Install]
+WantedBy=graphical.target
+endef
+
 

@@ -43,11 +43,41 @@ function _M.detect()
   return
 end
 
+
+--[[
+For each projectionist buffer
+look for the projection values we handle
+
+1. buffer content piped to stdin of CLI progmam,
+   then buffer content replaced with the stdout of that command.
+
+# format: pretty formatting
+  set the formatprg which will be used by neoformat
+  let g:neoformat_try_formatprg = 1
+
+# linters:  static analysis of typed languages
+  up setup ale linters for buffer
+  Errors, Warnings placed into location list
+
+2. prove:  onsave buffer content piped to stdin of CLI prog,
+   then stdout, stdout analyised with
+  Errors, Warnings and Information items placed into quickfix list
+  The buufer content is not altered
+
+  prove is an array of CLI jobs
+   if the job job exit status is a succesfull 0
+   then the next job in the array will run
+  if the job fails with a exit status 1
+    then then no addtional jobs will run
+
+ ---]]
+
+
 function _M.activate()
   -- log( ' - projection activated'  )
-
   local value, err = pcall(api.nvim_get_var, 'my_project_init')
   if not value then
+    api.nvim_command('Pcd')
     require('my.log').clear()
     log( ' - project activated'  )
     log( ' - ================='  )
@@ -75,9 +105,10 @@ function _M.activate()
         local sType =  getProjectionValue('type')
         log ( ' - - tests type: [ ' .. sType .. ' ]' )
         log ( ' - - tests sequence: : [ ' .. table.concat(oProofs," | ") .. ' ]'  )
-        local sTestFile = projectFile
-        if sType ~= 'ngxTest' then
-          sTestFile = getProjectionValue('alternate')
+        local sTestFile = getProjectionValue('alternate')
+        -- if the sType starts with test then the test file is the  project file
+        if string.sub(sType ,1,string.len('test')) == 'test'then
+          sTestFile = projectFile
         end
         api.nvim_buf_set_var( buffer, 'my_test_file', sTestFile )
         log ( ' - - test file: [ ' .. sTestFile .. ' ]')
