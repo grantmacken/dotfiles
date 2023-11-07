@@ -1,0 +1,53 @@
+[user]
+	name = grantmacken
+	email = grantmacken@gmail.com
+
+[push]
+	default = current
+	followTags = true
+
+[github]
+    user = grantmacken
+
+[color]
+  ui = auto
+  pager = no
+
+[init]
+  defaultBranch = main
+
+[core]
+	pager = nvim -R
+
+[tag]
+	sort = version:refname
+
+[init]
+	defaultBranch = main
+
+[help]
+    # Autocorrect mistyped commands.
+  autocorrect = 1
+
+[alias]
+    # Get name of default remote
+    upstream = !git remote | grep -oP '(upstream|origin)' | tail -1
+    # Get name of default head branch
+    main = !git remote show $(git upstream) | awk '/HEAD branch/ {print $NF}'
+    unstage = reset -q HEAD --
+    uncommit = reset --mixed HEAD~
+    # Repeat last commit message
+    recommit = commit --reuse-message=HEAD
+    # Rebase interactive for all commits on feature branch
+    rebase-branch = !git rebase -i $(git merge-base master HEAD)
+    # preferred git log view
+    lg = log --graph --abbrev-commit --decorate --format=format:'%C(yellow)%h%C(reset) %C(white)%s%C(reset) %C(dim white)-%C(reset) %ar %C(dim white)<%an>%C(reset)%C(auto)%d%C(reset)' --all
+    lg2 = log --graph --abbrev-commit --decorate --format=format:'%C(yellow)%h%C(reset) %C(white)%s%C(reset) %C(dim white)-%C(reset) %ar %C(dim white)<%an>%C(reset)%C(auto)%d%C(reset)%n' --all --stat
+    # View the log and diff for a commit (previous if no SHA1 provided)
+    details = log -n1 -p --format=fuller
+    # when Git loses upstream tracking branch (haven't figured out why exactly) run:
+    # git set-upstream
+    # git pull
+    set-upstream = !git branch --set-upstream-to=origin/$(git symbolic-ref --short HEAD)
+[fetch]
+	prune = true
