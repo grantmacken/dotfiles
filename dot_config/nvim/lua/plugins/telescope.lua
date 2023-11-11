@@ -1,15 +1,6 @@
 return {
   'nvim-telescope/telescope.nvim',
-  dependencies = {
-    {
-      'nvim-telescope/telescope-fzf-native.nvim',
-      build = 'make',
-      config = function()
-        require('telescope').load_extension 'fzf'
-      end,
-    },
-  },
-  cmd = 'Telescope',
+   cmd = 'Telescope',
   opts = {
     defaults = {
       prompt_prefix = string.format('%s ', require('my.icons').ui.search),

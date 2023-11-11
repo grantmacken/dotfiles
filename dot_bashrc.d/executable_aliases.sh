@@ -1,4 +1,5 @@
 #!/bin/bash
+alias wezterm='flatpak run org.wezfurlong.wezterm'
 alias dotfiles-reload='source $HOME/.bashrc'
 alias fold="fold -s "
 #alias docker=podman

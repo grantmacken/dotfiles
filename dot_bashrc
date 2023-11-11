@@ -24,4 +24,6 @@ if [ -d ~/.bashrc.d ]; then
 	done
 fi
 
+# source $HOME/.local/bin/wezterm.sh
+
 unset rc
