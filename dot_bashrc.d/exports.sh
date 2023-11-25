@@ -35,9 +35,8 @@ export NVIM_APPNAME
 # export XDG_RUNTIME_DIR
 #
 # # NODE 
+export NPM_CONFIG_USERCONFIG=~/.config/npm/npmrc
 # export NODE_PATH=$LOCAL/npm/lib/node_modules
-# export NPM_CONFIG_USERCONFIG=$CONF/npm/config
-# # export NPM_CONFIG_CACHE=$HOME/.cache/npm
 # # global npm
 # export NPM_BIN=$LOCAL/npm/bin
 # if [[ ! "$PATH" == *${NPM_BIN}* ]]; then

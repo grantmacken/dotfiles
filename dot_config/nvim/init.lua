@@ -5,7 +5,7 @@ require("mappings").setup()
 require("options").setup()
 require("commands").setup()
 require("autocmds").setup()
-require("my.lsp").setup()
+--require("my.lsp").setup()
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({

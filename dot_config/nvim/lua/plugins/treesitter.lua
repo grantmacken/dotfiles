@@ -61,43 +61,64 @@ return {
       additional_vim_regex_highlighting = false,
     },
     ensure_installed = {
-      'comment',
+      'awk',
       'bash',
+      'comment',
       'css',
+      'gitignore',
+      'gleam',
+      'go',
+      'gomod',
+      'gosum',
+      'gowork',
       'html',
       'javascript',
+      'jq',
       'json',
+      'ledger',
       'lua',
+      'make',
+      'markdown',
+      'markdown_inline',
+      'ocaml',
+      'ocaml_interface',
+      'ocamllex',
       'query',
       'regex',
-      'make',
-      "ocaml",
-      "ocaml_interface",
-      "toml",
-      'go',
-      "go",
-      "gomod",
-      "gowork",
-      "gosum",
-      "markdown",
-      "markdown_inline"
+      'rust',
+      'toml',
+      'xml'
     },
     sync_install = false,
     auto_install = false,
     autotag = { enable = false },
     playground = { enable = true},
+    incremental_selection = {
+        enable = true,
+        keymaps = {
+          init_selection = "gnn", -- set to `false` to disable one of the mappings
+          node_incremental = "grn",
+          scope_incremental = "grc",
+          node_decremental = "grm",
+        },
+      },
+      indent = {
+        enable = true
+      },
     },
+
+
     -- query_linter = {
     --   enable = true,
     --   use_virtual_text = true,
     --   lint_events = { 'BufWrite', 'CursorHold' },
     -- },
-    rainbow = {
-      enable = true,
-    },
-    matchup = {
-      enable = true, -- mandatory
-    },
+    -- rainbow = {
+    --   enable = true,
+    -- },
+    -- matchup = {
+    --   enable = true, -- mandatory
+    -- },
   config = function(_, opts)
     require'nvim-treesitter.configs'.setup(opts)
   end

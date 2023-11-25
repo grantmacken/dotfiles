@@ -1,16 +1,5 @@
--- return {
-  --   'olimorris/persisted.nvim',
-  --   opts = {
-    --     use_git_branch = true,
-    --     autoload = true,
-    --     allowed_dirs = {
-      --       '~/projects/grantmacken/dotfiles',
-      --     },
-      --   },
-      --   config = true,
-      -- }
-
-      return
+if true then return {} end
+return
       {
 	      "stevearc/resession.nvim",
 	      enabled = true,

@@ -6,7 +6,6 @@ local function augroup(name)
   return vim.api.nvim_create_augroup("my_" .. name, { clear = true })
 end
 
-
 -- Check if we need to reload the file when it changed
 local checkTime = function()
   autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
@@ -65,8 +64,6 @@ local unlistQuickfistBuffers = function()
   })
 end
 
-
-
 local onOpenGoToLastBuff = function()
   autocmd("BufReadPost", {
     group = augroup("last_loc"),
@@ -77,38 +74,6 @@ local onOpenGoToLastBuff = function()
         pcall(vim.api.nvim_win_set_cursor, 0, mark)
       end
     end,
-  })
-end
-
-local onLeave = function()
-  autocmd("VimLeavePre", {
-    desc = "On leave save session",
-    group = augroup("save_session"),
-    callback = function()
-      local get_session_name = require('my.util').get_session_name
-      local ok, resession = pcall(require, 'resession ')
-      if ok then
-        require('resession').load(require('my.util').get_session_name())
-      end
-    end,
-  })
-end
-
-local onEnter = function()
-  autocmd("VimEnter", {
-    desc = "On enter load session",
-    group = augroup("load_session"),
-    callback = function()
-      local get_session_name = require('my.util').get_session_name
-      log('Session: ' .. get_session_name())
-      local ok, resession = pcall(require, 'resession ')
-      if ok then
-        log('Session: ' .. get_session_name())
-        if vim.fn.argc(-1) == 0 then
-          require('resession').load(require('my.util').get_session_name())
-        end
-      end
-    end
   })
 end
 
@@ -262,10 +227,8 @@ M.setup = function()
   onLangServerAttach()
   onDiagnosticChange()
   onTermOpen()
-  onLeave()
-  onEnter()
   -- withGolang()
-  log('autocommands setup completed')
+  -- log('autocommands setup completed')
 end
 
 --

@@ -7,12 +7,13 @@ local M = {}
 --   term_mode = "t",
 --   command_mode = "c",
 
-local log = require('my.util').log
+-- local log = require('my.util').log
 M.setup = function()
   vim.cmd [[ command! W  execute ':w' ]] -- map :W to :w (helps which-key issue)
   local km = vim.keymap.set
   km('n', ' ', '<Nop>', { silent = true, remap = false })
   km('n', '<leader>cm', '<cmd>Mason<cr>', { desc = 'Mason' })
+  km('n', '-', '<cmd>Oil<cr>', { desc = 'Open parent directory' })
   km('n', '<F10>', '<cmd>:TSNodeUnderCursor<cr>', { desc = 'TS node under curser' })
   km('n', '<F11>', '<cmd>TSHighlightCapturesUnderCursor<cr>', { desc = 'TS captures under curser' })
   km('n', '<F12>', '<cmd>TSPlaygroundToggle<cr>', { desc = 'TS playground' })
@@ -41,7 +42,7 @@ M.setup = function()
   km('n', '[d', vim.diagnostic.goto_prev, { desc = 'Next tab' })
   km('n', ']d', vim.diagnostic.goto_next, { desc = 'Previous tab' })
 
-  log('vim mappings setup')
+  -- log('vim mappings setup')
 end
 
 return M

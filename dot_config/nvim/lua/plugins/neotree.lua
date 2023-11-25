@@ -1,5 +1,7 @@
+if true then return {} end
 return {
   'nvim-neo-tree/neo-tree.nvim',
+  enabled = false,
   dependencies = { 'nvim-tree/nvim-web-devicons', 'MunifTanjim/nui.nvim', 'mrbjarksen/neo-tree-diagnostics.nvim' },
   -- cmd = "Neotree",
   keys = {
