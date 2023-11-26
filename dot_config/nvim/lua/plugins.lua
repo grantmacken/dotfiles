@@ -12,19 +12,28 @@ return
       end,
     },
     { 'nvim-lua/plenary.nvim' },
-    -- Git related plugins
+-- Git related plugins
     {'tpope/vim-fugitive'},
-    {'tpope/vim-rhubarb'},
-    -- Detect tabstop and shiftwidth automatically
+    {'tpope/vim-rhubarb'}, -- Detect tabstop and shiftwidth automatically
     {'tpope/vim-sleuth'},
     {'lambdalisue/suda.vim',cmd = { 'SudaWrite' ,'SudaRead' }},
     {'famiu/bufdelete.nvim', cmd = { 'Bdelete', 'Bwipeout' }},
     --TODO  https://github.com/stevearc/conform.nvim
     {'stevearc/aerial.nvim'},
     {'stevearc/conform.nvim'},
-    {'stevearc/oil.nvim', opts = {},dependencies = { "nvim-tree/nvim-web-devicons" }},
+    {'stevearc/oil.nvim', opts = {
+      view_options = {
+        show_hidden = true,
+        is_hidden_file = function(name, bufnr)
+          return vim.startswith(name, ".")
+        end,
+        -- This function defines what will never be shown, even when `show_hidden` is set
+        is_always_hidden = function(name, bufnr)
+          return false
+        end,
+    },dependencies = { "nvim-tree/nvim-web-devicons" }},
     {'stevearc/overseer.nvim'},
-    {'stevearc/resession.nvim',opts = {}}
+    {'stevearc/resession.nvim',opts = {}},
     {'stevearc/stickybuf.nvim',opts = {}},
     {"j-hui/fidget.nvim",opts = {}},
     {
