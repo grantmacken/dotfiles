@@ -32,16 +32,10 @@ add({ name = 'mini.nvim', checkout = 'HEAD' })
 ----Safely execute immediately
 -- Use external plugins with `add()`
 now(function()
-  local filterout_lua_diagnosing = function(notif_arr)
-    local not_diagnosing = function(notif) return not vim.startswith(notif.msg, 'lua_ls: Diagnosing') end
-    notif_arr = vim.tbl_filter(not_diagnosing, notif_arr)
-    return MiniNotify.default_sort(notif_arr)
-  end
-  require('mini.notify').setup({
-    content = { sort = filterout_lua_diagnosing },
-    window = { config = { border = 'double' } },
-  })
-  vim.notify = MiniNotify.make_notify()
+  local plugin = require('plugins.notify')
+  local notify = require(plugin.name)
+  notify.setup(plugin.config)
+  vim.notify = notify.make_notify()
 end)
 
  now(function()
@@ -116,7 +110,6 @@ later(  function()require("mini.trailspace").setup() end)
 
 --- Automatic highlighting of word under cursor
 later(function() require('mini.cursorword').setup() end)
-
 
 later(function()
   add({

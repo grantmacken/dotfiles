@@ -21,13 +21,22 @@ gitList  := $(wildcard git/* )
 gitBuild := $(patsubst git/%,$(CONFIG)/git/%,$(gitList))
 
 nvimList  := $(call rwildcard,nvim,*.lua)
-nvimBuild := $(patsubst nvim/%.lua,$(CONFIG)/nvim/%.lua,$(nvimList)) 
+nvimBuild := $(patsubst nvim/%.lua,$(CONFIG)/nvim/%.lua,$(nvimList))
 
-default: $(ghBuild) $(gitBuild) $(nvimBuild)
+kittyInit := kitty/session.conf
+kittyList  := $(call rwildcard,kitty,*.conf)
+kittyBuild := $(patsubst kitty/%.conf,$(CONFIG)/kitty/%.conf,$(kittyList))
+
+default: $(kittyInit) $(kittyBuild) $(ghBuild) $(gitBuild) $(nvimBuild)
 
 info:
 	echo $(ghBuild) 
 	echo $(gitBuild)
+
+$(CONFIG)/kitty/%: kitty/%
+	mkdir -p $(dir $@)
+	echo  $<
+	ln -s  $(abspath $<) $(abspath $@)
 
 
 $(CONFIG)/nvim/%: nvim/%
@@ -49,18 +58,22 @@ $(CONFIG)/git/%: git/%
 	# source_file symbolic_link
 	ln -s  $(abspath $<) $(abspath $@)
 
-
-
 ostree:
 	# https://universal-blue.discourse.group/docs?topic=40
 	# remove layered packages
 	rpm-ostree reset
 	rpm-ostree rebase ostree-image-signed:docker://ghcr.io/ublue-os/bluefin:39
 
+toolbox:
+	systemctl --no-pager --user is-active zie-toolbox.service  || systemctl --no-pager --user start zie-toolbox.service
+	echo -n ' - is enabled: ' && systemctl --no-pager --user is-enabled zie-toolbox.service || true
+	echo -n ' - is active: '&& systemctl --no-pager --user is-active zie-toolbox.service || true
+	distrobox ls
 
-kitty-session: $(HOME)/.config/kitty/session.conf
+kitty/session.conf:
 	cat << EOF | tee $@
-	cd $HOME/zie
+	cd $(HOME)/zie
+	# journalctl --no-pager --user -xeu zie-toolbox.service
 	launch /bin/bash -c 'distrobox enter zie-quadlet'
 	EOF
 
@@ -89,3 +102,5 @@ clean:
 	rm -v $(ghBuild) || true
 	rm -v $(gitBuild) || true
 	rm -v $(nvimBuild) || true
+
+
