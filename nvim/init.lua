@@ -131,6 +131,19 @@ later(function()
   require('gitsigns').setup(plugin.config)
 end)
 
+later(function()
+ add({
+   source = 'stevearc/resession.nvim',
+   checkout = 'master',
+   })
+  local plugin = require('plugins.resession')
+  plugin.setup(plugin.config)
+  plugin.mappings()
+  plugin.autocommands()
+
+end)
+
+
 -- later(function()
 --   add({
 --     source = 'ThePrimeagen/harpoon',

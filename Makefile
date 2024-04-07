@@ -14,6 +14,9 @@ LOCAL_BIN := $(HOME)/.local/bin
 
 rwildcard = $(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(subst *,%,$2),$d))
 
+binList  := $(wildcard bin/*)
+binBuild := $(patsubst bin/%,$(LOCAL_BIN)/%,$(binList))
+
 ghList  := $(wildcard gh/*)
 ghBuild := $(patsubst gh/%,$(CONFIG)/gh/%,$(ghList))
 
@@ -27,7 +30,15 @@ kittyInit := kitty/session.conf
 kittyList  := $(call rwildcard,kitty,*.conf)
 kittyBuild := $(patsubst kitty/%.conf,$(CONFIG)/kitty/%.conf,$(kittyList))
 
-default: $(kittyInit) $(kittyBuild) $(ghBuild) $(gitBuild) $(nvimBuild)
+default: $(binBuild) $(kittyInit) $(kittyBuild) $(ghBuild) $(gitBuild) $(nvimBuild)
+	which lua-language-server
+
+$(LOCAL_BIN)/%: bin/%
+		mkdir -p $(dir $@)
+		echo  $<
+		ln -s  $(abspath $<) $(abspath $@)
+
+
 
 info:
 	echo $(ghBuild) 

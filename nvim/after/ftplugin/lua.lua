@@ -1,6 +1,10 @@
-local conf = {
+
+local lsp = 'lua-language-server'
+if vim.fn.executable(lsp) ~= 1 then return end
+-- :h ClientConfig
+local client_id = vim.lsp.start({
   name = 'lua_ls', --Name in log messages
-  cmd = { 'lua-language-server' },
+  cmd = {lsp},
   root_dir = vim.fs.dirname(vim.fs.find({'.git'}, { upward = true })[1]),
   workspace_folders = nil,
   -- before_init = beforeInit,
@@ -37,11 +41,12 @@ local conf = {
       },
     },
   },
-}
+})
 
 -- log(  'file type: '  .. args.match )
 -- log(  'file location: ' .. args.file )
-local client_id = vim.lsp.start(conf)
+--
+--
 vim.notify(  'clent id: ' .. client_id )
 
 
