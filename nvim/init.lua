@@ -95,7 +95,7 @@ later(function() require('mini.comment').setup() end)
 later(function() require("mini.surround").setup() end)
 
 --- Buffer removing (unshow, delete, wipeout), which saves window layout
-later(function() 
+later(function()
   local plugin = require('plugins.bufremove')
   local bufremove = require(plugin.name)
   bufremove.setup(plugin.config)
@@ -140,8 +140,31 @@ later(function()
   plugin.setup(plugin.config)
   plugin.mappings()
   plugin.autocommands()
-
 end)
+
+later(function() --Completion and signature help
+-- https://github.com/echasnovski/mini.nvim/blob/main/doc/mini-completion.txt
+later(  function()
+  local plugin = require('plugins.minicompletion')
+  plugin.setup(plugin.config)
+end)
+
+-- add({
+--    source = 'hrsh7th/nvim-cmp',
+--    checkout = 'main',
+--    depends = {
+--      'hrsh7th/cmp-buffer',
+--      'hrsh7th/cmp-path',
+--      'hrsh7th/cmp-nvim-lsp',
+--      'saadparwaiz1/cmp_luasnip',
+--       {
+--       source = 'L3MON4D3/LuaSnip',
+--       depends = {'rafamadriz/friendly-snippets'}
+--       },
+--    }})
+end)
+
+
 
 
 -- later(function()

@@ -1,4 +1,3 @@
-
 local lsp = 'lua-language-server'
 if vim.fn.executable(lsp) ~= 1 then return end
 -- :h ClientConfig

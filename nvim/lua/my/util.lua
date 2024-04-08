@@ -1,7 +1,4 @@
 local M = {}
-
-
-
 M.nmap_leader = function(suffix, rhs, desc, opts)
   opts = opts or {}
   opts.desc = desc
@@ -40,7 +37,7 @@ M.get_session_name = function()
 end
 
 -- This indicates that oil.nvim should be shown
- M.opened_with_dir_argument = function() 
+ M.opened_with_dir_argument = function()
   if vim.fn.argc() == 1 then
     local stat = vim.loop.fs_stat(vim.fn.argv(0))
     if stat and stat.type == "directory" then return true end
