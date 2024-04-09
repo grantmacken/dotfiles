@@ -71,6 +71,7 @@ local clues = {
   --{ mode = 'n', keys = '<Leader>h', desc = '+Harpoon' },
   { mode = 'n', keys = '<Leader>g', desc = '+Git' },
   { mode = 'n', keys = '<Leader>s', desc = '+Session' },
+  { mode = 'n', keys = '<Leader>t', desc = '+Toggle' },
   miniclue.gen_clues.builtin_completion(),
   miniclue.gen_clues.g(),
   miniclue.gen_clues.marks(),
@@ -78,10 +79,6 @@ local clues = {
   miniclue.gen_clues.windows(),
   miniclue.gen_clues.z(),
 }
-
-
-
-
 
 M.config = {
   window = window,

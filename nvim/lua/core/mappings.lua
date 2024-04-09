@@ -41,10 +41,22 @@ nmap( '<esc>', '<cmd>nohlsearch<cr>','Turn off search highlighting',{})
 nmap_leader("tn", function()
   vim.opt.number = not vim.opt.number:get()
   vim.opt.relativenumber = not vim.opt.relativenumber:get()
-end, "Toggle numbering",{})
+end, "[Toggle] Numbering",{})
 
 ---- spelling
-nmap_leader("ts", function() vim.opt.spell = not vim.opt.spell:get() end, "Toggle spelling", {})
+nmap_leader("ts", function()
+  vim.opt.spell = not vim.opt.spell:get()
+end,"[Toggle] Spelling", {})
+
+---- quickfix
+nmap_leader("tq", function()
+   local quickfix_wins = vim.tbl_filter(
+    function(win_id) return vim.fn.getwininfo(win_id)[1].quickfix == 1 end,
+    vim.api.nvim_tabpage_list_wins(0)
+  )
+  local command = #quickfix_wins == 0 and 'copen' or 'cclose'
+  vim.cmd(command)
+end, "[Toggle] Quickfix", {})
 
 -- BRACKETED
 

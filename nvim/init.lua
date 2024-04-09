@@ -2,7 +2,7 @@
 --   vim.g["loaded_" .. disable] = 0
 -- end
 for _, provider in ipairs({ "perl", "ruby", "node", "python3" }) do
-  vim.g["loaded_" .. provider .. '_provider' ] = 0
+  vim.g["loaded_" .. provider .. '_provider'] = 0
 end
 -- Clone 'mini.nvim' manually in a way that it gets managed by 'mini.deps'
 local path_package = vim.fn.stdpath('data') .. '/site/'
@@ -17,16 +17,18 @@ end
 require('mini.deps').setup({ path = { package = path_package } })
 -- Use 'mini.deps'. `now()` and `later()` are helpers for a safe two-stage
 local add, now, later = MiniDeps.add, MiniDeps.now, MiniDeps.later
---[[ SETTINGS AND MAPPINGS 
+--[[ SETTINGS AND MAPPINGS
  - options
  - autocommands
  - key binds
-]]--
-now( function()
+]]
+--
+now(function()
   -- setup options, autocommands, etc
   require('core')
-end )
---[[ mini.nvim ]]--
+end)
+--[[ mini.nvim ]]
+--
 add({ name = 'mini.nvim', checkout = 'HEAD' })
 --[[ STEP ONE ]]
 ----Safely execute immediately
@@ -38,12 +40,12 @@ now(function()
   vim.notify = notify.make_notify()
 end)
 
- now(function()
-  local plugin = require('plugins.statusline') 
+now(function()
+  local plugin = require('plugins.statusline')
   --require('nvim-web-devicons').setup()
-   require('mini.statusline').setup(plugin.config )
+  require('mini.statusline').setup(plugin.config)
   -- TODO https://github.com/echasnovski/nvim/blob/master/init.lua
- end)
+end)
 
 
 now(function() require('mini.tabline').setup() end)
@@ -65,7 +67,8 @@ now(function()
   vim.cmd("colorscheme kanagawa")
 end)
 
---[[ STEP TWO ]]--
+--[[ STEP TWO ]]
+--
 -- Safely execute later
 later(function()
   -- TODO! https://github.com/echasnovski/nvim/blob/master/init.lua
@@ -81,9 +84,9 @@ later(function()
     checkout = 'master',
     -- monitor = 'main',
     -- Perform action after every checkout
-    hooks = { },
+    hooks = {},
   })
-  local plugin = require('plugins.oil') 
+  local plugin = require('plugins.oil')
   require('oil').setup(plugin.config)
   plugin.mappings()
 end)
@@ -103,10 +106,10 @@ later(function()
 end)
 
 --- Visualize and operate on indent scope
-later( function() require('mini.indentscope').setup({ symbol = '│',}) end)
+later(function() require('mini.indentscope').setup({ symbol = '│', }) end)
 
 --- Trailspace (highlight and remove)
-later(  function()require("mini.trailspace").setup() end)
+later(function() require("mini.trailspace").setup() end)
 
 --- Automatic highlighting of word under cursor
 later(function() require('mini.cursorword').setup() end)
@@ -115,7 +118,7 @@ later(function()
   add({
     source = 'akinsho/toggleterm.nvim',
     checkout = 'main',
-    hooks = { },
+    hooks = {},
   })
   local plugin = require('plugins.toggleterm')
   require('toggleterm').setup(plugin.config)
@@ -123,19 +126,19 @@ later(function()
 end)
 
 later(function()
- add({
-   source = 'lewis6991/gitsigns.nvim',
-   checkout = 'main',
-   })
+  add({
+    source = 'lewis6991/gitsigns.nvim',
+    checkout = 'main',
+  })
   local plugin = require('plugins.gitsigns')
   require('gitsigns').setup(plugin.config)
 end)
 
 later(function()
- add({
-   source = 'stevearc/resession.nvim',
-   checkout = 'master',
-   })
+  add({
+    source = 'stevearc/resession.nvim',
+    checkout = 'master',
+  })
   local plugin = require('plugins.resession')
   plugin.setup(plugin.config)
   plugin.mappings()
@@ -143,25 +146,25 @@ later(function()
 end)
 
 later(function() --Completion and signature help
--- https://github.com/echasnovski/mini.nvim/blob/main/doc/mini-completion.txt
-later(  function()
-  local plugin = require('plugins.minicompletion')
-  plugin.setup(plugin.config)
-end)
+  -- https://github.com/echasnovski/mini.nvim/blob/main/doc/mini-completion.txt
+  later(function()
+    local plugin = require('plugins.minicompletion')
+    plugin.setup(plugin.config)
+  end)
 
--- add({
---    source = 'hrsh7th/nvim-cmp',
---    checkout = 'main',
---    depends = {
---      'hrsh7th/cmp-buffer',
---      'hrsh7th/cmp-path',
---      'hrsh7th/cmp-nvim-lsp',
---      'saadparwaiz1/cmp_luasnip',
---       {
---       source = 'L3MON4D3/LuaSnip',
---       depends = {'rafamadriz/friendly-snippets'}
---       },
---    }})
+  -- add({
+  --    source = 'hrsh7th/nvim-cmp',
+  --    checkout = 'main',
+  --    depends = {
+  --      'hrsh7th/cmp-buffer',
+  --      'hrsh7th/cmp-path',
+  --      'hrsh7th/cmp-nvim-lsp',
+  --      'saadparwaiz1/cmp_luasnip',
+  --       {
+  --       source = 'L3MON4D3/LuaSnip',
+  --       depends = {'rafamadriz/friendly-snippets'}
+  --       },
+  --    }})
 end)
 
 
@@ -177,5 +180,3 @@ end)
 --   require('harpoon').setup(plugin.config)
 --   plugin.mappings()
 -- end)
-
-
