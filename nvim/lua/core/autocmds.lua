@@ -108,6 +108,20 @@ autocmd({ "InsertLeave", "FocusLost" }, {
   That is to say, every time a new file is opened that is associated with
   an lsp (for example, opening `main.rs` is associated with `rust_analyzer`) this
   function will be executed to configure the current buffer
+
+LSP builtins
+
+- 'omnifunc' is set to |vim.lsp.omnifunc()|, use |i_CTRL-X_CTRL-O| to trigger
+  completion.
+- 'tagfunc' is set to |vim.lsp.tagfunc()|. This enables features like
+  go-to-definition, |:tjump|, and keymaps like |CTRL-]|, |CTRL-W_]|,
+  |CTRL-W_}| to utilize the language server.
+- 'formatexpr' is set to |vim.lsp.formatexpr()|, so you can format lines via
+  |gq| if the language server supports it.
+  - To opt out of this use |gw| instead of gq, or set 'formatexpr' on LspAttach.
+- |K| is mapped to |vim.lsp.buf.hover()| unless |'keywordprg'| is customized or
+  a custom keymap for `K` exists.
+
 --]]
 
 autocmd({ 'LspAttach' }, {
@@ -143,7 +157,8 @@ autocmd({ 'LspAttach' }, {
           vim.lsp.buf.format({ async = true })
         end
       })
-      vim.keymap.set("n", "<F3>", vim.lsp.buf.format, setBufOpts('Format'))
+    -- gq| if the language server supports it
+      -- vim.keymap.set("n", "<F3>", vim.lsp.buf.format, setBufOpts('Format'))
     end
 
     if capabilities.codeActionProvider then
