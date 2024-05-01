@@ -5,7 +5,6 @@ SHELL=/bin/bash
 MAKEFLAGS += --warn-undefined-variables
 MAKEFLAGS += --no-builtin-rules
 MAKEFLAGS += --silent
-# include .env
 ifndef XDG_CONFIG_HOME
 XDG_CONFIG_HOME := $(HOME)/.config
 endif
@@ -13,27 +12,34 @@ endif
 CACHE := $(HOME)/.cache
 DATA := $(HOME)/.local/share
 STATE := $(HOME)/.local/state
-LOCAL_BIN := $(HOME)/.local/bin
+INCLUDE := $(HOME)/.local/include
+BIN := $(HOME)/.local/bin
 QUADLET := $(XDG_CONFIG_HOME)/containers/systemd
 SYSTEMD := $(XDG_CONFIG_HOME)/systemd/user
 
+include $(INCLUDE)/gmsl
+
 rwildcard = $(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(subst *,%,$2),$d))
 
-quadletImageNames := lua-language-server
-quadletImageBuild := $(patsubst %,$(QUADLET)/%.image,$(quadletImageNames))
-timerImageBuild := $(patsubst %,$(SYSTEMD)/%-image.timer,$(quadletImageNames))
 
-quadletContainerNames := zie-toolbox
-quadletContainerBuild := $(patsubst %,$(QUADLET)/%.container,$(quadletContainerNames))
+#########
+## LISTS
+#########
+
+bashrcList  := $(wildcard bashrc/*.sh)
+bashrcBuild := $(patsubst bashrc/%,$(HOME)/.bashrc.d/%,$(bashrcList))
 
 binList  := $(wildcard bin/*)
-binBuild := $(patsubst bin/%,$(LOCAL_BIN)/%,$(binList))
+binBuild := $(patsubst bin/%,$(BIN)/%,$(binList))
 
 ghList  := $(wildcard gh/*)
 ghBuild := $(patsubst gh/%,$(XDG_CONFIG_HOME)/gh/%,$(ghList))
 
 gitList  := $(wildcard git/* )
 gitBuild := $(patsubst git/%,$(XDG_CONFIG_HOME)/git/%,$(gitList))
+
+gmslList  := gmsl/gmsl gmsl/__gmsl
+gmslBuild := $(patsubst gmsl/%,$(INCLUDE)/%,$(gmslList))
 
 nvimList  := $(call rwildcard,nvim,*.lua)
 nvimBuild := $(patsubst nvim/%.lua,$(XDG_CONFIG_HOME)/nvim/%.lua,$(nvimList))
@@ -42,137 +48,62 @@ kittyInit := kitty/session.conf
 kittyList  := $(call rwildcard,kitty,*.conf)
 kittyBuild := $(patsubst kitty/%.conf,$(XDG_CONFIG_HOME)/kitty/%.conf,$(kittyList))
 
-default: $(quadletContainerBuild)
+default: $(binBuild) $(nvimBuild)
 
-images: $(timerImageBuild)
-
-dots: $(binBuild) $(kittyInit) $(kittyBuild) $(ghBuild) $(gitBuild) $(nvimBuild)
-
-debug:
-	systemctl --no-pager --user  list-units --type=service
-	systemctl --no-pager --user  list-units --type=target 
+logs:
+	# podman images --format "{{.Repository}} id: {{.ID}} size: {{.Size}}"
+	podman logs --latest
+	# podman logs json-language-server
+	# podman run --rm  --entrypoint '["bash-language-server", "--version" ]' ghcr.io/grantmacken/bash-language-server
 
 
-check:
-	systemctl --user daemon-reload
-	ls -alR $(QUADLET)
-	systemctl --no-pager --user list-unit-files  --state=generated
-	systemctl --no-pager --user is-active zie-toolbox.service || true
-	systemctl --no-pager --user is-enabled zie-toolbox.service || true
-	systemctl --no-pager --user status zie-toolbox.service
-	# systemctl --no-pager --user  list-units --type=service
-	# systemctl --no-pager --user show lua-language-server-image.service
-	# echo '========================================================='
-	# systemctl --no-pager --user show lua-language-server-image.service | grep -oP 'Can.+'
-	# systemctl --no-pager --user start lua-language-server-image.service
-
-timers:
-	systemctl --no-pager --user list-timers --all lua-language-server-image.timer
-	systemctl --no-pager --user cat lua-language-server-image.timer
-	systemctl --no-pager --user show lua-language-server-image.timer | grep -oP 'Can.+'
-	systemctl --no-pager --user  list-units  --failed
-	systemctl --no-pager --user show lua-language-server-image.timer | grep -oP 'Desc.+'
-	systemctl --no-pager --user show lua-language-server-image.timer | grep -oP 'Trig.+'
-	systemctl --no-pager --user show lua-language-server-image.timer | grep -oP 'Load.+'
-
-journal:
-	journalctl --user -f -u lua-language-server-image.service
-
-loginctl:
-	#NOTE: i think the timers.target requires linger to be setup
-	loginctl list-users
-	loginctl enable-linger $(shell whoami)
-	loginctl list-users
-
-	# systemctl --no-pager --user status
-	# echo  $(quadletBuild)
-	# ls -al $(QUADLET)
-	# systemctl cat lua-language-server || true
-	# # Review the generated service.
-	# systemctl --user is-enabled  lua-language-server || systemctl --user enable lua-language-server.service
-	# systemctl cat lua-language-server
-	# /usr/lib/systemd/system-generators/podman-system-generator --user
-	# systemctl --no-pager --user start lua-luanguage-server
-	# systemd-analyze --no-pager --user verify $(XDG_CONFIG_HOME)/systemd/user/*
-	# systemctl --no-pager --user  list-units --type=service
-	# systemctl --no-pager --user  list-units | grep lua
-
-quadletsClean:
-	rm  $(quadletContainerBuild) || true
-	ls -al $(QUADLET)
-	systemctl --user daemon-reload
+luarocks:
+	# which luarocks
+	echo $(LUAROCKS_CONFIG)
+	LUAROCKS_CONFIG='$(LUAROCKS_CONFIG)'
+	echo $$LUAROCKS_CONFIG
+	luarocks \
+		--lua-version=5.1 \
+		--tree /var/home/gmack/.local/share/nvim/rocks \
+		--server='https://nvim-neorocks.github.io/rocks-binaries/'
 
 
-# https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html#image-units-image
-# The generated service is a one-time command that ensures that the image exists on the host, 
-# pulling it if needed.
-$(QUADLET)/%.image:
-	echo '##[ $* quadlet image ]##'
-	mkdir -p $(dir $@)
-	cat << EOF | tee $@
-	[Unit]
-	Description=$* image
-	After=local-fs.target network-online.target
-	[Image]
-	Image=ghcr.io/grantmacken/$*:latest
-	[Service]
-	TimeoutStartSec=120
-	EOF
-	systemctl --user daemon-reload
-	systemctl --no-pager --user list-unit-files  --state=generated | grep $*
-	systemctl --no-pager --user show $*-image.service | grep -oP '^UnitFile.+$$' 
-	systemctl --no-pager --user show $*.service
-	echo '-------------------------------------------------'
+clean-locks:
+	rm /var/home/gmack/.local/share/nvim/rocks/lockfile.lfs || true
+	rm /var/home/gmack/.local/share/nvim/rocks/.lock* || true
 
-$(SYSTEMD)/%-image.timer: $(QUADLET)/%.image
-	echo '##[ $(notdir $@) ]##'
-	mkdir -p $(dir $@)
-	cat << EOF | tee $@
-	[Unit]
-	Description=Pull latest $(*) image every week
-	[Timer]
-	OnCalendar=Mon, 04:10
-	AccuracySec=12h
-	Persistent=true
-	[Install]
-	WantedBy=timers.target
-	EOF
-	echo 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-	systemctl --user daemon-reload
-	systemctl --user is-enabled $(notdir $@)  || systemctl --user enable $(notdir $@)
-	systemctl --no-pager --user list-timers $(notdir $@)
-	echo '-------------------------------------------------'
-	systemctl --no-pager --user show $*.service
-	echo '-------------------------------------------------'
+clean: clean-bin
+	rm -v $(gitBuild) || true
+	rm -v $(nvimBuild) || true
 
+clean-bin:
+	rm -v $(binBuild) || true
 
-# TODO check often if up to date
-# https://raw.githubusercontent.com/ublue-os/toolboxes/main/quadlets/wolfi-toolbox/wolfi-distrobox-quadlet.container
-$(QUADLET)/%.container: quadlets/%.container
+clean-nvim:
+	rm -Rf $(XDG_CONFIG_HOME)/nvim || true
+	rm -Rf $(DATA)/nvim || true
+	rm -Rf $(STATE)/nvim || true
+
+$(INCLUDE)/%: gmsl/%
 	mkdir -p $(dir $@)
 	echo '##[ $(notdir $@) ]]##'
 	cp -v $< $@
-	systemctl --user daemon-reload
-	systemctl --no-pager --user show $*.service
-	systemctl --no-pager --user list-unit-files  --state=generated | grep $*
-	# systemctl --no-pager --user show $*.service | grep -oP '^UnitFile.+$$' 
-	# systemctl --no-pager --user show $*.service | grep -oP '^Load.+$$' 
-	# systemctl --no-pager --user show $*.service | grep -oP '^Active.+$$' 
-	# systemctl --no-pager --user status $*.service | grep -oP 'Active.+'
-	# echo -n ' - is enabled: ' && systemctl --no-pager --user is-enabled zie-toolbox.service || true
-	systemctl --no-pager --user is-active $*.service || systemctl --user start $*.service
-	systemctl --no-pager --user status $*.service
-	echo -n ' - is active: ' && systemctl --no-pager --user is-active $*.service || true
-	
-$(LOCAL_BIN)/%: bin/%
-		mkdir -p $(dir $@)
-		echo  $<
-		ln -s  $(abspath $<) $(abspath $@)
 
+$(HOME)/.bashrc.d/%.sh: bashrc/%.sh
+	mkdir -p $(dir $@)
+	echo '##[ $(notdir $@) ]]##'
+	cp -v $< $@
+
+$(BIN)/%: bin/%
+	mkdir -p $(dir $@)
+	chmod +x $<
+	ln -s  $(abspath $<) $(abspath $@)
+	which $*
+	# ln -s  $(abspath $<) $(abspath $@)
 
 info:
-	echo $(ghBuild) 
-	echo $(gitBuild)
+	$(info $(quadletImageList))
+	$(info $(quadletBuild))
 
 $(XDG_CONFIG_HOME)/kitty/%: kitty/%
 	mkdir -p $(dir $@)
@@ -185,7 +116,6 @@ $(XDG_CONFIG_HOME)/nvim/%: nvim/%
 	# source_file symbolic_link
 	ln -s  $(abspath $<) $(abspath $@)
 
-
 $(XDG_CONFIG_HOME)/gh/%: gh/%
 	mkdir -p $(dir $@)
 	echo  $<
@@ -197,6 +127,10 @@ $(XDG_CONFIG_HOME)/git/%: git/%
 	echo  $<
 	# source_file symbolic_link
 	ln -s  $(abspath $<) $(abspath $@)
+
+#####################################################
+
+include quadlets/quadlet.mk
 
 ostree:
 	# https://universal-blue.discourse.group/docs?topic=40
@@ -232,17 +166,8 @@ kitty-install:
 	echo '-------------------DONE ------------------------'
 
 
-clean-nvim:
-	rm -Rf $(XDG_CONFIG_HOME)/nvim || true
-	rm -Rf $(DATA)/nvim || true
-	rm -Rf $(STATE)/nvim || true
-	
-
-clean:
-	rm -v $(ghBuild) || true
-	rm -v $(gitBuild) || true
-	rm -v $(nvimBuild) || true
 
 
+# images: $(timerImageBuild)
 
 

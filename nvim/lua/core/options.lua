@@ -98,7 +98,7 @@ opt.termguicolors = true -- True color support
 opt.timeoutlen    = 600
 opt.undofile      = true  -- Enable persistent undo (see also `:h undodir`)
 opt.undolevels    = 10000
-opt.updatetime    = 250 
+opt.updatetime    = 400 -- time it takes to trigger the `CursorHold` event
 opt.virtualedit   = 'block' -- Allow cursor to move where there is no text in visual block mode
 opt.wildmode      = 'longest:full,full' -- Command-line completion mode
 opt.winblend      = 10 -- Make floating windows slightly transparent
@@ -120,6 +120,8 @@ opt.spelllang      = 'en'   -- Define spelling dictionaries
 opt.spelloptions = 'camel,noplainbuffer' -- Treat parts of camelCase words as seprate words
 opt.spellsuggest = 'best,6'
 -- vim.opt.complete:append('kspell') -- Add spellcheck options for autocomplete
-vim.opt.complete:remove('t')      -- Don't use tags for completion
+-- vim.opt.complete:remove('t')      -- Don't use tags for completion
+--
 
--- TODO!
+
+

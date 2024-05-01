@@ -61,6 +61,6 @@ end, "[Toggle] Quickfix", {})
 -- BRACKETED
 
 -- Diagnostic keymaps
-nmap('[d', vim.diagnostic.goto_prev, 'Go to previous [D]iagnostic message', {} )
-nmap(']d', vim.diagnostic.goto_next,'Go to next [D]iagnostic message', {})
+-- nmap('[d', vim.diagnostic.goto_prev, 'Go to previous [D]iagnostic message', {} )
+-- nmap(']d', vim.diagnostic.goto_next,'Go to next [D]iagnostic message', {})
 

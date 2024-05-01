@@ -121,55 +121,99 @@ LSP builtins
   - To opt out of this use |gw| instead of gq, or set 'formatexpr' on LspAttach.
 - |K| is mapped to |vim.lsp.buf.hover()| unless |'keywordprg'| is customized or
   a custom keymap for `K` exists.
-
 --]]
+--
+--https://vonheikemen.github.io/devlog/tools/neovim-lsp-client-guide/
+
+local function highlight_symbol(event)
+  local id = vim.tbl_get(event, 'data', 'client_id')
+  local client = id and vim.lsp.get_client_by_id(id)
+  if client == nil or not client.supports_method('textDocument/documentHighlight') then
+    return
+  end
+
+end
 
 autocmd({ 'LspAttach' }, {
-  desc = 'On attaching to LSP server',
+  desc = 'Setup highlight symbol',
   group = augroup("lsp_attach"),
   callback = function(args)
     local client = vim.lsp.get_client_by_id(args.data.client_id)
     local bufnr = args.buf
-    local setBufOpts = function(description)
-      return { noremap = true, silent = true, buffer = bufnr }
-    end
     local capabilities = client.server_capabilities
-
-
-    if capabilities.completionProvider then
-      vim.bo[bufnr].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp'
-      --vim.keymap.set('i', '<Tab>', [[pumvisible() ? "\<C-n>" : "\<Tab>"]], { expr = true, buffer = bufnr })
-      --vim.keymap.set('i', '<S-Tab>', [[pumvisible() ? "\<C-p>" : "\<S-Tab>"]], { expr = true, buffer = bufnr })
+    --inlay hints
+    if client.supports_method('textDocument/inlayHint') then
+      -- warning: this api is not stable yet
+      -- vim.lsp.i 
+      vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
     end
 
-    if capabilities.typeDefinitionProvider then
-      vim.keymap.set("n", "go", vim.lsp.buf.definition, setBufOpts('Definition'))
-    end
+    -- highlight symbol
+    if client.supports_method('textDocument/documentHighlight') then
+      local group = augroup('highlight_symbol', {clear = false})
 
-    if capabilities.renameProvider then
-      vim.keymap.set({ "n" }, "<F2>", vim.lsp.buf.rename, setBufOpts('Rename'))
-    end
-    if capabilities.documentFormattingProvider then
-      vim.api.nvim_create_autocmd("BufWritePre", {
-        group = vim.api.nvim_create_augroup("LspFormat", { clear = true }),
+      vim.api.nvim_clear_autocmds({buffer = bufnr, group = group})
+
+      vim.api.nvim_create_autocmd({'CursorHold', 'CursorHoldI'}, {
+        group = group,
         buffer = bufnr,
-        callback = function()
-          vim.lsp.buf.format({ async = true })
-        end
+        callback = vim.lsp.buf.document_highlight,
       })
-    -- gq| if the language server supports it
-      -- vim.keymap.set("n", "<F3>", vim.lsp.buf.format, setBufOpts('Format'))
+
+      vim.api.nvim_create_autocmd({'CursorMoved', 'CursorMovedI'}, {
+        group = group,
+        buffer = bufnr,
+        callback = vim.lsp.buf.clear_references,
+      })
     end
 
-    if capabilities.codeActionProvider then
-      vim.keymap.set({ "n" }, "<F4>", vim.lsp.buf.code_action, setBufOpts('Code Actions'))
-    end
   end
 })
+-- function(args)
+  --     local client = vim.lsp.get_client_by_id(args.data.client_id)
+  --     local bufnr = args.buf
+  --     local setBufOpts = function(description)
+    --       return { noremap = true, silent = true, buffer = bufnr }
+    --     end
+    --     local capabilities = client.server_capabilities
+    --     --diagnosticProvider
+    --     -- documentFormattingProvider
+    --     -- documentHighlightProvider
+    --     -- documentRangeFormattingProvider
+    --     -- hoverProvider
+--
+--
+--     if capabilities.completionProvider then
+--       vim.bo[bufnr].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp'
+--       --vim.keymap.set('i', '<Tab>', [[pumvisible() ? "\<C-n>" : "\<Tab>"]], { expr = true, buffer = bufnr })
+--       --vim.keymap.set('i', '<S-Tab>', [[pumvisible() ? "\<C-p>" : "\<S-Tab>"]], { expr = true, buffer = bufnr })
+--     end
+--
+--     if capabilities.typeDefinitionProvider then
+--       vim.keymap.set("n", "go", vim.lsp.buf.definition, setBufOpts('Definition'))
+--     end
+--
+--     if capabilities.renameProvider then
+--       vim.keymap.set({ "n" }, "<F2>", vim.lsp.buf.rename, setBufOpts('Rename'))
+--     end
+--     if capabilities.documentFormattingProvider then
+--       vim.api.nvim_create_autocmd("BufWritePre", {
+--         group = vim.api.nvim_create_augroup("LspFormat", { clear = true }),
+--         buffer = bufnr,
+--         callback = function()
+--           vim.lsp.buf.format({ async = true })
+--         end
+--       })
+--       -- gq| if the language server supports it
+--       -- vim.keymap.set("n", "<F3>", vim.lsp.buf.format, setBufOpts('Format'))
+--     end
+--
+--     if capabilities.codeActionProvider then
+--       vim.keymap.set({ "n" }, "<F4>", vim.lsp.buf.code_action, setBufOpts('Code Actions'))
+--     end
+--   end
 
 -- https://neovim.io/doc/user/diagnostic.html#diagnostic-events
---
---
 autocmd('DiagnosticChanged', {
   desc = 'On diagnostic change populate locallist',
   group = augroup("diag"),

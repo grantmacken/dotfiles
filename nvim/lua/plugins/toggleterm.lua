@@ -1,12 +1,12 @@
-
 local M = {}
-M.name = 'toggleterm'
+
+local name = 'toggleterm'
 local util = require('my.util')
 local nmap_leader = util.nmap_leader
 local open_mapping = [[<c-\>]]
 local direction = 'horizontal'
 -- plugin setup config options
-M.config = {
+local config = {
   size = function(term)
     if term.direction == 'horizontal' then
      return vim.o.lines * 0.6
@@ -37,21 +37,25 @@ M.config = {
   },
 }
 
-local lazygit = require("toggleterm.terminal").Terminal:new({
-  cmd = "lazygit",
-  count = 99,
-  hidden = true,
-  direction = "tab" })
---
--- vim.keymap.set(", "<leader>mt", function() vim.cmd("ToggleTermToggleAll") end, {
---   desc = "ToggleTerm all",
---   silent = true,
--- })
+M.setup = function()
+ require(name).setup(config)
+end
+
+-- local lazygit = require("toggleterm.terminal").Terminal:new({
+--   cmd = "lazygit",
+--   count = 99,
+--   hidden = true,
+--   direction = "tab" })
+-- --
+-- -- vim.keymap.set(", "<leader>mt", function() vim.cmd("ToggleTermToggleAll") end, {
+-- --   desc = "ToggleTerm all",
+-- --   silent = true,
+-- -- })
 
 -- plugin leader mappings
-M.mappings = function()
-local opts = { noremap = true, silent = true }
-nmap_leader("gg", function() lazygit:toggle() end, '[terminal] Lazygit' ,opts )
-end
+-- M.mappings = function()
+-- local opts = { noremap = true, silent = true }
+-- nmap_leader("gg", function() lazygit:toggle() end, '[terminal] Lazygit' ,opts )
+-- end
 
 return M

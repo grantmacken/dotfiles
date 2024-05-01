@@ -45,4 +45,27 @@ end
   return false
 end
 
+
+M.get_active_clients_list_by_ft =  function(filetype)
+  local clients = vim.lsp.get_active_clients()
+  local clients_list = {}
+  for _, client in pairs(clients) do
+    local filetypes = client.config.filetypes or {}
+    for _, ft in pairs(filetypes) do
+      if ft == filetype then
+        table.insert(clients_list, client.name)
+      end
+    end
+  end
+  return clients_list
+end
+
+M.get_active_client_by_name = function(bufnr, servername)
+  for _, client in pairs(vim.lsp.get_active_clients { bufnr = bufnr }) do
+    if client.name == servername then
+      return client
+    end
+  end
+end
+
 return M
