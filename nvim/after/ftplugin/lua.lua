@@ -4,6 +4,18 @@ local onAttach = require('mod.lsp').on_attach
 local capabilities = require('mod.lsp').capabilities
 local rootDir = vim.fs.dirname(vim.fs.find({ '.git' }, { upward = true })[1])
 if rootDir == nil then return end
+local workspace = {
+  checkThirdParty = false,
+  library = {
+    vim.env.VIMRUNTIME
+    -- Depending on the usage, you might want to add additional paths here.
+    -- "${3rd}/luv/library"
+    -- "${3rd}/busted/library",
+  }
+  -- or pull in all of 'runtimepath'. NOTE: this is a lot slower
+  -- library = vim.api.nvim_get_runtime_file("", true)
+}
+
 -- :h ClientConfig
 local client_id = vim.lsp.start({
   name = lsp, --Name in log messages
@@ -27,9 +39,7 @@ local client_id = vim.lsp.start({
           'duplicate-set-field',
         },
       },
-      workspace = {
-        checkThirdParty = false,
-      },
+      workspace = workspace,
       telemetry = {
         enable = false,
       },
@@ -42,6 +52,7 @@ local client_id = vim.lsp.start({
     },
   },
 })
+
 vim.notify(lsp .. ' clent id: ' .. client_id)
 
 --{"id":1,"jsonrpc":"2.0","result":{"capabilities":{

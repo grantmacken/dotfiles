@@ -1,0 +1,3 @@
+ #!/usr/bin/env bash
+IMAGE=ghcr.io/grantmacken/vscode-langservers-extracted
+podman run --rm --interactive $IMAGE $RUN './vscode-langservers-extracted/bin/vscode-markdown-language-server --stdio'

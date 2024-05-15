@@ -1,0 +1,4 @@
+ #!/usr/bin/env bash
+ podman pull ghcr.io/grantmacken/gleam:latest
+ # --mount 'type=volume,target=/home/nonroot,source=gleam-code'
+ podman run --interactive --rm ghcr.io/grantmacken/gleam 'gleam lsp'

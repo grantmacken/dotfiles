@@ -1,0 +1,14 @@
+ #!/usr/bin/env bash
+IMAGE=ghcr.io/grantmacken/vscode-langservers-extracted
+# podman pull $IMAGE:latest
+# podman images | grep -q $IMAGE || podman pull $IMAGE
+# podman run --rm  $IMAGE 'pwd'
+podman run --rm --interactive  $IMAGE './vscode-langservers-extracted/bin/vscode-css-language-server --stdio'
+# podman run --rm --interactive $IMAGE 'cat vscode-langservers-extracted/bin/vscode-css-language-server'
+# podman run --rm  $IMAGE ' -al vscode-langservers-extracted/lib/css-language-server/node/cssServerMain.js'
+# podman run --rm  $IMAGE 'which node'
+#podman run --rm --interactive $IMAGE './vscode-langservers-extracted/bin/vscode-css-language-server --stdio'
+# podman inspect $IMAGE
+# podman run --rm --entrypoint '["/bin/sh", "-c"]'  $IMAGE 'cat package.json'
+# podman run --rm --entrypoint '["/bin/sh", "-c"]'  $IMAGE 'pwd'
+# podman run --rm --entrypoint '["/bin/sh", "-c"]'  $IMAGE './bin/vscode-css-language-server --stdio'

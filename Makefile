@@ -21,7 +21,6 @@ include $(INCLUDE)/gmsl
 
 rwildcard = $(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(subst *,%,$2),$d))
 
-
 #########
 ## LISTS
 #########
@@ -49,6 +48,21 @@ kittyList  := $(call rwildcard,kitty,*.conf)
 kittyBuild := $(patsubst kitty/%.conf,$(XDG_CONFIG_HOME)/kitty/%.conf,$(kittyList))
 
 default: $(binBuild) $(nvimBuild)
+
+kill:
+	systemctl --user daemon-reload
+	ls -alR $(QUADLET)
+	systemctl --no-pager --user list-unit-files  --state=generated
+	systemctl --no-pager --user stop zie-toolbox.service || true
+	systemctl --no-pager --user disable zie-toolbox.service || true
+	rm $(QUADLET)/zie-toolbox.container || true
+
+	# systemctl --no-pager --user status zie-toolbox.service
+	# systemctl --no-pager --user  list-units --type=service
+	# systemctl --no-pager --user show lua-language-server-image.service
+	# echo '========================================================='
+	# systemctl --no-pager --user show lua-language-server-image.service | grep -oP 'Can.+'
+	# systemctl --no-pager --user start lua-language-server-image.service
 
 logs:
 	# podman images --format "{{.Repository}} id: {{.ID}} size: {{.Size}}"
@@ -129,8 +143,6 @@ $(XDG_CONFIG_HOME)/git/%: git/%
 	ln -s  $(abspath $<) $(abspath $@)
 
 #####################################################
-
-include quadlets/quadlet.mk
 
 ostree:
 	# https://universal-blue.discourse.group/docs?topic=40
