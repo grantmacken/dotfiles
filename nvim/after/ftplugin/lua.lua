@@ -1,27 +1,24 @@
 local lsp = 'lua-language-server'
 if vim.fn.executable(lsp) ~= 1 then return end
+local bufnr = vim.api.nvim_get_current_buf()
+
+local rootDir = vim.fs.root(bufnr, { '.git', '.stylua.toml' })
+if rootDir == nil then return end
+vim.bo[bufnr].comments = ':---,:--'
+-- TODO use vim.fs.root()|
+
 local onAttach = require('mod.lsp').on_attach
 local capabilities = require('mod.lsp').capabilities
-local rootDir = vim.fs.dirname(vim.fs.find({ '.git' }, { upward = true })[1])
-if rootDir == nil then return end
-local workspace = {
-  checkThirdParty = false,
-  library = {
-    vim.env.VIMRUNTIME
-    -- Depending on the usage, you might want to add additional paths here.
-    -- "${3rd}/luv/library"
-    -- "${3rd}/busted/library",
-  }
-  -- or pull in all of 'runtimepath'. NOTE: this is a lot slower
-  -- library = vim.api.nvim_get_runtime_file("", true)
-}
+-- add or subtract capabilities
+--capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+
 
 -- :h ClientConfig
 local client_id = vim.lsp.start({
   name = lsp, --Name in log messages
   cmd = {lsp},
   root_dir = rootDir,
-  workspace_folders = nil,
   on_attach = onAttach,
   capabilities = capabilities,
   -- before_init = beforeInit,
@@ -32,14 +29,13 @@ local client_id = vim.lsp.start({
       },
       diagnostics = {
         -- Get the language server to recognize the `vim` global, etc.
-        globals = {
-          'vim',
-        },
-        disable = {
-          'duplicate-set-field',
-        },
+        globals = { 'vim', 'describe', 'it', 'assert', 'stub' },
+        disable = {'duplicate-set-field',},
       },
-      workspace = workspace,
+      workspace = {
+        checkThirdParty = false,
+        library = {vim.env.VIMRUNTIME,}
+      },
       telemetry = {
         enable = false,
       },
@@ -52,8 +48,12 @@ local client_id = vim.lsp.start({
     },
   },
 })
+--  https://github.com/tjdevries/config.nvim/blob/master/lua/custom/plugins/lsp.lua#L141
+--local client = assert(vim.lsp.get_client_by_id(client_id), 'must have client id')
+-- client.server_capabilities.semanticTokensProvider = nil
 
 vim.notify(lsp .. ' clent id: ' .. client_id)
+--vim.print(client.server_capabilities)
 
 --{"id":1,"jsonrpc":"2.0","result":{"capabilities":{
   --"codeActionProvider":{"codeActionKinds":["","quickfix","refactor.rewrite","refactor.extract"],"resolveProvider":false},

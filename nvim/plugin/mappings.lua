@@ -1,12 +1,18 @@
+-- https://sw.kovidgoyal.net/kitty/keyboard-protocol/
+-- NOTE: with 10 +
+-- meta key = the right alt
+-- fn =  super + key RELEASE
+--  Mappings with <D- prefix
+-- hyper
+--  alt 
+--
+
 -- Set space as leader key
-
-local util = require('my.util')
-
+local util = require('mod.util')
 -- NOTE! opt defaults to {silent = true}
 local keymap = util.keymap -- function(mode, keys, rhs, desc, opts)
 local nmap = util.nmap     -- function( keys, rhs, desc, opts)
 local nmap_leader = util.nmap_leader        --  function(suffix, rhs, desc, opts)
-
 -- https://github.com/echasnovski/mini.nvim/blob/main/doc/mini-completion.txt
 --To get more consistent behavior of `<CR>`, you can use this template in your 'init.lua' to make customized mapping
 local keys = {
@@ -61,6 +67,7 @@ end, "[Toggle] Quickfix", {})
 -- BRACKETED
 
 -- Diagnostic keymaps
+--  Now defaults in 10+
 -- nmap('[d', vim.diagnostic.goto_prev, 'Go to previous [D]iagnostic message', {} )
 -- nmap(']d', vim.diagnostic.goto_next,'Go to next [D]iagnostic message', {})
 

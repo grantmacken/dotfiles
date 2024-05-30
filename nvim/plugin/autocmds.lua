@@ -13,7 +13,7 @@ autocmd('TextYankPost', {
   desc = 'Highlight when yanking (copying) text',
   group = augroup("highlight_yank"),
   callback = function()
-    vim.highlight.on_yank({ higroup = "Visual", timeout = 300 })
+    vim.highlight.on_yank({ higroup = "Visual", timeout = 500 })
   end,
 })
 
@@ -21,18 +21,18 @@ autocmd('TextYankPost', {
 ====== FILETYPE EVENTS ======
 --]]
 
-autocmd("FileType", {
-  desc = 'Enable built-in tree-sitter parsers',
-  group = augroup("ts_built_in"),
-  pattern = { "c", "lua", "vim", "help" },
-  callback = function(args)
-    if args.match == "help" then
-      args.match = "vimdoc"
-    end
-    vim.treesitter.start(args.buf, args.match)
-  end,
-})
-
+-- autocmd("FileType", {
+--   desc = 'Enable built-in tree-sitter parsers',
+--   group = augroup("ts_built_in"),
+--   pattern = { "c", "lua", "vim", "help" },
+--   callback = function(args)
+--     if args.match == "help" then
+--       args.match = "vimdoc"
+--     end
+--     vim.treesitter.start(args.buf, args.match)
+--   end,
+-- })
+--
 
 autocmd("FileType", {
   desc = 'Close specific filetype buffers with q',
@@ -56,22 +56,8 @@ autocmd("FileType", {
   end,
 })
 
-autocmd("FileType", {
-  desc = "With markdown and git commit turn on text wrap and spell",
-  group = augroup("wrap_spell"),
-  pattern = { "gitcommit", "markdown" },
-  callback = function()
-    vim.opt_local.wrap = true
-    vim.opt_local.spell = true
-  end,
-})
 
-autocmd("FileType", {
-  group = augroup("unlist_quickfix"),
-  desc = "Unlist quickfix buffers",
-  pattern = "qf",
-  callback = function() vim.opt_local.buflisted = false end,
-})
+
 
 
 --[[
@@ -101,6 +87,15 @@ autocmd({ "InsertLeave", "FocusLost" }, {
 --   pattern = "rocks.toml",
 --   command = "Rocks sync",
 -- })
+--
+-- New in 10
+--[[
+====== LSP REQUEST EVENT ======
+-- autocmd({ 'LspRequest' ...
+====== LSP PROGRESS EVENT ======
+-- autocmd({ 'LspProgress' ...
+--]]
+
 
 --[[
 ====== LSP ATTACH EVENT ======
@@ -125,50 +120,51 @@ LSP builtins
 --
 --https://vonheikemen.github.io/devlog/tools/neovim-lsp-client-guide/
 
-local function highlight_symbol(event)
-  local id = vim.tbl_get(event, 'data', 'client_id')
-  local client = id and vim.lsp.get_client_by_id(id)
-  if client == nil or not client.supports_method('textDocument/documentHighlight') then
-    return
-  end
+-- local function highlight_symbol(event)
+--   local id = vim.tbl_get(event, 'data', 'client_id')
+--   local client = id and vim.lsp.get_client_by_id(id)
+--   if client == nil or not client.supports_method('textDocument/documentHighlight') then
+--     return
+--   end
+--
+-- end
 
-end
+-- autocmd({ 'LspAttach' }, {
+--   desc = 'On LSP Attached',
+--   group = augroup("lsp_attach"),
+--   callback = function(args)
+--     local client = assert(vim.lsp.get_client_by_id(args.data.client_id), 'must have client id')
+--     local bufnr = args.buf
+--     local serverCapabilities = client.server_capabilities
+--
+--   end
+-- })
+--     --inlay hints
+--     if client.supports_method('textDocument/inlayHint') then
+--       -- warning: this api is not stable yet
+--       -- vim.lsp.i 
+--       vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+--     end
+--
+--     -- highlight symbol
+--     if client.supports_method('textDocument/documentHighlight') then
+--       local group = augroup('highlight_symbol', {clear = false})
+--
+--       vim.api.nvim_clear_autocmds({buffer = bufnr, group = group})
+--
+--       vim.api.nvim_create_autocmd({'CursorHold', 'CursorHoldI'}, {
+--         group = group,
+--         buffer = bufnr,
+--         callback = vim.lsp.buf.document_highlight,
+--       })
+--
+--       vim.api.nvim_create_autocmd({'CursorMoved', 'CursorMovedI'}, {
+--         group = group,
+--         buffer = bufnr,
+--         callback = vim.lsp.buf.clear_references,
+--       })
 
-autocmd({ 'LspAttach' }, {
-  desc = 'Setup highlight symbol',
-  group = augroup("lsp_attach"),
-  callback = function(args)
-    local client = vim.lsp.get_client_by_id(args.data.client_id)
-    local bufnr = args.buf
-    local capabilities = client.server_capabilities
-    --inlay hints
-    if client.supports_method('textDocument/inlayHint') then
-      -- warning: this api is not stable yet
-      -- vim.lsp.i 
-      vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
-    end
 
-    -- highlight symbol
-    if client.supports_method('textDocument/documentHighlight') then
-      local group = augroup('highlight_symbol', {clear = false})
-
-      vim.api.nvim_clear_autocmds({buffer = bufnr, group = group})
-
-      vim.api.nvim_create_autocmd({'CursorHold', 'CursorHoldI'}, {
-        group = group,
-        buffer = bufnr,
-        callback = vim.lsp.buf.document_highlight,
-      })
-
-      vim.api.nvim_create_autocmd({'CursorMoved', 'CursorMovedI'}, {
-        group = group,
-        buffer = bufnr,
-        callback = vim.lsp.buf.clear_references,
-      })
-    end
-
-  end
-})
 -- function(args)
   --     local client = vim.lsp.get_client_by_id(args.data.client_id)
   --     local bufnr = args.buf

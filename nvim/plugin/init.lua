@@ -1,7 +1,0 @@
-require('core.options')
-require('core.rocks')
--- require('core.mappings')
-require('core.diagnostics')
-require('core.lsp_handlers')
---require('core.lsp')
-require('core.autocmds')

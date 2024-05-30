@@ -1,3 +1,6 @@
+vim.opt_local.wrap = true
+vim.opt_local.spell = true
+
 local lsp = 'markdown-language-server'
 if vim.fn.executable(lsp) ~= 1 then return end
 -- :h ClientConfig

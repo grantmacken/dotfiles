@@ -40,8 +40,8 @@ gitBuild := $(patsubst git/%,$(XDG_CONFIG_HOME)/git/%,$(gitList))
 gmslList  := gmsl/gmsl gmsl/__gmsl
 gmslBuild := $(patsubst gmsl/%,$(INCLUDE)/%,$(gmslList))
 
-nvimList  := $(call rwildcard,nvim,*.lua)
-nvimBuild := $(patsubst nvim/%.lua,$(XDG_CONFIG_HOME)/nvim/%.lua,$(nvimList))
+nvimList  := $(call rwildcard,nvim,*.lua) nvim/rocks.toml
+nvimBuild := $(patsubst nvim/%,$(XDG_CONFIG_HOME)/nvim/%,$(nvimList))
 
 kittyInit := kitty/session.conf
 kittyList  := $(call rwildcard,kitty,*.conf)
@@ -63,6 +63,17 @@ kill:
 	# echo '========================================================='
 	# systemctl --no-pager --user show lua-language-server-image.service | grep -oP 'Can.+'
 	# systemctl --no-pager --user start lua-language-server-image.service
+	#
+#The image driver uses an image as the backing store of for the volume. 
+# An overlay filesystem is created, which allows changes to the volume to be committed as a new layer on top of the image.
+
+vol:
+	 podman volume exists data_nvim || podman volume create data_nvim
+
+inspect:
+	podman container inspect tbx
+	podman image inspect ghcr.io/grantmacken/zie-toolbox
+
 
 logs:
 	# podman images --format "{{.Repository}} id: {{.ID}} size: {{.Size}}"

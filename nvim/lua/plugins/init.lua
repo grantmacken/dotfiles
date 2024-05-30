@@ -1,8 +1,0 @@
-require('plugins.oil').setup()
-require('plugins.toggleterm').setup()
-require('plugins.mini').setup()
-require('plugins.tabby').setup()
-require('plugins.gitsigns').setup()
-require('plugins.fzf-lua').setup()
--- require('plugins.notify').setup()
-require('plugins.fidget').setup()

@@ -1,9 +1,10 @@
-local M = {}
-
-local util = require('my.util')
-
 -- plugin setup config options
 local config = {
+        columns = { "icon" },
+        keymaps = {
+          ["<C-h>"] = false,
+          ["<M-h>"] = "actions.select_split",
+        },
   view_options = {
     -- Show files and directories that start with "."
     show_hidden = true,}
@@ -15,9 +16,6 @@ local mappings = function()
   vim.keymap.set('n', '-', function() vim.cmd.Oil() end, { desc = '[oil] open parent directory' })
 end
 
-M.setup = function()
   require('oil').setup(config)
   mappings()
-end
 
-return M
