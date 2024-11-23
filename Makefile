@@ -1,196 +1,80 @@
 SHELL=/bin/bash
+.SHELLFLAGS := -eu -o pipefail
+# -e Exit immediately if a pipeline fails
+# -u Error if there are unset variables and parameters 
+# -o option-name Set the option corresponding to option-name
 .ONESHELL:
-.SHELLFLAGS := -eu -o pipefail -c
 .DELETE_ON_ERROR:
+.SECONDARY:
+
 MAKEFLAGS += --warn-undefined-variables
 MAKEFLAGS += --no-builtin-rules
 MAKEFLAGS += --silent
-ifndef XDG_CONFIG_HOME
-XDG_CONFIG_HOME := $(HOME)/.config
-endif
 
-CACHE := $(HOME)/.cache
-DATA := $(HOME)/.local/share
-STATE := $(HOME)/.local/state
-INCLUDE := $(HOME)/.local/include
-BIN := $(HOME)/.local/bin
-QUADLET := $(XDG_CONFIG_HOME)/containers/systemd
-SYSTEMD := $(XDG_CONFIG_HOME)/systemd/user
+CONFIG_DIRS := /etc/xdg
+DATA_DIRS   := /usr/local/share
 
-include $(INCLUDE)/gmsl
+CONFIG_HOME := $(HOME)/.config
+CACHE_HOME  := $(HOME)/.cache
+DATA_HOME   := $(HOME)/.local/share
+STATE_HOME  := $(HOME)/.local/state
+BIN_HOME    := $(HOME)/.local/bin
 
+QUADLET := $(CONFIG_HOME)/containers/systemd
+SYSTEMD := $(CONFIG_HOME)/systemd/user
+# include $(INCLUDE)/gmsl
 rwildcard = $(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(subst *,%,$2),$d))
 
 #########
 ## LISTS
 #########
 
-bashrcList  := $(wildcard bashrc/*.sh)
-bashrcBuild := $(patsubst bashrc/%,$(HOME)/.bashrc.d/%,$(bashrcList))
+bashList  := $(wildcard bash/*.sh)
+bashBuild := $(patsubst bash/%,$(HOME)/.bashrc.d/%,$(bashList))
 
 binList  := $(wildcard bin/*)
-binBuild := $(patsubst bin/%,$(BIN)/%,$(binList))
-
-ghList  := $(wildcard gh/*)
-ghBuild := $(patsubst gh/%,$(XDG_CONFIG_HOME)/gh/%,$(ghList))
+binBuild := $(patsubst bin/%,$(BIN_HOME)/%,$(binList))
 
 gitList  := $(wildcard git/* )
-gitBuild := $(patsubst git/%,$(XDG_CONFIG_HOME)/git/%,$(gitList))
+gitBuild := $(patsubst git/%,$(CONFIG_HOME)/git/%,$(gitList))
 
-gmslList  := gmsl/gmsl gmsl/__gmsl
-gmslBuild := $(patsubst gmsl/%,$(INCLUDE)/%,$(gmslList))
+ghList  := $(wildcard gh/*)
+ghBuild := $(patsubst gh/%,$(CONFIG_HOME)/gh/%,$(ghList))
 
-nvimList  := $(call rwildcard,nvim,*.lua) nvim/rocks.toml
-nvimBuild := $(patsubst nvim/%,$(XDG_CONFIG_HOME)/nvim/%,$(nvimList))
+# gmslList  := gmsl/gmsl gmsl/__gmsl
+# gmslBuild := $(patsubst gmsl/%,$(INCLUDE)/%,$(gmslList))
+#
+BUILDS := $(bashBuild) $(binBuild) $(gitBuild)
 
-kittyInit := kitty/session.conf
-kittyList  := $(call rwildcard,kitty,*.conf)
-kittyBuild := $(patsubst kitty/%.conf,$(XDG_CONFIG_HOME)/kitty/%.conf,$(kittyList))
+default: $(BUILDS)
 
-default: $(binBuild) $(nvimBuild)
-
-kill:
-	systemctl --user daemon-reload
-	ls -alR $(QUADLET)
-	systemctl --no-pager --user list-unit-files  --state=generated
-	systemctl --no-pager --user stop zie-toolbox.service || true
-	systemctl --no-pager --user disable zie-toolbox.service || true
-	rm $(QUADLET)/zie-toolbox.container || true
-
-	# systemctl --no-pager --user status zie-toolbox.service
-	# systemctl --no-pager --user  list-units --type=service
-	# systemctl --no-pager --user show lua-language-server-image.service
-	# echo '========================================================='
-	# systemctl --no-pager --user show lua-language-server-image.service | grep -oP 'Can.+'
-	# systemctl --no-pager --user start lua-language-server-image.service
-	#
-#The image driver uses an image as the backing store of for the volume. 
-# An overlay filesystem is created, which allows changes to the volume to be committed as a new layer on top of the image.
-
-vol:
-	 podman volume exists data_nvim || podman volume create data_nvim
-
-inspect:
-	podman container inspect tbx
-	podman image inspect ghcr.io/grantmacken/zie-toolbox
-
-
-logs:
-	# podman images --format "{{.Repository}} id: {{.ID}} size: {{.Size}}"
-	podman logs --latest
-	# podman logs json-language-server
-	# podman run --rm  --entrypoint '["bash-language-server", "--version" ]' ghcr.io/grantmacken/bash-language-server
-
-
-luarocks:
-	# which luarocks
-	echo $(LUAROCKS_CONFIG)
-	LUAROCKS_CONFIG='$(LUAROCKS_CONFIG)'
-	echo $$LUAROCKS_CONFIG
-	luarocks \
-		--lua-version=5.1 \
-		--tree /var/home/gmack/.local/share/nvim/rocks \
-		--server='https://nvim-neorocks.github.io/rocks-binaries/'
-
-
-clean-locks:
-	rm /var/home/gmack/.local/share/nvim/rocks/lockfile.lfs || true
-	rm /var/home/gmack/.local/share/nvim/rocks/.lock* || true
-
-clean: clean-bin
-	rm -v $(gitBuild) || true
-	rm -v $(nvimBuild) || true
+clean:
+	rm -vf $(BUILDS)
 
 clean-bin:
-	rm -v $(binBuild) || true
+	rm -vf $(binBuild)
 
-clean-nvim:
-	rm -Rf $(XDG_CONFIG_HOME)/nvim || true
-	rm -Rf $(DATA)/nvim || true
-	rm -Rf $(STATE)/nvim || true
+$(BIN_HOME)/%: bin/%
+	echo '##[ $@ ]##'
+	mkdir -p $(dir $@)
+	cp -v $(abspath $<) $(abspath $@)
+	chmod +x $(abspath $@)
+	whereis $*
 
-$(INCLUDE)/%: gmsl/%
+$(HOME)/.bashrc.d/%.sh: bash/%.sh
+	echo '##[ $@ ]##'
 	mkdir -p $(dir $@)
 	echo '##[ $(notdir $@) ]]##'
-	cp -v $< $@
+	ln -sf $(abspath $<) $(abspath $@)
 
-$(HOME)/.bashrc.d/%.sh: bashrc/%.sh
-	mkdir -p $(dir $@)
-	echo '##[ $(notdir $@) ]]##'
-	cp -v $< $@
-
-$(BIN)/%: bin/%
-	mkdir -p $(dir $@)
-	chmod +x $<
-	ln -s  $(abspath $<) $(abspath $@)
-	which $*
-	# ln -s  $(abspath $<) $(abspath $@)
-
-info:
-	$(info $(quadletImageList))
-	$(info $(quadletBuild))
-
-$(XDG_CONFIG_HOME)/kitty/%: kitty/%
-	mkdir -p $(dir $@)
-	echo  $<
-	ln -s  $(abspath $<) $(abspath $@)
-
-$(XDG_CONFIG_HOME)/nvim/%: nvim/%
+$(CONFIG_HOME)/gh/%: gh/%
 	mkdir -p $(dir $@)
 	echo  $<
 	# source_file symbolic_link
 	ln -s  $(abspath $<) $(abspath $@)
 
-$(XDG_CONFIG_HOME)/gh/%: gh/%
+$(CONFIG_HOME)/git/%: git/%
 	mkdir -p $(dir $@)
 	echo  $<
 	# source_file symbolic_link
 	ln -s  $(abspath $<) $(abspath $@)
-
-$(XDG_CONFIG_HOME)/git/%: git/%
-	mkdir -p $(dir $@)
-	echo  $<
-	# source_file symbolic_link
-	ln -s  $(abspath $<) $(abspath $@)
-
-#####################################################
-
-ostree:
-	# https://universal-blue.discourse.group/docs?topic=40
-	# remove layered packages
-	rpm-ostree reset
-	rpm-ostree rebase ostree-image-signed:docker://ghcr.io/ublue-os/bluefin:39
-
-toolbox:
-	systemctl --no-pager --user is-active zie-toolbox.service  || systemctl --no-pager --user start zie-toolbox.service
-	echo -n ' - is enabled: ' && systemctl --no-pager --user is-enabled zie-toolbox.service || true
-	echo -n ' - is active: '&& systemctl --no-pager --user is-active zie-toolbox.service || true
-	distrobox ls
-
-kitty/session.conf:
-	cat << EOF | tee $@
-	cd $(HOME)/zie
-	# journalctl --no-pager --user -xeu zie-toolbox.service
-	launch /bin/bash -c 'distrobox enter zie-quadlet'
-	EOF
-
-kitty-install:
-	# curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
-	# Create symbolic links to add kitty and kitten to PATH (assuming ~/.local/bin is in
-	# your system-wide PATH)
-	ln -sf ~/.local/kitty.app/bin/kitty ~/.local/kitty.app/bin/kitten ~/.local/bin/
-	# Place the kitty.desktop file somewhere it can be found by the OS
-	cp ~/.local/kitty.app/share/applications/kitty.desktop ~/.local/share/applications/
-	# If you want to open text files and images in kitty via your file manager also add the kitty-open.desktop file
-	cp ~/.local/kitty.app/share/applications/kitty-open.desktop ~/.local/share/applications/
-	# Update the paths to the kitty and its icon in the kitty.desktop file(s)
-	sed -i "s|Icon=kitty|Icon=/home/$$USER/.local/kitty.app/share/icons/hicolor/256x256/apps/kitty.png|g" ~/.local/share/applications/kitty*.desktop
-	sed -i "s|Exec=kitty|Exec=/home/$$USER/.local/kitty.app/bin/kitty|g" ~/.local/share/applications/kitty*.desktop
-	echo '-------------------DONE ------------------------'
-
-
-
-
-# images: $(timerImageBuild)
-
-

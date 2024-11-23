@@ -1,7 +1,0 @@
- #!/usr/bin/env bash
-IMAGE=ghcr.io/grantmacken/vscode-langservers-extracted
-# podman pull $IMAGE:latest
-# podman images | grep -q $IMAGE || podman pull $IMAGE
-podman run --rm --interactive  $IMAGE './vscode-langservers-extracted/bin/vscode-html-language-server --stdio'
-# podman inspect $IMAGE
-

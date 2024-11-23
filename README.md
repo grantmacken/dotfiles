@@ -2,16 +2,56 @@
 
 This repo is an experimental work in progress!!
 
+My operating system is Fedora Silverblue which is an atomic (immutable) operating system, so my
+aim is to provide a CLI customized toolbox work environment orientated around Neovim and associated CLI tooling
+
+## First Things First
+Clone this repo.
+The bin dir contains a tbx-setup 
+
+```
+
+```
+
+
+
+Keyboard: change caps lock into escape
+
+```
+dconf write /org/gnome/desktop/input-sources/xkb-options "['caps:escape']"
+
+```
+
+Install Make
+
+```
+rpm-ostree install make
+```
+
+## After Make is Installed
+
+
+## After customised Toolbx is Installed
+
+Ctl-Alt-T as a custom shortcut to open  ptyxis terminal
+
+Open directly into Neovim with a ptyxis terminal default profile setting
+
+
+## Configuration Dotfiles:
+
+
+
+
+
 These are my revised dotfiles and as such are a work in progress.
 
-My operating system is Fedora Silverblue which is an atomic (immutable) operating system.
 
-Apart from the Kitty terminal app, Flatpak is used to install any desktop apps I require.
-Apart from my desktop apps, I use the stuff I require a run in containers.
 
-My personal development environment is based on the Neovim text editor which I run in a toolbox container using 
-distrobox to enter the container.
+My desktop apps are installed as flatpaks via flathub.
 
+My personal development environment based on the Neovim text editor 
+and other terminal CLI programs I use are installed in in a toolbox container.
 
 ## BASHRC
 

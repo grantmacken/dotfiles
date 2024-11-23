@@ -51,3 +51,5 @@ rebase-branch = !git rebase -i $(git merge-base master HEAD)
 set-upstream = !git branch --set-upstream-to=origin/$(git symbolic-ref --short HEAD)
   [fetch]
   prune = true
+[http]
+	postBuffer = 157286400

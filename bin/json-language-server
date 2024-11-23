@@ -1,6 +1,0 @@
- #!/usr/bin/env bash
-NAME='json-language-server'
-IMAGE=ghcr.io/grantmacken/vscode-langservers-extracted
-# podman pull $IMAGE:latest
-# podman images | grep -q $IMAGE || podman pull $IMAGE
-podman run --rm --name ${NAME} --interactive  $IMAGE "./vscode-langservers-extracted/bin/vscode-${NAME} --stdio"
