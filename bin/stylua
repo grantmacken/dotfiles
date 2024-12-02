@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-IMAGE=ghcr.io/grantmacken/stylua
-podman images | grep -oP "${IMAGE}" || podman pull ${IMAGE}
-podman run --rm ghcr.io/grantmacken/stylua $@
