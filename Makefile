@@ -1,5 +1,5 @@
 SHELL=/bin/bash
-.SHELLFLAGS := -eu -o pipefail
+.SHELLFLAGS := -euo pipefail -c
 # -e Exit immediately if a pipeline fails
 # -u Error if there are unset variables and parameters 
 # -o option-name Set the option corresponding to option-name
@@ -50,6 +50,12 @@ default: $(BUILDS)
 
 clean:
 	rm -vf $(BUILDS)
+
+gh:
+	echo '##[ $@ ]##'
+	cd gh
+	stow --no --target $(CONFIG_HOME)/$@
+
 
 clean-bin:
 	rm -vf $(binBuild)

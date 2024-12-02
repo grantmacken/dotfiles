@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-set -Eeuo pipefail
+set -eu -o pipefail
 if [ -f "/run/.toolboxenv" ] ; then
   echo -e " - do not run in a toolbox \n - exiting ..."
   exit 1
 fi
-FONT_DIR="$HOME/.local/share/fonts"
+FONT_DIR="${HOME}/.local/share/fonts"
 FONT_NAME=IBMPlexMono
 FONT_RELEASE=v3.3.0
 FONT_URL="https://github.com/ryanoasis/nerd-fonts/releases/download/${FONT_RELEASE}/${FONT_NAME}.tar.xz"
@@ -85,7 +85,7 @@ dconf write /org/gnome/Ptyxis/Profiles/${PROFILE_UUID}/default-container "'${CON
 # # set label
 
 # # set opacity
-mkdir -p ~/Projects
+mkdir -p ${HOME}/Projects
 KEY_BINDING='<Control><Alt>t'
 CUSTOM_COMMAND='ptyxis -s -d Projects -- nvim'
 echo " ---------------------------------------"

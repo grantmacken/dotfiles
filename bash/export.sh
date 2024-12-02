@@ -6,7 +6,6 @@
 # XDG_STATE_HOME=${HOME}/.local/state
 # XDG_INCLUDE_HOME=${HOME}/.local/include
 # XDG_BIN_HOME=${HOME}/.local/bin
-#
 export NVIM_APPNAME=nvim
 export NVIM_LOG_FILE=${HOME}/.local/state/${NVIM_APPNAME}.log
 export PROJECTS=${HOME}/projects
