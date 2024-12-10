@@ -1,0 +1,9 @@
+[Unit]
+Description=image pulled every Mon, 01:15
+[Timer]
+OnCalendar=Mon, 01:15
+AccuracySec=12h
+Persistent=true
+[Install]
+WantedBy=timers.target
+

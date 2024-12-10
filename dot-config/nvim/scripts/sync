@@ -1,0 +1,4 @@
+#!/usr/bin/bash
+podman ps
+# flatpak-spawn --host podman --help
+nvim --headless '+Rocks! sync' +qa

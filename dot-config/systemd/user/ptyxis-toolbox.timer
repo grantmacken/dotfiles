@@ -1,0 +1,9 @@
+[Unit]
+Description=Start the Systemd service ptyxis-tbx-setup after zie-toolbox-image
+Requires=zie-toolbox-image.timer
+After=zie-toolbox-image.timer
+[Timer]
+OnCalendar=Mon, 02:05
+Persistent=true
+[Install]
+WantedBy=timers.target

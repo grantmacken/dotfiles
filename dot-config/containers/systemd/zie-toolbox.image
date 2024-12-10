@@ -1,0 +1,5 @@
+  [Unit]
+  Description=' - pull zie-toolbox as set by timer'
+  [Image]
+  Image=ghcr.io/grantmacken/zie-toolbox:latest
+
