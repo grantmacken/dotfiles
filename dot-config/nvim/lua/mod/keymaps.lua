@@ -13,6 +13,11 @@ local nMap    = function(keys, rhs, desc, opts)
   keymap('n', keys, rhs, desc, opts)
 end
 
+local niMap    = function(keys, rhs, desc, opts)
+  keymap({ "n", "i" }, keys, rhs, desc, opts)
+end
+
+
 local nvMap    = function(keys, rhs, desc, opts)
   keymap({ "n", "v" }, keys, rhs, desc, opts)
 end
@@ -50,6 +55,7 @@ end
 
 M.nLeader     = nLeader
 M.nMap        = nMap
+M.niMap       = niMap
 M.nxoMap      = nxoMap
 M.iMap        = iMap
 M.tMap        = tMap

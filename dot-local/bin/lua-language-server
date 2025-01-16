@@ -1,2 +1,2 @@
-#!/usr/bin/env bash
+#!/usr/bin/bash
 podman run --interactive --rm ghcr.io/grantmacken/lua-language-server
