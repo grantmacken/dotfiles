@@ -6,14 +6,11 @@ copilot.setup({
   suggestion = {
   enabled = true,
   auto_trigger = true,
-    keymap = {
-      accept = "<M-Space>",
-    },
   }
 })
 -- Keymaps
 
-local key = require('mod.keymaps')
+local k = require('keymaps')
 local suggestion = require('copilot.suggestion')
 --[[
 When auto_trigger is false, use the next or prev keymap to trigger copilot suggestion
@@ -22,8 +19,8 @@ M-]     : next suggestion
 M-[     : previous suggestion
 C-]>    : dismiss suggestion
 --]]
- key.iMap('<M-w>',suggestion.accept_word,' suggestion accept [w]ord' )
- key.iMap('<M-e>',suggestion.accept_line,' suggestion accept to line [e]nd' )
+ k.iMap('<M-w>',suggestion.accept_word,' suggestion accept [w]ord' )
+ k.iMap('<M-e>',suggestion.accept_line,' suggestion accept to line [e]nd' )
 
 --[[
 The copilot.suggestion module exposes the following functions:

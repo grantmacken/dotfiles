@@ -12,7 +12,42 @@ A modern linux OS with the following install CLI apps
 2. toolbox
 3. dconf
 
-Note: These are preinstalled on Fedora
+Note: These are already installed on Fedora
+
+## Dot file management
+
+My dot files are managed by stow.
+I invoke stow with my Makefile default target so
+`make` will symlink the dot files using **Stow**
+
+## ./dot-local/bin
+
+ - dconf-writes 
+
+    "Dconf is the low-level configuration system used by the GNOME desktop environment"
+
+ The dconf-writes script sets up some of my preferences.
+
+  - switch caps/escape on keyboard
+  - use BlexMono as font in Ptyxis terminal
+  - use Kanagawa pallette in terminal
+
+
+
+ - tbx-reset
+
+
+## Toolbox
+
+
+
+
+
+## Neovim notes
+
+
+
+<!--
 
 ## First Things First
 Clone this repo and cd into it.
@@ -27,6 +62,8 @@ chmod +x bin/neovim-toolbox-setup
 # run the script
 ./bin/neovim-toolbox-setup
 ```
+
+-->
 
 <!-- The systemd timer for the associated 'language server' ensures the *latest* language server is available. -->
 

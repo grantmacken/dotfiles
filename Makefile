@@ -19,17 +19,24 @@ BIN_HOME    := $(HOME)/.local/bin
 QUADLET := $(CONFIG_HOME)/containers/systemd
 SYSTEMD := $(CONFIG_HOME)/systemd/user
 
+CONTAINER_NAME=zie-toolbox-dx
+IMAGE=ghcr.io/grantmacken/$(CONTAINER_NAME)
+
 .PHONY: help mini
 
-default:: ## stow dotfiles
+default: ## stow dotfiles
 	echo '##[ stow dotfiles ]##'
 	chmod +x dot-local/bin/*
-	stow --verbose --dotfiles --restow --target ~/ .  2>&1
+	stow --verbose --dotfiles --target ~/ .
 	echo ' - task completed'
-	# for rc in $(HOME)/.bashrc.d/*
-	# do
-	# source "$$rc"
-	# done
+
+parsers:
+	echo '##[ $@ ]##'
+	# cp $(DATA_HOME)/nvim/rocks/lib/lua/5.1/parser/* $(CONFIG_HOME)/nvim/parser/
+	# 
+
+queries:
+	echo '##[ $@ ]##'
 
 
 help: ## show this help
@@ -38,24 +45,44 @@ help: ## show this help
 	sort |
 	awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-10s\033[0m %s\n", $$1, $$2}'
 
-mini:
-	git clone --filter=blob:none \
-		https://github.com/echasnovski/mini.nvim \
-		$(DATA_HOME)/tbx-nvim-release/site/pack/deps/start/mini.nvim
+delete: ## delete stow dotfiles
+	echo '##[ $@ ]##'
+	stow --verbose --dotfiles --delete --target ~/ .
 
-images:
-	podman pull ghcr.io/grantmacken/nodejs:latest
+reset-nvim:
+	echo '##[ $@ ]##'
+	rm -rf $(DATA_HOME)/nvim/*
+	rm -rf $(STATE_HOME)/nvim/*
+	rm -rf $(CACHE_HOME)/nvim/*
+	stow --dotfiles --restow --target ~/ .
 
+nativevim:
+	git clone https://github.com/boltlessengineer/nativevim.git $(CONFIG_HOME)/nativevim
 
 timers:
 	systemctl --user daemon-reload
 	systemctl --user is-enabled lua-language-server-image
-	systemctl --user is-enabled nodejs-image
 	systemctl --no-pager --user --all  list-timers
-	podman pull ghcr.io/grantmacken/nodejs:latest
 
+bu:
+	rsync -av --delete .  ~/Backup/dotfiles-$$(date --iso)
 
+tbx:
+	LOCAL_DIGEST=$$(podman image inspect $(IMAGE):latest | jq -r '.[0].Digest')
+	REMOTE_DIGEST=$$(skopeo inspect docker://$(IMAGE):latest | jq -r '.Digest')
+	printf "Remote Digest: %s\n" "$$REMOTE_DIGEST"
+	printf " Local Digest: %s\n" "$$LOCAL_DIGEST"
+	if [ "$$LOCAL_DIGEST" != "$$REMOTE_DIGEST" ];
+	then
+	echo "Local and Remote Digests do not match"
+	echo "Pulling the latest image"
+	podman pull $(IMAGE):latest
+	fi
 
+luarocks:
+	printf "lua interpreter: %s \n" "$$(luarocks config lua_interpreter)"
+	luarocks config variables
+	
 
 # timers:
 # 	echo '##[ $@ ]##'
@@ -83,7 +110,3 @@ start:
 # echo  $(notdir $${timer})
 # done
 
-
-delete:
-	echo '##[ $@ ]##'
-	stow --verbose --dotfiles --delete --target ~/ .
