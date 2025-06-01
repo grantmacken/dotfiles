@@ -18,13 +18,14 @@ STATE_HOME  := $(HOME)/.local/state
 BIN_HOME    := $(HOME)/.local/bin
 QUADLET := $(CONFIG_HOME)/containers/systemd
 SYSTEMD := $(CONFIG_HOME)/systemd/user
+PROJECTS := $(HOME)/Projects
 
 CONTAINER_NAME=zie-toolbox-dx
 IMAGE=ghcr.io/grantmacken/$(CONTAINER_NAME)
 
 .PHONY: help mini
 
-default: ## stow dotfiles
+default: delete ## stow dotfiles
 	echo '##[ stow dotfiles ]##'
 	chmod +x dot-local/bin/*
 	stow --verbose --dotfiles --target ~/ .
@@ -33,9 +34,6 @@ default: ## stow dotfiles
 parsers:
 	echo '##[ $@ ]##'
 	# cp $(DATA_HOME)/nvim/rocks/lib/lua/5.1/parser/* $(CONFIG_HOME)/nvim/parser/
-	# 
-
-queries:
 	echo '##[ $@ ]##'
 
 
@@ -64,10 +62,10 @@ timers:
 	systemctl --user is-enabled lua-language-server-image
 	systemctl --no-pager --user --all  list-timers
 
-bu:
-	rsync -av --delete .  ~/Backup/dotfiles-$$(date --iso)
+backup:
+	rsync -av --delete $(PROJECTS)  $(HOME)/Backup/dotfiles-$$(date --iso)
 
-tbx:
+pull:
 	LOCAL_DIGEST=$$(podman image inspect $(IMAGE):latest | jq -r '.[0].Digest')
 	REMOTE_DIGEST=$$(skopeo inspect docker://$(IMAGE):latest | jq -r '.Digest')
 	printf "Remote Digest: %s\n" "$$REMOTE_DIGEST"
@@ -79,10 +77,29 @@ tbx:
 	podman pull $(IMAGE):latest
 	fi
 
+xxx:
+	if toolbox list containers | grep -q "$(CONTAINER_NAME)"
+	then
+	echo " - 1: Remove the toolbox container $(CONTAINER_NAME)"
+	toolbox rm -f $(CONTAINER_NAME) &>/dev/null
+	echo " - 2: Recreate toolbox from the latest image and"
+	echo "      give it the same name as the removed container"
+	toolbox create --image $(IMAGE) ${CONTAINER_NAME} &>/dev/null
+	else
+	echo " -----------------------------------------------------------"
+	echo " Create the toolbox container with name: $(CONTAINER_NAME)  "
+	echo " -----------------------------------------------------------"
+	toolbox create --image $(IMAGE):latest $(CONTAINER_NAME)
+	fi
+
+
+dconf:
+	dconf-writes
+
+
 luarocks:
 	printf "lua interpreter: %s \n" "$$(luarocks config lua_interpreter)"
 	luarocks config variables
-	
 
 # timers:
 # 	echo '##[ $@ ]##'
@@ -90,7 +107,7 @@ luarocks:
 # 	echo $(wildcard dot-config/systemd/user/*.timer)
 # 	$(foreach d,
 # 	$(wildcard dot-config/systemd/user/*.timer),
-# 	systemctl --user is-enabled --quiet $(notdir $(d))  || systemctl --user enable $(notdir $(d))
+# 	systemctl --user is<F2>-enabled --quiet $(notdir $(d))  || systemctl --user enable $(notdir $(d))
 # 	)
 # 	systemctl --no-pager --user --all list-timers | head -1
 # 	$(foreach d, $(wildcard dot-config/systemd/user/*.timer),
@@ -105,8 +122,23 @@ status:
 start:
 	systemctl --user start ptyxis-toolbox.service
 
-# for timer in $(SYSTEMD)/*.timer
-# do
-# echo  $(notdir $${timer})
-# done
+sys:
+	systemctl disable NetworkManager-wait-online
+
+
+files/lilex.zip:
+	mkdir -p files
+	URL=$$(wget -q -O - 'https://api.github.com/repos/mishamyrt/Lilex/releases/latest' | jq -r '.assets[].browser_download_url')
+	wget $${URL} -q -O $@
+
+
+fonts: files/lilex.zip
+	# install latest lilex fonts into ~/.local/share/fonts
+	# https://github.com/mishamyrt/Lilex/releases/latest
+	# mkdir -p $(DATA_HOME)/fonts/lilex
+	# unzip -q lilex.zip -d $(DATA_HOME)/fonts/lilex
+	fc-cache -f -v $(DATA_HOME)/fonts
+
+fonts-list:
+	fc-list | grep Lilex
 

@@ -1,5 +1,0 @@
-[Unit]
-Description=Ptyxis Toolbox reset when new container is created
-[Service]
-Type=oneshot
-ExecStart=%h/.local/bin/ptyxis-toolbox.sh

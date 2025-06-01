@@ -4,9 +4,4 @@ pcall(function()
   -- vim.deprecate = function() end
 end)
 
-
-
-
-
-
-
+-- vim.loader.reset()
