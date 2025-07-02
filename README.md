@@ -40,6 +40,18 @@ I invoke stow with my Makefile default target so
 ## Toolbox
 
 
+## Quadlets
+
+[docs](https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html)
+
+
+Location: `./dot-config/containers/systemd/`
+
+Files a read during boot and when `systemctl daemon-reload` is run
+
+`.volume, .network, .build, and .image files` run as a `oneshoot` service
+
+
 
 
 

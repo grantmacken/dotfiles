@@ -1,4 +1,3 @@
-
 if [ -f "/run/.toolboxenv" ]
 then
   export SHELL=/usr/bin/bash
@@ -6,3 +5,7 @@ then
 else
  export SHELL=/usr/bin/bash
 fi
+
+export NPM_CONFIG_USERCONFIG="$HOME/.config/npm/npmrc"
+export GEMINI_API_KEY=$(cat $HOME/Projects/.gemini-api-key)
+
