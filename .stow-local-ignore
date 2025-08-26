@@ -1,7 +1,6 @@
 # Comments and blank lines are allowed.
 \.git
 \.gitignore
-/HelloWorld
 /README.*
 /LICENSE
 /Makefile

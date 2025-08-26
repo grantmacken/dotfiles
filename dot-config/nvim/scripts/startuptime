@@ -1,9 +1,0 @@
-#!/usr/bin/bash
-# flatpak-spawn --host podman --help
-cd ~/Projects/nvim/
-# toolbox run --container zie-toolbox nvim --startuptime start.log -c 'q'
-# awk '/./{line=$0} END{print line}' start.log | awk '{ print $1}'
-NVIM_APPNAME=nvim
-toolbox run --container zie-toolbox nvim -V8verbose.log -c 'q'
-cat verbose.log
-

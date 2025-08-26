@@ -1,0 +1,34 @@
+local M = {
+  VERSION = '0.1.0',
+}
+---@module util
+--[[
+  This module provides utility functions for key mappings and other common tasks in Neovim.
+  It includes functions for setting keymaps and buffer-specific keymaps with descriptions.
+]]
+
+---@param lhs string
+---@param rhs string|function
+---@param desc string
+---@param mode? string|string[]
+local keymap = function(lhs, rhs, desc, mode)
+  mode = mode or 'n'
+  local opt = { desc = desc }
+  vim.keymap.set(mode, lhs, rhs, opt)
+end
+---@param lhs string
+---@param rhs string|function
+---@param desc string
+---@param bufnr? number
+---@param mode? string|string[]
+buf_keymap = function(lhs, rhs, desc, bufnr, mode)
+  bufnr = bufnr or 0
+  mode = mode or 'n'
+  local opt = { buffer = 0, desc = desc }
+  vim.keymap.set(mode, lhs, rhs, opt)
+end
+
+M.keymap = keymap
+M.buf_keymap = buf_keymap
+
+return M
