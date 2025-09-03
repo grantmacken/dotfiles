@@ -20,27 +20,34 @@ QUADLET := $(CONFIG_HOME)/containers/systemd
 SYSTEMD := $(CONFIG_HOME)/systemd/user
 PROJECTS := $(HOME)/Projects
 
-default: init ## stow dotfiles
+WGET := wget -q --no-check-certificate --timeout=10 --tries=3
+
+default: # init fonts ## stow dotfiles
 	echo '##[ stow dotfiles ]##'
+	chmod +x dot-local/bin/* || true
 	stow --verbose --dotfiles --target ~/ .
-	fc-cache -f -v $(DATA_HOME)/fonts
-	echo ' - task completed'
-	
-init: 
+	# fc-cache -f -v $(DATA_HOME)/fonts
+	echo '✅ completed task'
+
+delete: ## delete stow dotfiles
 	echo '##[ $@ ]##'
-	mkdir -p files dot-local/bin  dot-local/share/fonts dot-config dot-bashrc.d
+	stow --verbose --dotfiles --delete --target ~/ .
+
+init:
+	echo '##[ $@ ]##'
+	mkdir $(BIN_HOME)
+	mkdir -p files latest dot-local/bin  dot-local/share/fonts dot-config dot-bashrc.d
 	chmod +x dot-local/bin/* &>/dev/null || true
 
 
-files/lilex.zip:
-	mkdir -p files
-	URL=$$(wget -q -O - 'https://api.github.com/repos/mishamyrt/Lilex/releases/latest' | 
-	jq -r '.assets[].browser_download_url')
-	wget $${URL} -q -O $@
+latest/lilex.json:
+	echo '##[[ $@ ]]##'
+	$(WGET) https://api.github.com/repos/mishamyrt/Lilex/releases/latest -O $@
+
+files/lilex.zip: latest/lilex.json
+	$(WGET) $(shell jq -r '.assets[].browser_download_url' $<) -O $@ 
 
 fonts: files/lilex.zip
 	echo '##[[ $@ ]]##'
 	# install latest lilex fonts into ~/.local/share/fonts
-	# mkdir -p $(DATA_HOME)/fonts/lilex
-	unzip -q $< -d dot-local/share/fonts/lilex
-	# fc-cache -f -v $(DATA_HOME)/fonts
+	unzip -qo $< -d dot-local/share/fonts/lilex

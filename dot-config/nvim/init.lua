@@ -20,18 +20,30 @@ end
 vim.g.mapleader = vim.keycode("<space>") -- Set leader key to space
 
 vim.pack.add({
-  -- bling
- 'https://github.com/neanias/everforest-nvim',
- 'https://github.com/hiphish/rainbow-delimiters.nvim',
- 'https://github.com/lewis6991/gitsigns.nvim',
-
  'https://github.com/echasnovski/mini.nvim',
-  -- files
+ 'https://github.com/hiphish/rainbow-delimiters.nvim',
+ 'https://github.com/ibhagwan/fzf-lua',
+ 'https://github.com/lewis6991/gitsigns.nvim',
+ 'https://github.com/mason-org/mason.nvim',
+ 'https://github.com/neanias/everforest-nvim',
  'https://github.com/stevearc/oil.nvim',
  'https://github.com/stevearc/resession.nvim',
- 'https://github.com/ibhagwan/fzf-lua'
    })
 
 vim.cmd([[colorscheme everforest]])
+local home =  vim.uv.os_homedir()
+local mason_install = home .. "/.local"
+require("mason").setup({
+  ui = {
+    icons = {
+      package_installed = "✓",
+      package_pending = "➜",
+      package_uninstalled = "✗"
+    }
+  },
+  install_root_dir = mason_install,
+  PATH = "skip",
+})
+
 
 -- vim.loader.reset()
