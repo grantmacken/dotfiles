@@ -1,29 +1,35 @@
--- vim.opt.showmode = false
---
+vim.opt.showmode = false
+
+---ICONS-
+local ok_icons, icons = pcall(require, 'mini.icons')
+if ok_icons then
+  icons.setup()
+end
+
 -----@type rainbow_delimiters.config
--- vim.g.rainbow_delimiters = {
---   strategy = {
---     [''] = 'rainbow-delimiters.strategy.global',
---     vim = 'rainbow-delimiters.strategy.local',
---   },
---   query = {
---     [''] = 'rainbow-delimiters',
---     lua = 'rainbow-blocks',
---   },
---   priority = {
---     [''] = 110,
---     lua = 210,
---   },
---   highlight = {
---     'RainbowDelimiterRed',
---     'RainbowDelimiterYellow',
---     'RainbowDelimiterBlue',
---     'RainbowDelimiterOrange',
---     'RainbowDelimiterGreen',
---     'RainbowDelimiterViolet',
---     'RainbowDelimiterCyan',
---   },
--- }
+vim.g.rainbow_delimiters = {
+  strategy = {
+    [''] = 'rainbow-delimiters.strategy.global',
+    vim = 'rainbow-delimiters.strategy.local',
+  },
+  query = {
+    [''] = 'rainbow-delimiters',
+    lua = 'rainbow-blocks',
+  },
+  priority = {
+    [''] = 110,
+    lua = 210,
+  },
+  highlight = {
+    'RainbowDelimiterRed',
+    'RainbowDelimiterYellow',
+    'RainbowDelimiterBlue',
+    'RainbowDelimiterOrange',
+    'RainbowDelimiterGreen',
+    'RainbowDelimiterViolet',
+    'RainbowDelimiterCyan',
+  },
+}
 --
 --
 --[[
@@ -87,7 +93,11 @@ if ok_notify then
   end
   miniNotify.setup({ window = { config = win_config } })
   vim.notify = miniNotify.make_notify()
+else
+  vim.notify( 'mini notify not available' )
 end
+
+vim.notify( 'OK' )
 
 -- indentscope
 local ok_indentscope, indentscope = pcall(require, 'mini.indentscope')
@@ -101,6 +111,7 @@ if ok_indentscope then
 
   vim.api.nvim_create_autocmd("FileType", {
     pattern = {
+      'oil',
       "help",
       "notify",
       "toggleterm",

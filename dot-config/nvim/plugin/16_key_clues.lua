@@ -1,6 +1,17 @@
 -- CLUES
+
+local resession_ok, resession = pcall(require, "resession")
+if not resession_ok then
+  vim.notify('Resession not found, skipping session management', vim.log.levels.WARN)
+  return
+end
+
 local ok_clues, clue = pcall(require, 'mini.clue')
-if ok_clues then
+if not ok_clues then
+  vim.notify('mini.clue not found, skipping', vim.log.levels.WARN)
+  return
+end
+
   local clue_triggers = {
     -- Builtins
     { mode = "n", keys = "g" },
@@ -69,4 +80,3 @@ if ok_clues then
       clue.gen_clues.z(),
     },
   })
-end

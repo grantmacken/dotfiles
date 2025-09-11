@@ -11,6 +11,30 @@ local function keymap(lhs, rhs, desc, mode)
     vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
 end
 
+local support_inline_completion = function() 
+vim.opt.completeopt = { 'menu', 'menuone', 'noinsert', 'fuzzy', 'popup' }
+ vim.lsp.inline_completion.enable(true)
+ vim.keymap.set("i", "<Tab>", function()
+   if not vim.lsp.inline_completion.get() then
+     return "<Tab>"
+   end
+ end,
+ { expr = true, replace_keycodes = true, desc = "Apply the currently displayed completion suggestion" }
+        )
+        vim.keymap.set("i", "<M-n>",
+        function()
+          vim.lsp.inline_completion.select({})
+        end,
+        { desc = "Show next inline completion suggestion", }
+      )
+      vim.keymap.set("i", "<M-p>",
+      function()
+        vim.lsp.inline_completion.select({ count = -1 })
+      end,
+      { desc = "Show previous inline completion suggestion", }
+    )
+  end
+
 local support_completion = function( client, bufnr)
   vim.opt.completeopt = { 'menu', 'menuone', 'noinsert', 'fuzzy', 'popup' }
   vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = true })
@@ -22,32 +46,21 @@ local support_completion = function( client, bufnr)
  })
  end
 
-
-vim.api.nvim_create_autocmd('LspAttach', {
-  desc = 'LSP Attach',
-  group = vim.api.nvim_create_augroup("UserLspAttach", { clear = true }),
-  callback = function(event)
-    local client = vim.lsp.get_client_by_id(event.data.client_id)
-    local bufnr = event.buf
-      -- Enable completion
-    if client:supports_method(vim.lsp.protocol.Methods.textDocument_completion) then
-      support_completion(client, bufnr)
-
-    end
-  end
-})
-
--- Set up LSP servers.
-vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
-  once = true,
-  callback = function()
-    local server_configs = vim.iter(vim.api.nvim_get_runtime_file('lsp/*.lua', true))
-        :map(function(file)
-          return vim.fn.fnamemodify(file, ':t:r')
-        end)
-        :totable()
-    vim.lsp.enable(server_configs)
-  end,
+ vim.api.nvim_create_autocmd('LspAttach', {
+   desc = 'LSP Attach',
+   group = vim.api.nvim_create_augroup("UserLspAttach", { clear = true }),
+   callback = function(event)
+     local client = vim.lsp.get_client_by_id(event.data.client_id)
+     local bufnr = event.buf
+     -- Enable completion
+     if client:supports_method(vim.lsp.protocol.Methods.textDocument_completion) then
+       support_completion(client, bufnr)
+     end
+     if client:supports_method(vim.lsp.protocol.Methods.textDocument_inlineCompletion) then
+       -- vim.notify(vim.print(client.name))
+       support_inline_completion()
+     end
+   end
 })
 
 vim.api.nvim_create_autocmd('LspDetach', {
@@ -64,6 +77,10 @@ vim.api.nvim_create_autocmd('LspDetach', {
         event = 'BufWritePre',
         buffer = bufnr,
       })
+    end
+
+    if client:supports_method(vim.lsp.protocol.Methods.textDocument_inlineCompletion) then
+      support_inline_completion()
     end
   end,
 })

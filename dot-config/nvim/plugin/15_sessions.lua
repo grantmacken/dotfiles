@@ -15,7 +15,12 @@ resession.setup({
   end
 })
 
-local keymap = require('util').keymap
+local keymap = function(lhs, rhs, desc, mode)
+  mode = mode or 'n'
+  local opt = { desc = desc }
+  vim.keymap.set(mode, lhs, rhs, opt)
+end
+
 -- Make Session --> ms
 keymap("<leader>ms", resession.save_tab, 'Save session')
 keymap("<leader>ml", resession.load, 'Load session')

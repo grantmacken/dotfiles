@@ -20,34 +20,32 @@ QUADLET := $(CONFIG_HOME)/containers/systemd
 SYSTEMD := $(CONFIG_HOME)/systemd/user
 PROJECTS := $(HOME)/Projects
 
-WGET := wget -q --no-check-certificate --timeout=10 --tries=3
+# WGET := wget -q --no-check-certificate --timeout=10 --tries=3
+# https://docs.rockylinux.org/10/books/nvchad/nerd_fonts/
 
 default: # init fonts ## stow dotfiles
 	echo '##[ stow dotfiles ]##'
 	chmod +x dot-local/bin/* || true
 	stow --verbose --dotfiles --target ~/ .
-	# fc-cache -f -v $(DATA_HOME)/fonts
 	echo '✅ completed task'
 
 delete: ## delete stow dotfiles
 	echo '##[ $@ ]##'
 	stow --verbose --dotfiles --delete --target ~/ .
+	echo '✅ completed task'
 
 init:
 	echo '##[ $@ ]##'
-	mkdir $(BIN_HOME)
-	mkdir -p files latest dot-local/bin  dot-local/share/fonts dot-config dot-bashrc.d
+	mkdir -p $(BIN_HOME)
+	mkdir -p $(CACHE_HOME)/nvim
+	mkdir -p $(STATE_HOME)/nvim
+	mkdir -p -v $(DATA_HOME)/nvim/luals/{logs,meta}
+	mkdir -p files latest dot-local/bin  dot-config dot-bashrc.d
 	chmod +x dot-local/bin/* &>/dev/null || true
 
-
-latest/lilex.json:
-	echo '##[[ $@ ]]##'
-	$(WGET) https://api.github.com/repos/mishamyrt/Lilex/releases/latest -O $@
-
-files/lilex.zip: latest/lilex.json
-	$(WGET) $(shell jq -r '.assets[].browser_download_url' $<) -O $@ 
-
-fonts: files/lilex.zip
-	echo '##[[ $@ ]]##'
-	# install latest lilex fonts into ~/.local/share/fonts
-	unzip -qo $< -d dot-local/share/fonts/lilex
+clean_nvim:
+	rm -rf $(CACHE_HOME)/nvim
+	rm -rf $(STATE_HOME)/nvim
+	rm -rf $(DATA_HOME)/nvim
+	rm -rf $(CONFIG_HOME)/nvim
+	$(MAKE)

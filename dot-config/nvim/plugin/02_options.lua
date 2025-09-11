@@ -53,16 +53,19 @@ vim.o.list           = true -- Show some invisible characters (tabs...
 } -- ▶ helper symbols to show
 
 vim.o.iskeyword      = '@,48-57,_,192-255,-' -- Treat dash separated words as a word text object
+
 -- SPLITING WINDOWS
 vim.opt.splitbelow   = true -- Put new windows below current
 vim.opt.splitkeep    = "screen"
 vim.opt.splitright   = true -- Put new windows right of current
+
 -- SEARCHING
 vim.o.smartcase      = true
 vim.o.hlsearch       = true
 vim.o.ignorecase     = true                             -- Ignore case when searching (use `\C` to force not doing that)
 vim.o.inccommand     = "split"                          -- preview incremental substitute
 vim.o.incsearch      = true                             -- Show search results while typing
+
 -- UNDO RESTORE
 vim.o.shortmess      = 'FOSWaco'                        -- Disable certain messages from |ins-completion-menu|
 --vim.o.shortmess     = 'aoOWFcSC'                      -- Reduce command line messages
@@ -74,6 +77,7 @@ vim.o.undolevels     = 10000                            -- 10x more undo levels
 vim.o.updatetime     = 200
 vim.o.confirm        = true                             -- Confirm to save changes before exiting modified buffer
 vim.o.swapfile       = false                            -- bye bye
+
 -- COMPLETING
 vim.o.infercase      = true                             -- Infer letter cases for a richer built-in keyword completion
 vim.opt.completeopt  = { 'menu', 'noselect', 'fuzzy' }  -- Options for built-in completion
@@ -82,8 +86,8 @@ vim.o.winblend       = 0
 vim.o.pumheight      = 10                  -- Make popup menu smaller
 vim.o.smartcase      = true                -- Don't ignore case with capitals
 vim.o.wildmode       = "longest:full,full" -- Command-line completion mode
--- v12 vim.o.pummaxwidth       = 100                        -- Limit maximum width of popup menu
--- v12 vim.o.completefuzzycollect = 'keyword,files,whole_line' -- Use fuzzy matching when collecting candidates
+vim.o.pummaxwidth       = 100                        -- Limit maximum width of popup menu
+vim.o.completefuzzycollect = 'keyword,files,whole_line' -- Use fuzzy matching when collecting candidates
 
 -- FOLDING
 vim.o.foldcolumn     = "0"
