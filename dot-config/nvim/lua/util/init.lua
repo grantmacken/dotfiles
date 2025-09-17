@@ -21,10 +21,22 @@ end
 ---@param desc string
 ---@param bufnr? number
 ---@param mode? string|string[]
-buf_keymap = function(lhs, rhs, desc, bufnr, mode)
+keymap_buf = function(lhs, rhs, desc, bufnr, mode)
   bufnr = bufnr or 0
   mode = mode or 'n'
   local opt = { buffer = 0, desc = desc }
+  vim.keymap.set(mode, lhs, rhs, opt)
+end
+
+---@param lhs string
+---@param rhs string|function
+---@param desc string
+---@param bufnr? number
+---@param mode? string|string[]
+keymap_dynamic = function(lhs, rhs, desc, bufnr, mode)
+  bufnr = bufnr or 0
+  mode = mode or 'n'
+  local opt = { buffer = bufnr, desc = desc, expr = true, replace_keycodes = true }
   vim.keymap.set(mode, lhs, rhs, opt)
 end
 

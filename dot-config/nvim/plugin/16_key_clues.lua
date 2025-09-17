@@ -1,17 +1,6 @@
 -- CLUES
-
-local resession_ok, resession = pcall(require, "resession")
-if not resession_ok then
-  vim.notify('Resession not found, skipping session management', vim.log.levels.WARN)
-  return
-end
-
 local ok_clues, clue = pcall(require, 'mini.clue')
-if not ok_clues then
-  vim.notify('mini.clue not found, skipping', vim.log.levels.WARN)
-  return
-end
-
+if ok_clues then
   local clue_triggers = {
     -- Builtins
     { mode = "n", keys = "g" },
@@ -35,17 +24,17 @@ end
     { mode = "n", keys = "[" },
     { mode = "n", keys = "]" },
     -- Custom extras
-    mark_clues,
+    -- mark_clues,
   }
 
   local leader_group_clues = {
     --{ mode = 'n', keys = '<Leader>a', desc = '+AiCopilotChat' },
     { mode = 'n', keys = '<Leader>b', desc = '+Buffer' },
-    --{ mode = 'n', keys = '<Leader>J', desc = '+Split[J]oin' },
-    --{ mode = 'n', keys = '<Leader>s', desc = '+[S]earch' },
+    { mode = 'n', keys = '<Leader>J', desc = '+Split[J]oin' },
+    { mode = 'n', keys = '<Leader>s', desc = '+[S]earch' },
     --{ mode = 'n', keys = '<Leader>d', desc = '+Diagnostic' },
-    { mode = 'n', keys = '<Leader>f', desc = '+[[F]uzzyFind' },
-    { mode = 'n', keys = '<Leader>m', desc = '+[M]akeSession' },
+    { mode = 'n', keys = '<Leader>f', desc = '+FuzzyFind' },
+    { mode = 'n', keys = '<Leader>m', desc = '+[m]kSession' },
     --{ mode = 'n', keys = '<Leader>t', desc = '+Toggle' },
   }
 
@@ -80,3 +69,4 @@ end
       clue.gen_clues.z(),
     },
   })
+end

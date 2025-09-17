@@ -1,35 +1,29 @@
-vim.opt.showmode = false
-
----ICONS-
-local ok_icons, icons = pcall(require, 'mini.icons')
-if ok_icons then
-  icons.setup()
-end
-
+-- vim.opt.showmode = false
+--
 -----@type rainbow_delimiters.config
-vim.g.rainbow_delimiters = {
-  strategy = {
-    [''] = 'rainbow-delimiters.strategy.global',
-    vim = 'rainbow-delimiters.strategy.local',
-  },
-  query = {
-    [''] = 'rainbow-delimiters',
-    lua = 'rainbow-blocks',
-  },
-  priority = {
-    [''] = 110,
-    lua = 210,
-  },
-  highlight = {
-    'RainbowDelimiterRed',
-    'RainbowDelimiterYellow',
-    'RainbowDelimiterBlue',
-    'RainbowDelimiterOrange',
-    'RainbowDelimiterGreen',
-    'RainbowDelimiterViolet',
-    'RainbowDelimiterCyan',
-  },
-}
+-- vim.g.rainbow_delimiters = {
+--   strategy = {
+--     [''] = 'rainbow-delimiters.strategy.global',
+--     vim = 'rainbow-delimiters.strategy.local',
+--   },
+--   query = {
+--     [''] = 'rainbow-delimiters',
+--     lua = 'rainbow-blocks',
+--   },
+--   priority = {
+--     [''] = 110,
+--     lua = 210,
+--   },
+--   highlight = {
+--     'RainbowDelimiterRed',
+--     'RainbowDelimiterYellow',
+--     'RainbowDelimiterBlue',
+--     'RainbowDelimiterOrange',
+--     'RainbowDelimiterGreen',
+--     'RainbowDelimiterViolet',
+--     'RainbowDelimiterCyan',
+--   },
+-- }
 --
 --
 --[[
@@ -83,22 +77,6 @@ if ok_misc then
   miniMisc.setup_termbg_sync()
 end
 
--- NOTIFY
-local ok_notify, miniNotify = pcall(require, 'mini.notify')
-if ok_notify then
-  local win_config = function()
-    local has_statusline = vim.o.laststatus > 0
-    local pad = vim.o.cmdheight + (has_statusline and 1 or 0)
-    return { anchor = 'SE', col = vim.o.columns, row = vim.o.lines - pad }
-  end
-  miniNotify.setup({ window = { config = win_config } })
-  vim.notify = miniNotify.make_notify()
-else
-  vim.notify( 'mini notify not available' )
-end
-
-vim.notify( 'OK' )
-
 -- indentscope
 local ok_indentscope, indentscope = pcall(require, 'mini.indentscope')
 if ok_indentscope then
@@ -111,10 +89,9 @@ if ok_indentscope then
 
   vim.api.nvim_create_autocmd("FileType", {
     pattern = {
-      'oil',
       "help",
       "notify",
-      "toggleterm",
+      "oil",
     },
     callback = function()
       vim.b.miniindentscope_disable = true
