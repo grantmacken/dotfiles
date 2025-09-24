@@ -29,12 +29,16 @@ if ok_clues then
 
   local leader_group_clues = {
     --{ mode = 'n', keys = '<Leader>a', desc = '+AiCopilotChat' },
-    { mode = 'n', keys = '<Leader>b', desc = '+Buffer' },
-    { mode = 'n', keys = '<Leader>J', desc = '+Split[J]oin' },
-    { mode = 'n', keys = '<Leader>s', desc = '+[S]earch' },
+    { mode = 'n', keys = '<Leader>b', desc = '+buffer' },
+    { mode = 'n', keys = '<Leader>J', desc = '+Split[j]oin' },
+    { mode = 'n', keys = '<Leader>s', desc = '+search' },
+    { mode = 'n', keys = '<Leader>S', desc = '+Session' },
     --{ mode = 'n', keys = '<Leader>d', desc = '+Diagnostic' },
-    { mode = 'n', keys = '<Leader>f', desc = '+FuzzyFind' },
-    { mode = 'n', keys = '<Leader>m', desc = '+[m]kSession' },
+    { mode = 'n', keys = '<Leader>f', desc = '+fuzzyFind' },
+    { mode = 'n', keys = '<Leader>l', desc = '+LSP' },
+    { mode = 'n', keys = '<Leader>m', desc = '+markdown' },
+
+    --{ mode = 'n', keys = '<Leader>S', desc = '+mk[S]ession' },
     --{ mode = 'n', keys = '<Leader>t', desc = '+Toggle' },
   }
 

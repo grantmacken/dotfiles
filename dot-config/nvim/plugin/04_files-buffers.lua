@@ -33,8 +33,11 @@ if ok_bufremove then
   keymap('<Leader>bd', bufremove.delete, 'bufremove: [d]elete current buffer', 'n')
 end
 
+
 local ok_fzf, fzf = pcall(require, 'fzf-lua')
 if ok_fzf then
+  -- or using the `FzfLua` vim command:
+  vim.api.nvim_create_user_command('GlobalFind', fzf.global, { desc = '[FZF] Global Find ' })
   vim.api.nvim_create_user_command('Files', fzf.files, { desc = '[FZF] Find Files' })
   keymap('<Leader>ff', vim.cmd.Files, 'Find [f]iles')
   vim.api.nvim_create_user_command('Directories', fzf.zoxide, { desc = '[FZF] List recent Directories' })

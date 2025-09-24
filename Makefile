@@ -49,3 +49,7 @@ clean_nvim:
 	rm -rf $(DATA_HOME)/nvim
 	rm -rf $(CONFIG_HOME)/nvim
 	$(MAKE)
+
+ai:
+	# uv a python package manager
+	uv tool install specify-cli --from git+https://github.com/github/spec-kit.git

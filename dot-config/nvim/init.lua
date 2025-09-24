@@ -1,7 +1,7 @@
 -- Initialization =============================================================
 --pcall(function()
- -- vim.loader.enable()
-  -- vim.deprecate = function() end
+-- vim.loader.enable()
+-- vim.deprecate = function() end
 --end)
 -- disable built-in providers
 
@@ -38,24 +38,6 @@ end
 
 vim.cmd.colorscheme('kanagawa-wave')
 
----ICONS-
-local ok_icons, icons = pcall(require, 'mini.icons')
-if ok_icons then
-  icons.setup()
-end
-
--- NOTIFY
-local ok_notify, miniNotify = pcall(require, 'mini.notify')
-if ok_notify then
-  local win_config = function()
-    local has_statusline = vim.o.laststatus > 0
-    local pad = vim.o.cmdheight + (has_statusline and 1 or 0)
-    return { anchor = 'SE', col = vim.o.columns, row = vim.o.lines - pad }
-  end
-  miniNotify.setup({ window = { config = win_config } })
-  vim.notify = miniNotify.make_notify()
-end
-
 local lsp_dir = vim.fn.stdpath("config") .. "/lsp"
 local fd = uv.fs_scandir(lsp_dir)
 if fd then
@@ -64,7 +46,7 @@ if fd then
     if not server_name then break end
     local name = server_name:match("(.+)%..+$")
     -- vim.notify( 'enabled LSP server:'  .. name)
-    vim.lsp.enable( name )
+    vim.lsp.enable(name)
   end
 end
 
@@ -73,7 +55,60 @@ end
 
 local keymap = require('util').keymap
 keymap('<Leader>t', ':botright sp | term<CR>', 'Open [t]erminal')
-keymap('<esc>',[[<C-\><C-n>]], 'Close [t]erminal','t')
+keymap('<ESC>', [[<C-\><C-n>]], 'Close [t]erminal', 't')
+keymap('<ESC>', [[<cmd>noh<CR>]], 'ESC to remove search highlights', 'n')
+
+-- mode = { "n", "v" },
+-- { "<leader>m", group = "[P]markdown" },
+-- { "<leader>mf", group = "[P]fold" },
+-- { "<leader>mh", group = "[P]headings increase/decrease" },
+-- { "<leader>ml", group = "[P]links" },
+-- { "<leader>ms", group = "[P]spell" },
+-- { "<leader>msl", group = "[P]language" },
+--
+-- MARKDOWN
+keymap(
+  "<Leader>mj",
+  ":g/^\\s*$/d<CR>:nohlsearch<CR>",
+  "Delete newlines in selected text (join)",
+  "v"
+)
+
+keymap("<leader>mss", function()
+  -- Simulate pressing "z=" with "m" option using feedkeys
+  -- vim.api.nvim_replace_termcodes ensures "z=" is correctly interpreted
+  -- 'm' is the {mode}, which in this case is 'Remap keys'. This is default.
+  -- If {mode} is absent, keys are remapped.
+  --
+  -- I tried this keymap as usually with
+  vim.cmd("normal! 1z=")
+  -- But didn't work, only with nvim_feedkeys
+  -- vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("z=", true, false, true), "m", true)
+end, "Spelling suggestions")
+
+-- Undo zw, remove the word from the entry in 'spellfile'.
+keymap("<leader>msu", function()
+  vim.cmd("normal! zug")
+end, "Spelling undo, remove word from list")
+-- Repeat the replacement done by |z=| for all matches with the replaced word
+-- in the current window.
+keymap("<leader>msr", function()
+  -- vim.cmd(":spellr")
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(":spellr\n", true, false, true), "m", true)
+end, "[P]Spelling repeat")
+
+-- This surrounds CURRENT WORD with inline code in NORMAL MODE lamw25wmal
+-- keymap( "gss", function()
+--   -- Use nvim_replace_termcodes to handle special characters like backticks
+--   local keys = vim.api.nvim_replace_termcodes("gsaiw`", true, false, true)
+--   -- Feed the keys in visual mode ('x' for visual mode)
+--   vim.api.nvim_feedkeys(keys, "x", false)
+--   -- I tried these 3, but they didn't work, I assume because of the backtick character
+--   -- vim.cmd("normal! gsa`")
+--   -- vim.cmd([[normal! gsa`]])
+--   -- vim.cmd("normal! gsa\\`")
+-- end, "Surround selection with backticks (inline code)")
+
 -- keymap('<esc>',
 --  function()
 --   vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-\\><C-n>', true, false, true), 'n', true)
@@ -86,27 +121,13 @@ keymap('<Leader>r', ':restart<CR>', '[r]estart nvim')
 -- keymap('<Leader>ll', function() vim.cmd.edit( vim.lsp.log.get_filename() ) end, '[L]sp [l]og')')
 keymap('<leader>q', '<cmd>lua vim.diagnostic.setqflist()<CR>', 'set [q]uickfix list')
 
--- [ERROR][2025-09-10 19:47:13] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	"inlinecompletion"	
--- { code = -32802, message = "Request was superseded by a new request", 
---  <metatable> = { __tostring = <function 1> } }
---
-
--- [ERROR][2025-09-18 06:27:12] /usr/local/share/nvim/runtime/lua/vim/lsp/log.lua:151	
--- "rpc"	"lua-language-server"	"stderr"	
--- "/usr/local/share/mason/packages/lua-language-server/libexec/bin/lua-language-server: create_directories: 
--- \"/usr/local/share/mason/packages/lua-language-server/libexec/log/cache/122447\": 
--- (generic:13)Permission denied\nstack traceback:\n\t[C]: 
--- in function 'bee.filesystem.create_directories'\n\tscript/service/service.lua:263: 
--- in function 'service.lockCache'\n\tscript/service/service.lua:286: in function 
--- 'service.start'\n\t...hare/mason/packages/lua-language-server/libexec/main.lua:82: in main chunk\n\t(bootstrap.lua):85: in main chunk\n\t[C]: in ?\n"
-
 local group = vim.api.nvim_create_augroup('my_group', {})
 local au = function(event, pattern, callback, desc)
-    vim.api.nvim_create_autocmd(event, { group = group, pattern = pattern, callback = callback, desc = desc })
+  vim.api.nvim_create_autocmd(event, { group = group, pattern = pattern, callback = callback, desc = desc })
 end
 
 --- Highlight on yank
-au('TextYankPost', '*',function() vim.hl.on_yank() end,'Highlight yanked text')
+au('TextYankPost', '*', function() vim.hl.on_yank() end, 'Highlight yanked text')
 
 local start_terminal_insert = vim.schedule_wrap(function(data)
   -- Try to start terminal mode only if target terminal is current

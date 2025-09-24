@@ -41,6 +41,7 @@ keymap_dynamic = function(lhs, rhs, desc, bufnr, mode)
 end
 
 M.keymap = keymap
-M.buf_keymap = buf_keymap
+M.keymap_buf = keymap_buf
+M.keymap_dynamic = keymap_dynamic
 
 return M

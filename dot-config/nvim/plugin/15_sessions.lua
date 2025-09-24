@@ -22,9 +22,9 @@ local keymap = function(lhs, rhs, desc, mode)
 end
 
 -- Make Session --> ms
-keymap("<leader>ms", resession.save_tab, 'Save session')
-keymap("<leader>ml", resession.load, 'Load session')
-keymap("<leader>md", resession.delete, 'Delete session')
+keymap("<leader>SS", resession.save_tab, 'Save session')
+keymap("<leader>SL", resession.load, 'Load session')
+keymap("<leader>SD", resession.delete, 'Delete session')
 
 vim.api.nvim_create_autocmd("VimLeavePre", {
   callback = function()
