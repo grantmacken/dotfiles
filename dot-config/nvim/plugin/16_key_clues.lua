@@ -32,6 +32,8 @@ if ok_clues then
     { mode = 'n', keys = '<Leader>b', desc = '+buffer' },
     { mode = 'n', keys = '<Leader>J', desc = '+Split[j]oin' },
     { mode = 'n', keys = '<Leader>s', desc = '+search' },
+    { mode = 'n', keys = '<Leader>o', desc = '+opencode' },
+    { mode = 'v', keys = '<Leader>o', desc = '+opencode' },
     { mode = 'n', keys = '<Leader>S', desc = '+Session' },
     --{ mode = 'n', keys = '<Leader>d', desc = '+Diagnostic' },
     { mode = 'n', keys = '<Leader>f', desc = '+fuzzyFind' },
