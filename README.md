@@ -1,13 +1,13 @@
 # My Dotfiles
 
-This repo is an experimental work in progress!!
+This repo is an experimental work in progress!
 
 My operating system is Fedora Silverblue which is an atomic (immutable) operating system, so my
 aim is to provide a CLI customized toolbox work environment orientated around Neovim and associated CLI tooling
 
 ## Requirements
 
-A modern linux OS with the following install CLI apps
+A modern Linux OS with the following install CLI apps
 1. podman
 2. toolbox
 3. dconf

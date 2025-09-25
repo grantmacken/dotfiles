@@ -1,5 +1,0 @@
-#!/usr/bin/bash
-cd ~/Projects/nvim/
-toolbox run --container zie-toolbox make clean
-toolbox run --container zie-toolbox make
-
