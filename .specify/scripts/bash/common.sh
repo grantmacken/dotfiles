@@ -72,9 +72,10 @@ check_feature_branch() {
         return 0
     fi
     
-    if [[ ! "$branch" =~ ^[0-9]{3}- ]]; then
+    # Allow branches starting with 3 digits (e.g., 001-feature-name) or copilot/ prefix
+    if [[ ! "$branch" =~ ^[0-9]{3}- ]] && [[ ! "$branch" =~ ^copilot/ ]]; then
         echo "ERROR: Not on a feature branch. Current branch: $branch" >&2
-        echo "Feature branches should be named like: 001-feature-name" >&2
+        echo "Feature branches should be named like: 001-feature-name or copilot/feature-name" >&2
         return 1
     fi
     
