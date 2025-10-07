@@ -25,11 +25,11 @@ vim.diagnostic.config({
       [vim.diagnostic.severity.INFO] = '»',
     }
   },
-  underline = false,
+  underline = true,
   virtual_text = false,
   virtual_lines = {
     severity = {
-      min = vim.diagnostic.severity.HINT,
+      min = vim.diagnostic.severity.WARN,
     },
     update_in_insert = false,
     current_line = true,
@@ -40,6 +40,7 @@ vim.diagnostic.config({
     }
   },
 })
+
 
 -- vim.diagnostic.enable(true)
 
@@ -55,3 +56,32 @@ vim.diagnostic.handlers.loclist = {
     vim.api.nvim_set_current_win(winid)
   end
 }
+
+-- Toggle function for virtual lines
+local virtual_lines_enabled = true
+local function toggle_diagnostic_virtual_lines()
+  virtual_lines_enabled = not virtual_lines_enabled
+  local config = vim.diagnostic.config()
+  if virtual_lines_enabled then
+    config.virtual_lines = {
+      severity = {
+        min = vim.diagnostic.severity.WARN,
+      },
+      update_in_insert = false,
+      current_line = true,
+      -- Open the location list on every diagnostic change (warnings/errors only).
+      loclist = {
+        open = true,
+        severity = { min = vim.diagnostic.severity.WARN },
+      }
+    }
+  else
+    config.virtual_lines = false
+  end
+  vim.diagnostic.config(config)
+  vim.notify('Diagnostic virtual lines: ' .. (virtual_lines_enabled and 'enabled' or 'disabled'))
+end
+
+-- Set up key binding to toggle virtual lines
+local keymap = require('util').keymap
+keymap('<Leader>dv', toggle_diagnostic_virtual_lines, 'Toggle [d]iagnostic [v]irtual lines')

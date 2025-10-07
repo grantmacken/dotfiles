@@ -16,8 +16,10 @@ Note: These are already installed on Fedora
 
 ## Dot file management
 
-My dot files are managed by stow.
-I invoke stow with my Makefile default target so
+The terminal CLI tools I use are run from a toolbox. 
+
+
+My dot files are managed by stow. I invoke stow with my Makefile default target so
 `make` will symlink the dot files using **Stow**
 
 ## ./dot-local/bin
@@ -31,7 +33,6 @@ I invoke stow with my Makefile default target so
   - switch caps/escape on keyboard
   - use BlexMono as font in Ptyxis terminal
   - use Kanagawa pallette in terminal
-
 
 
  - tbx-reset

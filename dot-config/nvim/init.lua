@@ -1,8 +1,8 @@
 -- Initialization =============================================================
---pcall(function()
--- vim.loader.enable()
--- vim.deprecate = function() end
---end)
+pcall(function()
+  vim.loader.enable()
+  -- vim.deprecate = function() end
+end)
 -- disable built-in providers
 
 local providers = { "node", "perl", "ruby", "python", "python3" }
@@ -50,12 +50,8 @@ if fd then
   end
 end
 
-
-
-
 local keymap = require('util').keymap
-keymap('<Leader>t', ':botright sp | term<CR>', 'Open [t]erminal')
-keymap('<ESC>', [[<C-\><C-n>]], 'Close [t]erminal', 't')
+
 keymap('<ESC>', [[<cmd>noh<CR>]], 'ESC to remove search highlights', 'n')
 
 -- mode = { "n", "v" },
@@ -75,8 +71,8 @@ keymap(
 )
 
 keymap("<leader>mss", function()
-  -- Simulate pressing "z=" with "m" option using feedkeys
-  -- vim.api.nvim_replace_termcodes ensures "z=" is correctly interpreted
+  -- Simulate reusing "z=" with "m" option using feed keys
+  -- vim.api.nvim_replace_term codes ensures "z=" is correctly interpreted
   -- 'm' is the {mode}, which in this case is 'Remap keys'. This is default.
   -- If {mode} is absent, keys are remapped.
   --
@@ -136,4 +132,11 @@ local start_terminal_insert = vim.schedule_wrap(function(data)
 end)
 au('TermOpen', 'term://*', start_terminal_insert, 'Start builtin terminal in Insert mode')
 
---vim.opt.rtp:prepend('/usr/share/nvim/site')
+-- close windows like 'help' with 'q'
+au(
+  'FileType',
+  { 'help', 'oil' },
+  function()
+    keymap('q', '<cmd>close<cr>', 'close window')
+  end, 'Close help and oil with q'
+)

@@ -33,7 +33,7 @@ vim.pack.add({ -- LSP UI ENHANCEMENTS
 })
 
 vim.pack.add({
-  'https://github.com/NickvanDyke/opencode.nvim',
+  'https://github.com/nanozuki/tabby.nvim',
   'https://github.com/MagicDuck/grug-far.nvim',
   'https://github.com/MeanderingProgrammer/render-markdown.nvim',
   'https://github.com/folke/flash.nvim',

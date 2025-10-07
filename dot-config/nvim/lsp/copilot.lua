@@ -1,25 +1,43 @@
 local tbl_cmd = { 'copilot-language-server', '--stdio' }
 local tbl_settings = {
-    telemetry = {
-      telemetryLevel = "off",
-    }}
-local tbl_roots = {'.git'}
-local tbl_init_options = {
-    editorInfo = {
-      name = 'Neovim',
-      version = tostring(vim.version()),
-    },
-    editorPluginInfo = {
-      name = 'Neovim',
-      version = tostring(vim.version()),
-    },
+  telemetry = {
+    telemetryLevel = "off",
   }
+}
+local tbl_roots = { '.git' }
+local tbl_init_options = {
+  editorInfo = {
+    name = 'Neovim',
+    version = tostring(vim.version()),
+  },
+  editorPluginInfo = {
+    name = 'Neovim',
+    version = tostring(vim.version()),
+  },
+}
+
+local tbl_filetypes = {
+  'css',
+  'elixir',
+  'erlang',
+  'gleam',
+  'go',
+  'html',
+  'javascript',
+  'json',
+  'lua',
+  'make',
+  'markdown',
+  'rust',
+  'typescript',
+  'yaml',
+}
 
 ---@param bufnr integer,
 ---@param client vim.lsp.Client
 local function sign_in(bufnr, client)
   client:request(
-    ---@diagnostic disable-next-line: param-type-mismatch
+  ---@diagnostic disable-next-line: param-type-mismatch
     'signIn',
     vim.empty_dict(),
     function(err, result)
@@ -61,7 +79,7 @@ end
 ---@param client vim.lsp.Client
 local function sign_out(_, client)
   client:request(
-    ---@diagnostic disable-next-line: param-type-mismatch
+  ---@diagnostic disable-next-line: param-type-mismatch
     'signOut',
     vim.empty_dict(),
     function(err, result)
@@ -78,7 +96,7 @@ end
 
 return {
   cmd = tbl_cmd,
-  filetypes = { 'lua' },
+  filetypes = tbl_filetypes,
   root_markers = tbl_roots,
   init_options = tbl_init_options,
   settings = tbl_settings,
