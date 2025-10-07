@@ -71,7 +71,7 @@ keymap(
 )
 
 keymap("<leader>mss", function()
-  -- Simulate reusing "z=" with "m" option using feed keys
+  -- Simulate pressing "z=" with "m" option using feed keys
   -- vim.api.nvim_replace_term codes ensures "z=" is correctly interpreted
   -- 'm' is the {mode}, which in this case is 'Remap keys'. This is default.
   -- If {mode} is absent, keys are remapped.
