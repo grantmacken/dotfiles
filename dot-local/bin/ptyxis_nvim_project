@@ -37,7 +37,7 @@ printf "Neovim socket path: %s\n" "$SOCKET"
 PROJECT_DIR="$HOME/Projects/${SOCK_NAME}"
 # abort id if the directory does not exist
 if [ ! -d "$PROJECT_DIR" ]; then
-  echo "Error: Project directory '$PROJECT_DIR' does not exist."
+  printf "Error: Project directory '%s' does not exist." "$PROJECT_DIR" | tee -a "$LOG"
   exit 1
 fi
 
@@ -46,38 +46,40 @@ mkdir -p "$NVIM_RUNTIME_DIR"
 
 # 6. Check if the socket is actively listening
 if ss -xl | grep -q "$SOCKET" 2>/dev/null || nc -zU "$SOCKET" 2>/dev/null; then
-  printf "TODOConnecting to existing Neovim server %s \n" "$SOCK_NAME"
+  printf "TODO: ?? Connecting to existing Neovim server %s \n" "$SOCK_NAME" | tee -a "$LOG"
   if [ -f /run/.containerenv ]; then
     host-spawn ptyxis \
-      --title="dev-${SOCK_NAME}-repo" \
+      --title="${SOCK_NAME}-repo" \
       --working-directory="${PROJECT_DIR}" \
       --tab-with-profile="${PTYXIS_PROFILE}" \
       -- nvim --server "$SOCKET" --remote-ui "$@"
   else
     ptyxis \
-      --title="dev-${SOCK_NAME}-repo" \
+      --title="${SOCK_NAME}-repo" \
       --working-directory="${PROJECT_DIR}" \
       --tab-with-profile="${PTYXIS_PROFILE}" \
       -- nvim --server "$SOCKET" --remote-ui "$@"
   fi
 else
-  # - If not, start a new Neovim server instance
-  #  - Use ptyxis to launch Neovim in a new terminal tab with
   #  - the specified profile ie we run in our toolbox container
   #  - open in  git controlled project  working directory
   #  - the nvim servr listening on the specified socket
   #  - the tab title set to the project name
   if [ -f /run/.containerenv ]; then
     host-spawn ptyxis \
-      --title="dev-${SOCK_NAME}-repo" \
+      --title="${SOCK_NAME}-repo" \
       --working-directory="${PROJECT_DIR}" \
       --tab-with-profile="${PTYXIS_PROFILE}" \
       -- nvim --listen "$SOCKET" "$@"
   else
     ptyxis \
-      --title="dev-${SOCK_NAME}-repo" \
+      --title="${SOCK_NAME}-repo" \
       --working-directory="${PROJECT_DIR}" \
       --tab-with-profile="${PTYXIS_PROFILE}" \
       -- nvim --listen "$SOCKET" "$@"
   fi
+  echo '-  ptyxis opened new terminal tab with terminal running in toolbox container' | tee -a "$LOG"
+  printf ' - ptyxis tab title: %s_repo' "$SOCK_NAME" | tee -a "$LOG"
+  printf " - project working directory: %s" "$PROJECT_DIR" | tee -a "$LOG"
+  printf ' - nvim server listening on socket: %s' "SOCKET" | tee -a "$LOG"
 fi
