@@ -84,6 +84,6 @@ DIR=${HOME}/Projects/${PROJECT}
 TITLE="dev-${PROJECT}-pi-agent"
 dconf write "${custom5}name" "'${TITLE}'"
 dconf write "${custom5}binding" "'<Control><Shift>1'" # open pi in dotfiles repo - ctl-shift-1  note compliments ctl-alt-1 dev-dotfiles-repo
-dconf write "${custom5}command" "'ptyxis --title=${TITLE} --working-directory=${DIR} --tab-with-profile=${PROFILE_UUID} -- pi --resume'"
+dconf write "${custom5}command" "'ptyxis --title=${TITLE} --working-directory=${DIR} --tab-with-profile=${PROFILE_UUID} -- pi --continue --model gpt-5.6-luna'"
 
 dconf dump "$BASE_DIR"
