@@ -1,0 +1,83 @@
+#!/usr/bin/env  bash
+set -euo pipefail
+### DESCRIPTION
+# This script connects to a Neovim server instance using a specified socket name.
+# If the server is not running, it will start a new instance of Neovim in a new terminal tab using ptyxis.
+# A ptyxis tab is opened in the working directory of a git controlled project, and the tab title is set to the project name.
+#### USAGE
+# ./ptyxis_nvim_project [PROJECT NAME] [additional nvim args]
+### REFERENCES
+#
+LOG="$HOME/Projects/ptyxis-setup.log"
+touch "$LOG"
+
+# 1. Capture the first argument or fallback to 'dots' if empty
+SOCK_NAME="${1:-dotfiles}"
+# 2. Shift the arguments so any remaining ones (like filenames) can be passed to Neovim
+if [ -n "$1" ]; then
+  shift
+fi
+
+# Check if running inside a toolbox/podman container
+if [ -f /run/.containerenv ]; then
+  PTYXIS_PROFILE=$(host-spawn dconf read /org/gnome/Ptyxis/default-profile-uuid | tr -d "'")
+else
+  PTYXIS_PROFILE=$(dconf read /org/gnome/Ptyxis/default-profile-uuid | tr -d "'")
+fi
+
+printf "Using socket name: %s\n" "$SOCK_NAME"
+printf "Using default profile: %s\n" "$PTYXIS_PROFILE"
+
+# 3. Define the directory and full socket path
+NVIM_RUNTIME_DIR="${XDG_RUNTIME_DIR}/nvim"
+SOCKET="${NVIM_RUNTIME_DIR}/${SOCK_NAME}.sock"
+printf "Neovim socket path: %s\n" "$SOCKET"
+
+# 4. CHeck if arg is a project in the projects directory
+PROJECT_DIR="$HOME/Projects/${SOCK_NAME}"
+# abort id if the directory does not exist
+if [ ! -d "$PROJECT_DIR" ]; then
+  echo "Error: Project directory '$PROJECT_DIR' does not exist."
+  exit 1
+fi
+
+# 5. Ensure the subdirectory exists
+mkdir -p "$NVIM_RUNTIME_DIR"
+
+# 6. Check if the socket is actively listening
+if ss -xl | grep -q "$SOCKET" 2>/dev/null || nc -zU "$SOCKET" 2>/dev/null; then
+  printf "TODOConnecting to existing Neovim server %s \n" "$SOCK_NAME"
+  if [ -f /run/.containerenv ]; then
+    host-spawn ptyxis \
+      --title="dev-${SOCK_NAME}-repo" \
+      --working-directory="${PROJECT_DIR}" \
+      --tab-with-profile="${PTYXIS_PROFILE}" \
+      -- nvim --server "$SOCKET" --remote-ui "$@"
+  else
+    ptyxis \
+      --title="dev-${SOCK_NAME}-repo" \
+      --working-directory="${PROJECT_DIR}" \
+      --tab-with-profile="${PTYXIS_PROFILE}" \
+      -- nvim --server "$SOCKET" --remote-ui "$@"
+  fi
+else
+  # - If not, start a new Neovim server instance
+  #  - Use ptyxis to launch Neovim in a new terminal tab with
+  #  - the specified profile ie we run in our toolbox container
+  #  - open in  git controlled project  working directory
+  #  - the nvim servr listening on the specified socket
+  #  - the tab title set to the project name
+  if [ -f /run/.containerenv ]; then
+    host-spawn ptyxis \
+      --title="dev-${SOCK_NAME}-repo" \
+      --working-directory="${PROJECT_DIR}" \
+      --tab-with-profile="${PTYXIS_PROFILE}" \
+      -- nvim --listen "$SOCKET" "$@"
+  else
+    ptyxis \
+      --title="dev-${SOCK_NAME}-repo" \
+      --working-directory="${PROJECT_DIR}" \
+      --tab-with-profile="${PTYXIS_PROFILE}" \
+      -- nvim --listen "$SOCKET" "$@"
+  fi
+fi
