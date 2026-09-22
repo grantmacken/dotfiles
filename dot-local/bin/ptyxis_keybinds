@@ -5,14 +5,26 @@ set -euo pipefail
 # this script sets up custom keybindings for the Ptyxis terminal emulator.
 # It configures keybindings to launch specific commands in new Ptyxis tabs,
 # each associated with a different project directory and Neovim server instance.
-
-### USAGE
+#
+# Actions Configured:
+# - Ctrl+Alt+0: Opens pi-agent in project working directory (using select_project script).
+# - Ctrl+Alt+1: Opens dotfiles project (using ptyxis_nvim_project script).
+# - Ctrl+Alt+2: Opens tbx project.
+# - Ctrl+Alt+3: Opens accounts project.
+# - Ctrl+Alt+4: Opens dots project.
+#
+# Guardrails:
+# Aborts if executed inside a container (/run/.containerenv), ensuring it
+# configures GNOME settings properly on the host system.
 # ptyxis_keybinds
-
+#
+LOG="$HOME/Projects/ptyxis-setup.log"
+touch "$LOG"
+echo "Setting up keybindings for Ptyxis..." | tee -a "$LOG"
 # guardrail:
 if [ -f /run/.containerenv ]; then
   ERROR_MSG="This script is intended to be run on the host system, not inside a toolbox/podman container."
-  echo "Error: $ERROR_MSG"
+  echo "Error: $ERROR_MSG" | tee -a "$LOG"
   exit 1
 fi
 
@@ -25,65 +37,40 @@ PROFILE_UUID=$(dconf read "${PTYXIS}/default-profile-uuid" | tr -d "'")
 KEY=/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings
 BASE_DIR="${KEY}/"
 dconf reset -f ${BASE_DIR}
-custom0="${BASE_DIR}custom0/" # host-spawn
-custom1="${BASE_DIR}custom1/" # dev-dotfiles-repo
-custom2="${BASE_DIR}custom2/" # dev-tbx-repo
-custom3="${BASE_DIR}custom3/" # dev-accounts-repo
-custom4="${BASE_DIR}custom4/" # dev-dots-repo TODO: remove old dotfiles
-custom5="${BASE_DIR}custom5/" # pi-agent
-# custom6="${BASE_DIR}custom6/" # copilot
-# custom7="${BASE_DIR}custom7/" # fzf
 
-# printf "[ '%s', '%s', '%s', '%s', '%s']" "${custom0}" "${custom1}" "${custom2}" "${custom3} "${custom4}" "
-VALUE=$(printf "[ '%s', '%s', '%s', '%s', '%s', '%s']" "${custom0}" "${custom1}" "${custom2}" "${custom3}" "${custom4}" "${custom5}")
+# Generate the VALUE string for dconf write custom-keybindings dynamically
+VALUE="["
+for i in {0..4}; do
+  VALUE+="'${BASE_DIR}custom${i}/'"
+  if [ $i -lt 4 ]; then
+    VALUE+=", "
+  fi
+done
+VALUE+="]"
+
 echo "Setting keybindings to: $VALUE"
 dconf write "$KEY" "$VALUE"
 
-TITLE="host-spawn"
-DIR="${HOME}/Projects"
-dconf write "${custom0}name" "'host-spawn'"
-dconf write "${custom0}binding" "'<Control><Alt>0'"
-dconf write "${custom0}command" "'ptyxis --maximize --fullscreen --title=${TITLE} --working-directory=${DIR} --tab-with-profile=${PROFILE_UUID} -- host-spawn'"
+PROJECT=pi-agent
+DIR=${HOME}/Projects
+TITLE="pi-agent"
+dconf write "${BASE_DIR}custom0/name" "'${TITLE}'"
+dconf write "${BASE_DIR}custom0/binding" "'<Control><Alt>0'"
+dconf write "${BASE_DIR}custom0/command" "'ptyxis --standalone --maximize --fullscreen --title=${TITLE} --working-directory=${DIR} --tab-with-profile=${PROFILE_UUID} -- select_project'"
 
-PROJECT=dotfiles
-DIR=$HOME/Projects/${PROJECT}
-CONNECT="$HOME/.local/bin/nv_connect ${PROJECT} ${DIR}/"
-TITLE="dev-${PROJECT}-repo"
-dconf write "${custom1}name" "'${TITLE}'"
-dconf write "${custom1}binding" "'<Control><Alt>1'"
-dconf write "${custom1}command" "'ptyxis --title=${TITLE} --working-directory=${DIR} --tab-with-profile=${PROFILE_UUID} -- ${CONNECT}'"
+# Define projects in order (indices 1 through 4)
+PROJECTS=("dotfiles" "tbx" "accounts" "dots")
 
-PROJECT=tbx
-DIR=${HOME}/Projects/${PROJECT}
-CONNECT="$HOME/.local/bin/nv_connect ${PROJECT} ${DIR}/"
-TITLE="dev-${PROJECT}-repo"
-dconf write "${custom2}name" "'${TITLE}'"
-dconf write "${custom2}binding" "'<Control><Alt>2'"
-dconf write "${custom2}command" "'ptyxis  --maximize --fullscreen --title=${TITLE} --working-directory=${DIR} --tab-with-profile=${PROFILE_UUID} -- ${CONNECT}'"
+# Loop through the array, incrementing the custom index and the keybind index
+for i in "${!PROJECTS[@]}"; do
+  PROJECT="${PROJECTS[$i]}"
+  IDX=$((i + 1))
+  CUSTOM="${BASE_DIR}custom${IDX}/"
+  TITLE="dev-${PROJECT}-repo"
 
-PROJECT=accounts
-DIR=${HOME}/Projects/${PROJECT}
-CONNECT="$HOME/.local/bin/nv_connect ${PROJECT} ${DIR}/"
-TITLE="dev-${PROJECT}-repo"
-dconf write "${custom3}name" "'${TITLE}'"
-dconf write "${custom3}binding" "'<Control><Alt>3'"
-dconf write "${custom3}command" "'ptyxis  --maximize --fullscreen --title=${TITLE} --working-directory=${DIR} --tab-with-profile=${PROFILE_UUID} -- ${CONNECT}'"
+  dconf write "${CUSTOM}name" "'${TITLE}'"
+  dconf write "${CUSTOM}binding" "'<Control><Alt>${IDX}'"
+  dconf write "${CUSTOM}command" "'ptyxis_nvim_project ${PROJECT}'"
+done
 
-PROJECT=dots
-DIR=${HOME}/Projects/${PROJECT}
-CONNECT="$HOME/.local/bin/nv_connect ${PROJECT} ${DIR}/"
-TITLE="dev-${PROJECT}-repo"
-dconf write "${custom4}name" "'${TITLE}'"
-dconf write "${custom4}binding" "'<Control><Alt>4'"
-dconf write "${custom4}command" "'ptyxis  --maximize --fullscreen --title=${TITLE} --working-directory=${DIR} --tab-with-profile=${PROFILE_UUID} -- ${CONNECT}'"
-# gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings
-
-## pi-agant and copilot open in a project directory, but do not connect to a neovim server instance
-PROJECT=dotfiles
-DIR=${HOME}/Projects/${PROJECT}
-TITLE="dev-${PROJECT}-pi-agent"
-dconf write "${custom5}name" "'${TITLE}'"
-dconf write "${custom5}binding" "'<Control><Shift>1'" # open pi in dotfiles repo - ctl-shift-1  note compliments ctl-alt-1 dev-dotfiles-repo
-dconf write "${custom5}command" "'ptyxis --title=${TITLE} --working-directory=${DIR} --tab-with-profile=${PROFILE_UUID} -- pi --continue --model gpt-5.6-luna'"
-
-dconf dump "$BASE_DIR"
+dconf dump "$BASE_DIR" | tee -a "$LOG"
