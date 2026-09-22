@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+set -euo pipefail
+## VERSION: 0.1.0
+### DESCRIPTION
+# use FZF to select a project directory from ~/Projects and set working directory to that project
+# then execute pi-agent with the continue flag
+
+# Ensure fzf is installed
+if ! command -v fzf >/dev/null 2>&1; then
+  echo "Error: fzf is not installed." >&2
+  exit 1
+fi
+
+PROJECTS_DIR="$HOME/Projects"
+
+# Ensure Projects directory exists
+if [ ! -d "$PROJECTS_DIR" ]; then
+  echo "Error: Directory $PROJECTS_DIR does not exist." >&2
+  exit 1
+fi
+
+# Use fzf to select a project (only direct subdirectories of ~/Projects)
+# We change to the directory first to show clean relative names in fzf
+SELECTED_PROJECT=$(cd "$PROJECTS_DIR" && find . -maxdepth 1 -mindepth 1 -type d -printf "%f\n" | fzf --prompt="Select Project > ")
+
+# Exit if user cancelled fzf
+if [ -z "$SELECTED_PROJECT" ]; then
+  echo "No project selected."
+  exit 0
+fi
+
+# Change to the selected directory
+cd "$PROJECTS_DIR/$SELECTED_PROJECT"
+
+echo "Starting pi in $SELECTED_PROJECT..."
+
+# Execute pi with the continue flag. (Replaces the current shell process)
+exec pi --continue
