@@ -15,7 +15,7 @@ local cmd_list = {
   'TemplatesCreateLuaModule',
   'UtilSaveAndQuit',
   'UtilNvimServerList',
-  'UtilPiAgent'
+  'PiAgent'
   -- 'RestRunSnapshots',
 }
 
