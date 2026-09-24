@@ -1,0 +1,17 @@
+# Comments and blank lines are allowed.
+/README.*
+/AGENTS.md
+/.pi
+/LICENSE
+/Makefile
+/files
+/latest
+/docs
+/okf
+/tmp
+.arglist
+.git
+.github
+.gitignore
+.luarc.json
+.nvim.lua

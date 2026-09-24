@@ -1,3 +1,10 @@
+--[[ lsp setup
+ - [ ] md section: reference links:  'gf' & `gx`  file and url
+ - [ ] md section: documenting built-in keybindings
+ - [ ] enable all LSP servers in the 'lsp' config directory [lsp_enable]
+ - [ ] checklist: enable LSP features based on server capabilities [server_capabilities]
+--]]
+
 --[[ LSP and Diagnostics Keymaps and Features
 ## GLOBAL KEYMAPS
 These GLOBAL keymaps are created **unconditionally** when Nvim starts:
@@ -22,23 +29,8 @@ BUFFER-LOCAL DEFAULTS
    - To opt out call vim.lsp.document_color.enable(false, args.buf) on LspAttach.
 
 https://neovim.io/doc/user/lsp.html#_lua-module:-vim.lsp.buf
-Enable LSP features based on server capabilities
-' Features supported:
- - defintions:  keymap: gd:
-                display: quickfix list
- - references:  keymap: gr
-                display: quickfix list
- - code actions: keymap: gra (Normal and Visual mode)
- - hover:       keymap K, KK to enter the hover window and use q to close it
-                         Show hover information about the symbol under the cursor in a floating window.
- - completions:          keymap: <C-Space>
- - inline completions:   keymaps: <Tab>, <M-n>, <M-p>
- - formatting on save:   BufWritePre
- - folding ranges:       keymap: za, zc, zo, zm, zr, zR`
- - signatures help:      keymap:  CTRL-S (Insert mode)
-                         Show signature information about the symbol under the cursor in a floating window.'
---]]
 
+--]]
 
 
 -- --[[ Show signature information about the symbol under the cursor
@@ -65,8 +57,11 @@ Enable LSP features based on server capabilities
 --   max_height = math.floor(vim.o.lines * 0.5),
 --   max_width = math.floor(vim.o.columns * 0.4),
 -- })
+--
 
--- Enable all LSP servers in the 'lsp' config directory
+
+
+--[[ lsp_enable ]] --
 local uv = vim.uv or vim.loop
 local lsp_dir = vim.fn.stdpath("config") .. "/lsp"
 local fd = uv.fs_scandir(lsp_dir)
@@ -79,58 +74,17 @@ if fd then
     vim.notify_once('enabled LSP server:' .. name, vim.log.levels.INFO)
   end
 end
--- -- Update mappings when registering dynamic capabilities.
--- local register_capability = vim.lsp.handlers['client/registerCapability']
--- vim.lsp.handlers['client/registerCapability'] = function(err, res, ctx)
---     local client = vim.lsp.get_client_by_id(ctx.client_id)
---     if not client then
---         return
---     end
---
---     on_attach(client, vim.api.nvim_get_current_buf())
---
---     return register_capability(err, res, ctx)
--- end
---
+
+
+-- HACK: Override buf_request to ignore notifications from LSP servers that don't implement a method.
+local buf_request = vim.lsp.buf_request
+---@diagnostic disable-next-line: duplicate-set-field
+vim.lsp.buf_request = function(bufnr, method, params, handler)
+  return buf_request(bufnr, method, params, handler, function() end)
+end
+
 --[[
- try to use defaults
---]]
---
---   -- --- Set up buffer-local keymaps for LSP features
---   -- --- @param keymap table A table containing the keymap definition in the format { lhs, rhs, desc }
---   -- --- @param mode string The mode in which the keymap should be set (e.g 'n' for normal mode, 'i' for insert mode, etc.)
---   -- local set_keymap = function(keymap, mode)
---   --   vim.keymap.set(mode, keymap[1], keymap[2], { buffer = bufID, desc = keymap[3] })
---   -- end
---
---   --- Set up buffer-local keymaps for LSP features that require dynamic evaluation
---   --- @param keymap table A table containing the keymap definition in the format { lhs, rhs, desc }
---   --- @param mode string The mode in which the keymap should be set (e.g 'n' for normal mode, 'i' for insert mode, etc.)
---   local set_dynamic_keymap = function(keymap, mode)
---     vim.keymap.set(mode, keymap[1], keymap[2], { expr = true, buffer = bufID, desc = keymap[3] })
---   end
---
---   if client:supports_method('textDocument/completion') then
---     --vim.bo[bufID].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp'
---   --   vim.lsp.completion.enable(true, clientID, bufID, {
---   --       autotrigger = true,
---   --       convert = function(item)
---   --         return { abbr = item.label:gsub('%b()', '') }
---   --       end,
---   --     })
---   --   --  vim.lsp.completion.enable(true, clientID, bufID, { autotrigger = false })
---   --   --set_keymap({ '<C-Space>', vim.lsp.completion.get, "Trigger lsp completion" }, 'i')
---   -- end
---   -- inline completion
---   if client:supports_method('textDocument/inlineCompletion') then
---     vim.lsp.inline_completion.enable(true)
---     set_dynamic_keymap(
---       { '<C-Space>',
---         function() if not vim.lsp.inline_completion.get() then return '<C-Space' end end,
---         'Accept the current inline completion' }
---       , 'i')
---   end
---
+
 --   if client:supports_method('textDocument/foldingRange') then
 --     local win = vim.api.nvim_get_current_win()
 --     vim.wo[win][bufID].foldexpr = 'v:lua.vim.lsp.foldexpr()'
@@ -150,6 +104,26 @@ end
 --     })
 --   end
 -- end,
+-- ]]
+
+--[[ server_capabilities ]] --
+--[[ Checklist of  LSP features based on server capabilities
+' Features supported:
+ - definitions:  keymap: gd:
+                 display: quickfix list
+ - references:  keymap: gr
+                display: quickfix list
+ - code actions: keymap: gra (Normal and Visual mode)
+ - hover:       keymap K, KK to enter the hover window and use q to close it
+                         Show hover information about the symbol under the cursor in a floating window.
+ - folding ranges:       keymap: za, zc, zo, zm, zr, zR`
+ - signatures help:      keymap:  CTRL-S (Insert mode)
+                         Show signature information about the symbol under the cursor in a floating window.'
+
+- [ ] completions:          keymap: <C-Space>
+- [ ] inline completions:   keymaps: <Tab>, <M-n>, <M-p>
+- [ ] formatting on save:   BufWritePre
+--]]
 
 --- Set up buffer-local keymaps for LSP features
 --- @param keymap table A table containing the keymap definition in the format { lhs, rhs, desc }

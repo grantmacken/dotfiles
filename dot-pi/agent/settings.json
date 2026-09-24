@@ -1,0 +1,22 @@
+{
+  "defaultProvider": "github-copilot",
+  "defaultModel": "gpt-5.6-luna",
+  "defaultThinkingLevel": "medium",
+  "hideThinkingBlock": false,
+  "cacheWarming": "streaming",
+  "defaultProjectTrust": "ask",
+  "modelThinkingLevels": {
+    "github-copilot/gpt-5.6-luna": "medium"
+  },
+  "thinkingBudgets": {
+    "low": 2048,
+    "medium": 4096,
+    "high": 10240,
+    "max": 16384
+  },
+  "lastChangelogVersion": "0.85.1",
+  "theme": "dark",
+  "extensions": [
+    "~/.pi/extensions/nvim-buffer.ts"
+  ]
+}

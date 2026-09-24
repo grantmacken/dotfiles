@@ -1,0 +1,44 @@
+{
+  "plugins": {
+    "gitsigns.nvim": {
+      "rev": "8d79f2410c76e62b92e51c28c82e28c1c5a3daeb",
+      "src": "gh:lewis6991/gitsigns.nvim"
+    },
+    "kanagawa.nvim": {
+      "rev": "bb85e4bfc8d89b0e62c8fa53ccdd13d12e2f77b3",
+      "src": "gh:rebelot/kanagawa.nvim"
+    },
+    "kanso.nvim": {
+      "rev": "1afbbb449aa0254823dbe1932e3cbb51886ff9fe",
+      "src": "gh:webhooked/kanso.nvim"
+    },
+    "mini.clue": {
+      "rev": "1c136d62729c8c3b0c2d91379bc37efac15d916e",
+      "src": "gh:nvim-mini/mini.clue"
+    },
+    "mini.completion": {
+      "rev": "d2a2b2a2b5350b713ade3bb744df39eee7d4229b",
+      "src": "gh:nvim-mini/mini.completion"
+    },
+    "mini.icons": {
+      "rev": "98faae31e9be1cc054ae63485e58ceb185efcad0",
+      "src": "gh:nvim-mini/mini.icons"
+    },
+    "mini.keymap": {
+      "rev": "2c0c7980512f72fdc221f1812b9f8b4d7ab07127",
+      "src": "gh:nvim-mini/mini.keymap"
+    },
+    "mini.snippets": {
+      "rev": "050638170639ceb7bef4e804507cbf209e565b2c",
+      "src": "gh:nvim-mini/mini.snippets"
+    },
+    "mini.test": {
+      "rev": "3cc4c29be99531b3fc4fb99f3fa964b492166728",
+      "src": "gh:nvim-mini/mini.test"
+    },
+    "tiny-inline-diagnostic.nvim": {
+      "rev": "6264451f14119d63a52580e5198d6baf8518b0b2",
+      "src": "gh:rachartier/tiny-inline-diagnostic.nvim"
+    }
+  }
+}

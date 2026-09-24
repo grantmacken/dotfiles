@@ -1,0 +1,25 @@
+files
+tmp
+latest
+tests
+dot-pi/agent/auth.json
+dot-pi/agent/models-store.json
+dot-pi/agent/trust.json
+dot-pi/agent/sessions/
+dot-pi/sessions/
+# Neovim test outputs
+dot-config/oldnvim
+dot-config/minmax
+dot-config/nvim/*.log
+dot-config/nvim/tests/*.log
+dot-config/systemd/user/default.target.wants/*
+dot-config/systemd/user/sockets.target.wants/*
+dot-config/nvim/_hold
+Session.vim
+
+# Vim swap/backup files
+*.swp
+*.swo
+*~
+# Backup files
+*.bak
