@@ -15,7 +15,8 @@ local cmd_list = {
   'TemplatesCreateLuaModule',
   'UtilSaveAndQuit',
   'UtilNvimServerList',
-  'RestRunSnapshots',
+  'UtilPiAgent'
+  -- 'RestRunSnapshots',
 }
 
 require('commands').set(cmd_list)
