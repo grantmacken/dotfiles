@@ -9,6 +9,7 @@ Command conventions: begin with name: first letter uppercase, then more context:
 
 
 local cmd_list = {
+  'GitAddFile',
   'GitCommitFile',
   'GitStatusToQuickfix',
   'GitLog',

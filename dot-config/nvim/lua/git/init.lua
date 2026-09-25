@@ -23,6 +23,13 @@ M.references = [[
 
 local show = require('show')
 
+M.addFile = function()
+  -- Add the current file to the Git staging area
+  vim.cmd([[!git add %]])
+  vim.notify("Added current file to Git staging area", vim.log.levels.INFO)
+end
+
+
 M.commitFile = function()
   -- Commit the current file with a message provided by the user
   vim.ui.input({ prompt = 'Enter commit message: ' }, function(input)
