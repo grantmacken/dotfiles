@@ -1,22 +1,27 @@
 local M = {}
 M.version = "0.1.0"
 M.description = [[
- A brief plan outline of what the module will achieve.
- - overview: module overview which describes the module's purpose and functionality
- - scope: module scope
- - usage: how to use the module
+ Provide Neovim-facing Git operations and output integrations.
+ - overview: supports Git actions such as committing files, viewing status, and displaying Git logs
+ - scope: owns Git operations and routes results to quickfix or the show window; plugin files own startup wiring
+ - usage: nvim/plugin files invoke the module's public functions through user commands, keymaps, and autocommands
 ]]
 
 -- A TODO list of tasks to be completed for the module's implementation
 M.implementation = [[
- - [ ] todo task 1
- - [ ] todo task 3
+ - [x] Commit the current file with a user-provided message.
+ - [x] Display Git status entries in the quickfix list.
+ - [ ] Add Git log output to the show window.
 ]]
 
 M.references = [[
- - reference 1 url to gh issue or discussion
- - reference 2 file path to local documentation
+ - ../../plugin/10_user_commands.lua
+ - ../util/init.lua
+ - ../show/init.lua
+ - ../../README.md
 ]]
+
+local show = require('show')
 
 M.commitFile = function()
   -- Commit the current file with a message provided by the user
@@ -54,6 +59,19 @@ M.statusToQuickfix = function()
     vim.cmd('copen')                  -- Instantly brings up the quickfix tray
   else
     vim.notify("Git working directory is clean.", vim.log.levels.INFO)
+  end
+end
+
+---@brief Display the repository's Git log in the show window.
+---@return nil
+M.log = function()
+  local name = 'bufTaskGitLog'
+  -- collect data from git log command
+  local lines = vim.fn.systemlist("git log --oneline --graph --decorate --all")
+  if #lines > 0 then
+    show.data(name, lines, {})
+  else
+    vim.notify("No Git log entries found.", vim.log.levels.INFO)
   end
 end
 

@@ -11,6 +11,7 @@ Command conventions: begin with name: first letter uppercase, then more context:
 local cmd_list = {
   'GitCommitFile',
   'GitStatusToQuickfix',
+  'GitLog',
   'SearchGrepInputIntoQf',
   'TemplatesCreateLuaModule',
   'UtilSaveAndQuit',
