@@ -5,7 +5,13 @@ M.description = [[
  - overview: routes data and commands to reusable named buffers shown in the show window
  - scope: owns show-window, buffer, and channel coordination; not user commands, keymaps, or test wiring
  - usage: require('show') and call show.data(bufName, data, opts) or show.run(bufName, cmd)
- - buffer kind: the bufName prefix selects the buffer kind, such as bufScratch, bufTask, bufEdit, or bufShell
+ - buffer kind: the bufName prefix selects the buffer kind,
+   which determines how the data is handled and displayed in the show window:
+   - bufScratch{NameSuffix} => buffers for displaying data as markdown lists, tables or other data
+   - bufEdit{NameSuffix}    =>  buffers for fetching, editing and posting data
+   - bufTask{NameSuffix}    =>  task buffer for sending shell commands to a channel and displaying output
+   - bufShell{NameSuffix}   =>  interactive shell buffer
+   the bufType with the NameSuffix provides a unique handle for buffer.
 ]]
 
 -- A TODO list of tasks to be completed for the module's implementation
