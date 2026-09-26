@@ -8,9 +8,9 @@ dot-pi/agent/trust.json
 dot-pi/agent/sessions/
 dot-pi/sessions/
 # Neovim test outputs
-dot-config/oldnvim
-dot-config/minmax
 dot-config/nvim/*.log
+# meta should not be there from lua LSP
+dot-config/nvim/meta 
 dot-config/nvim/tests/*.log
 dot-config/systemd/user/default.target.wants/*
 dot-config/systemd/user/sockets.target.wants/*
