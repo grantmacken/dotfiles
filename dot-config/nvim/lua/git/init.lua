@@ -74,7 +74,7 @@ end
 M.log = function()
   local name = 'bufTaskGitLog'
   -- collect data from git log command
-  local lines = vim.fn.systemlist("git log --oneline --graph --decorate --all")
+  local lines = vim.fn.systemlist("git log --color=always --oneline --graph --decorate --all")
   if #lines > 0 then
     show.data(name, lines, {})
   else
