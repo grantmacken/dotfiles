@@ -7,19 +7,25 @@ Command conventions: begin with name: first letter uppercase, then more context:
      - the spliting function call is cmd:gsub("%u", " %0"):gsub("^%s+", "")
 ]]
 
-
-local cmd_list = {
+local git_list = {
   'GitAddFile',
   'GitCommitFile',
-  'GitStatusToQuickfix',
   'GitLog',
+  'GitStatusList',
+  'GitPush',
+  --  'GitStatusToQuickfix',
+}
+
+require('commands').set(git_list)
+
+
+local cmd_list = {
+  'PiAgent',
+  'RepoIssueList',
   'SearchGrepInputIntoQf',
   'TemplatesCreateLuaModule',
-  'UtilSaveAndQuit',
   'UtilNvimServerList',
-  'PiAgent'
-  -- 'RestRunSnapshots',
+  'UtilSaveAndQuit',
 }
 
 require('commands').set(cmd_list)
-vim.notify('plugin user_command loaded')
