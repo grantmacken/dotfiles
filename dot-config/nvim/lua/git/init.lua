@@ -22,11 +22,17 @@ M.references = [[
 ]]
 
 local show = require('show')
+-- imports
+M.statusList = require('git.status').statusList
 
 M.addFile = function()
   -- Add the current file to the Git staging area
   vim.cmd([[!git add %]])
   vim.notify("Added current file to Git staging area", vim.log.levels.INFO)
+end
+
+M.push = function()
+  vim.cmd([[!git push]])
 end
 
 
@@ -74,7 +80,7 @@ end
 M.log = function()
   local name = 'bufTaskGitLog'
   -- collect data from git log command
-  local lines = vim.fn.systemlist("git log --color=always --oneline --graph --decorate --all")
+  local lines = vim.fn.systemlist("git log --oneline --graph --decorate --all")
   if #lines > 0 then
     show.data(name, lines, {})
   else
