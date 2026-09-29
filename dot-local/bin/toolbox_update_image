@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+set -euo pipefail
+### DESCRIPTION
+# This script checks if the local toolbox container image is up to date with the remote image.
+# If the local image is outdated, it pulls the latest image and recreates the toolbox container
+# with the same name.
+#
+# Exit codes:
+# 0 - Success
+
+##USAGE
+# runs once a weekly @see dot-config/systemd/user/tbx-reset.service
+
+CONTAINER=tbx-coding
+IMAGE=ghcr.io/grantmacken/${CONTAINER}
+LOCAL_DIGEST=$(podman image inspect ${IMAGE}:latest | jq -r '.[0].Digest')
+REMOTE_DIGEST=$(skopeo inspect docker://${IMAGE}:latest | jq -r '.Digest')
+# printf "Remote Digest: %s\n" "$REMOTE_DIGEST"
+printf " Local Digest: %s\n" "$LOCAL_DIGEST"
+printf "Remote Digest: %s\n" "$REMOTE_DIGEST"
+if [ "$LOCAL_DIGEST" != "$REMOTE_DIGEST" ]; then
+  echo "Local and Remote Digests do not match"
+  echo " - pulling the latest image"
+  podman pull ${IMAGE}:latest
+
+else
+  echo "Local and Remote Digests Match"
+  echo " - pull not needed"
+fi
+printf "inage %s update complete" "$IMAGE"
+exit 0
