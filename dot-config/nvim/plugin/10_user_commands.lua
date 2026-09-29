@@ -4,28 +4,34 @@ User defined commands for neovim, with a consistent naming convention and descri
 Command conventions: begin with name: first letter uppercase, then more context:  e.g. "UtilCopyRelativePathToClipboard"
      - the function to call is the substring after first word e.g. "Issue", with the first letter  of the second word lowercased e.g. "CopyRelativePathToClipboard" -> "copyRelativePathToClipboard"
      - the description for the command is the cmd  split into words, e.g. "UtilCopyRelativePathToClipboard" -> "Util Copy Relative Path To Clipboard""
-     - the spliting function call is cmd:gsub("%u", " %0"):gsub("^%s+", "")
 ]]
 
 local git_list = {
   'GitAddFile',
   'GitCommitFile',
   'GitLog',
-  'GitStatusList',
   'GitPush',
-  --  'GitStatusToQuickfix',
+  'GitStatusList',
+  'GitStatusToQuickfix',
 }
 
 require('commands').set(git_list)
 
+local pi_agent_list = {
+  'PiAgentNew',
+  'PiAgentContinue',
+  'PiAgentScopedCommit'
+}
+
+require('commands').set(pi_agent_list)
 
 local cmd_list = {
-  'PiAgent',
-  'RepoIssueList',
+  --'RepoIssueList',
   'SearchGrepInputIntoQf',
   'TemplatesCreateLuaModule',
   'UtilNvimServerList',
   'UtilSaveAndQuit',
+  'KeymapsList',
 }
 
 require('commands').set(cmd_list)
