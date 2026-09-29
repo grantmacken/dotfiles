@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+set -euo pipefail
+## DESCRIPTION
+# This script should run after a new image has been pulled and the local toolbox container is outdated.
+# It will remove the existing toolbox container and recreate it with the same name using the latest image.
+
+## references
+# https://toolbox.fedoraproject.org/
+# https://toolbox.fedoraproject.org/faq/
+# https://containertoolbx.org/doc/
+# https://docs.fedoraproject.org/en-US/atomic-desktops/toolbox/
+# https://github.com/containers/toolbox/blob/main/doc/toolbox-list.1.md
+# https://github.com/containers/toolbox/blob/main/doc/toolbox-rm.1.md
+# use rm with force flag to remove a container that is running or has running processes
+
+CONTAINER="tbx-coding"
+IMAGE="ghcr.io/grantmacken/${CONTAINER}"
+BIN_DIR="${HOME}/Projects/dotfiles/dot-local/bin"
+RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/usr/1000}"
+if [ -f /run/.containerenv ]; then
+  CONTAINER=$(grep -oP 'name=\K.+' /run/.containerenv | tr -d '"')
+  IMAGE=$(grep -oP 'image=\K.+' /run/.containerenv | tr -d '"')
+  IMAGE_ID=$(grep -oP 'imageid=\K.+' /run/.containerenv | tr -d '"')
+  CONTAINER_ID=$(grep -oP 'id=\K.+' /run/.containerenv | tr -d '"')
+  printf " - Container Name: %s\n - Image: %s\n - Image ID: %s\n - Container ID: %s\n" "$CONTAINER" "$IMAGE" "$IMAGE_ID" "$CONTAINER_ID"
+  MAYBE_NEW_IMAGE_ID=$(host-spawn podman image inspect "${IMAGE}" | jq -r '.[].Id')
+  printf " - Maybe new image id: %s\n" "${MAYBE_NEW_IMAGE_ID}"
+  if [ "${IMAGE_ID}" != "${MAYBE_NEW_IMAGE_ID}" ]; then
+    echo " - Image ID has changed, recreating the toolbox container ${CONTAINER}"
+    # drop in host with host-spawn to run toolbox commands in the host environment
+    host-spawn ptyxis \
+      --standalone \
+      --new-window \
+      --tab-with-profile="11e1f02151d1a4f6e435dbf668ed9c16" \
+      --title="toolbox-recreate-container_${CONTAINER}" \
+      --working-directory="${BIN_DIR}" \
+      -- bash -c 'pwd && sleep 2 && ./toolbox_recreate_container && sleep 25 && exit 0'
+  fi
+fi
+
+## NOTE: we are now running this script outside of the toolbox container, so we can safely remove and recreate the container if needed
+echo " ----------------------------------------------"
+echo " Recreate the toolbox container ${CONTAINER} "
+echo " -------------------------------------------------"
+if toolbox list containers | grep -q "${CONTAINER}"; then
+  echo " - 1: Remove the toolbox container ${CONTAINER}"
+  toolbox rm -f ${CONTAINER} &>/dev/null
+  echo " - 2: Remove nvim server socket addresses created via 'nvim --listen'"
+  rm -f "${RUNTIME_DIR}/nvim/*.sock"
+fi
+echo " - 3: Recreate toolbox from the latest image and"
+echo "      give it the same name as the removed container"
+toolbox create -i $(toolbox list images | grep -oP '.+\s\K.+ghcr.+tbx-coding:latest') tbx-coding
+toolbox list containers
