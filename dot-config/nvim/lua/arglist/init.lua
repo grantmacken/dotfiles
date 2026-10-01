@@ -24,16 +24,12 @@ M.references     = [[
  - ../../plugin/07_opt_bracketed.lua
  - ../../plugin/10_user_commands.lua
  - ../../plugin/22_args.lua
- - https://neovim.io/doc/user/editing.html#arglist
+ - https://neaovim.io/doc/user/editing.html#arglist
 ]]
 
+local files      = require('util.files')
 
-local files = require('util.files')
-
-
-
-
-local show   = function()
+local list       = function()
   local bufName = 'bufScratchArglist'
   local data = vim.fn.argv()
   if #data == 0 then
@@ -55,7 +51,7 @@ local show   = function()
   end, { buffer = bufID, desc = 'Custom gf for scratch buffers' })
 end
 
-local load   = function()
+local load       = function()
   local cwd = vim.fn.getcwd()
   local arglist_file = cwd .. '/.arglist'
   if vim.fn.filereadable(arglist_file) == 1 then
@@ -74,7 +70,7 @@ local load   = function()
   end
 end
 
-local save   = function()
+local save       = function()
   local arglist = vim.fn.argv()
   local cwd = vim.fn.getcwd()
   local arglist_file = cwd .. '/.arglist'
@@ -88,7 +84,7 @@ end
 
 --- add the current file to the arglist
 --- @return nil
-local add    = function()
+local add        = function()
   local relative_path = files.get_relative_path()
   vim.cmd.argadd(relative_path)
   vim.cmd.argdedupe() -- remove duplicates from the arglist
@@ -98,13 +94,13 @@ end
 
 --- add the current file to the arglist
 --- @return nil
-local delete = function()
+local delete     = function()
   local relative_path = files.get_relative_path()
   local _, _ = pcall(vim.cmd.argdelete, relative_path)
   local _, _ = pcall(vim.cmd.ArglistSave)
 end
 
-local nav    = function(count)
+local nav        = function(count)
   local arglen = vim.fn.argc()
   if arglen == 0 then
     return
@@ -116,10 +112,10 @@ local nav    = function(count)
   vim.cmd(next + 1 .. 'argu')
 end
 
-M.add        = add
-M.delete     = delete
-M.save       = save
-M.show       = show
-M.load       = load --  ../../plugin/22_args.lua
-M.nav        = nav
+M.add            = add
+M.delete         = delete
+M.save           = save
+M.list           = list
+M.load           = load --  ../../plugin/22_args.lua
+M.nav            = nav
 return M
