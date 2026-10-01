@@ -1,10 +1,10 @@
 local M          = {}
 M.version        = "0.1.0"
 M.description    = [[
- module: arglist - management for project specific arglists
-  - Each project has its own arglist, stored in a .arglist file in the project root
-  - The arglist is managed with user commands and keymaps for adding, deleting, and navigating the arglist
-  - The arglist can be saved to the .arglist file with a user command
+ Manage a project-specific Neovim arglist, persisted in the working directory's `.arglist` file.
+ - overview: add or delete files, save or load the list, display it, and navigate its entries
+ - scope: owns arglist operations and persistence; command, keymap, and startup wiring belongs to plugin files
+ - usage: `require('arglist')` exposes `add`, `delete`, `save`, `show`, `load`, and `nav`
 ]]
 
 -- A TODO list of tasks to be completed for the module's implementation
@@ -14,12 +14,17 @@ M.implementation = [[
  - [x] when aglist is added to or deleted, save the arglist to file in project root
  - [x] show arglist in a show window buffer, with each file on a separate line
  - [x] buffer-local cmd  for show buffer: `gf` will open file in main window
- - [x] load data form .arglist file into arglist when project is opened
+ - [x] load data from the `.arglist` file into the arglist when the project is opened
+ - [x] Navigate arglist entries by count, wrapping at either end
 ]]
 
 M.references     = [[
- - reference 1 url to gh issue or discussion
- - reference 2 file path to local documentation
+ - ../show/init.lua
+ - ../util/files.lua
+ - ../../plugin/07_opt_bracketed.lua
+ - ../../plugin/10_user_commands.lua
+ - ../../plugin/22_args.lua
+ - https://neovim.io/doc/user/editing.html#arglist
 ]]
 
 
