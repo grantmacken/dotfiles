@@ -22,9 +22,13 @@ M.references     = [[
  - reference 2 file path to local documentation
 ]]
 
-local files      = require('util.files')
 
-local show       = function()
+local files = require('util.files')
+
+
+
+
+local show   = function()
   local bufName = 'bufScratchArglist'
   local data = vim.fn.argv()
   if #data == 0 then
@@ -46,7 +50,7 @@ local show       = function()
   end, { buffer = bufID, desc = 'Custom gf for scratch buffers' })
 end
 
-local load       = function()
+local load   = function()
   local cwd = vim.fn.getcwd()
   local arglist_file = cwd .. '/.arglist'
   if vim.fn.filereadable(arglist_file) == 1 then
@@ -65,7 +69,7 @@ local load       = function()
   end
 end
 
-local save       = function()
+local save   = function()
   local arglist = vim.fn.argv()
   local cwd = vim.fn.getcwd()
   local arglist_file = cwd .. '/.arglist'
@@ -79,7 +83,7 @@ end
 
 --- add the current file to the arglist
 --- @return nil
-local add        = function()
+local add    = function()
   local relative_path = files.get_relative_path()
   vim.cmd.argadd(relative_path)
   vim.cmd.argdedupe() -- remove duplicates from the arglist
@@ -89,36 +93,28 @@ end
 
 --- add the current file to the arglist
 --- @return nil
-local delete     = function()
+local delete = function()
   local relative_path = files.get_relative_path()
   local _, _ = pcall(vim.cmd.argdelete, relative_path)
   local _, _ = pcall(vim.cmd.ArglistSave)
 end
 
-local quickfix   = function()
-  local list = vim.fn.argv()
-  if type(list) ~= 'table' then
-    vim.notify('Arglist is empty', vim.log.levels.WARN)
+local nav    = function(count)
+  local arglen = vim.fn.argc()
+  if arglen == 0 then
     return
   end
-  if #list > 0 then
-    local qf_items = {}
-    for _, filename in ipairs(list) do
-      table.insert(qf_items, {
-        filename = filename,
-        lnum = 1,
-        text = ''
-      })
-    end
-    vim.fn.setqflist(qf_items, 'r')
-    vim.cmd.copen()
+  local next = (vim.fn.argidx() + count) % arglen
+  if next < 0 then
+    next = next + arglen
   end
+  vim.cmd(next + 1 .. 'argu')
 end
 
-M.add            = add
-M.delete         = delete
-M.load           = load
-M.save           = save
-M.show           = show
-M.quickfix       = quickfix
+M.add        = add
+M.delete     = delete
+M.save       = save
+M.show       = show
+M.load       = load --  ../../plugin/22_args.lua
+M.nav        = nav
 return M
