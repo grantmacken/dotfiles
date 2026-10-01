@@ -96,24 +96,21 @@ Treesitter selection and multicursor
 ]=]
 
 --- custom bracketed mappings
-
--- window mappings
-vim.keymap.set('n', '[w', '<C-w>p', { desc = 'Previous window' })
-vim.keymap.set('n', ']w', '<C-w>w', { desc = 'Next window' })
--- use arrow keys to move between windows
-vim.keymap.set('n', '[<Up>', '<C-w>k', { desc = 'Move to window above' })
-vim.keymap.set('n', '[<Down>', '<C-w>j', { desc = 'Move to window below' })
-vim.keymap.set('n', '[<Left>', '<C-w>h', { desc = 'Move to window left' })
-vim.keymap.set('n', '[<Right>', '<C-w>l', { desc = 'Move to window right' })
--- also for terminal mode
-vim.keymap.set('t', '[<Up>', '<C-\\><C-n><C-w>k', { desc = 'Move to window above' })
-vim.keymap.set('t', '[<Down>', '<C-\\><C-n><C-w>j', { desc = 'Move to window below' })
-
--- tabpage mappings
---  [ pageup / ]pagedown
---  [ tabprev / ]tabnext
--- Tab navigation using brackets + Page Up/Down keys
+-- TODO: use function to cycle through tabs instead of just going to the next/previous tab
 vim.keymap.set("n", "[<PageUp>", "<cmd>tabprevious<cr>", { desc = "Previous Tab" })
 vim.keymap.set("n", "]<PageDown>", "<cmd>tabnext<cr>", { desc = "Next Tab" })
 
---
+-- override default mappings for arglist navigation to use custom arglist module
+--- custom bracketed mappings for arglist navigation
+
+vim.keymap.set("n", "[a", function()
+  local nav = require("arglist").nav
+  nav(-vim.v.count1)
+  -- vim.cmd("args")
+end)
+
+vim.keymap.set("n", "]a", function()
+  local nav = require("arglist").nav
+  nav(vim.v.count1)
+  -- vim.cmd("args")
+end)
