@@ -17,13 +17,22 @@ local git_list = {
 
 require('commands').set(git_list)
 
-local pi_agent_list = {
+local pi_list = {
   'PiAgentNew',
   'PiAgentContinue',
   'PiAgentScopedCommit'
 }
+--
+require('commands').set(pi_list)
 
-require('commands').set(pi_agent_list)
+local arg_list = {
+  'ArglistAdd',
+  'ArglistDelete',
+  'ArglistShow',
+  'ArglistSave',
+}
+
+require('commands').set(arg_list)
 
 local cmd_list = {
   --'RepoIssueList',
